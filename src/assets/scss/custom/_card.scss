@@ -7,3 +7,33 @@
 @import "../core/cards/card-blockquote";
 @import "../core/cards/card-animations";
 @import "../core/cards/card-stats";
+
+
+.card {
+    height: 100%;
+}
+.card-item{
+    .card-body {
+        display: flex;
+        justify-self: center;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Thay đổi con trỏ chuột thành hình bàn tay */
+    border: 1px solid #ddd; /* Thêm viền cho thẻ card */
+    border-radius: 0.25rem; /* Bo góc của thẻ card */
+  }
+  
+  .card-hover:hover {
+    transform: scale(1.05); /* Tăng kích thước thẻ card khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Thêm bóng cho thẻ card khi hover */
+  }
+  
+  .card-hover:active {
+    transform: scale(0.98); /* Tạo hiệu ứng nhấn cho thẻ card khi click */
+  }
