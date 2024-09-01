@@ -8,6 +8,7 @@ import CarePost from '../views/Starter/CarePost.vue';
 import PostDetail from '../views/Starter/PostDetail.vue';
 import Program from '../views/Starter/Program.vue';
 import MapPage from '../views/Starter/Map.vue';
+import WelcomePage from '../views/Starter/Welcome.vue';
 
 Vue.use(Router);
 
@@ -15,6 +16,11 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'welcome',
+      component: WelcomePage,
+    },
+    {
+      path: '/home',
       name: 'home',
       redirect: '/dashboard',
       component: DashboardLayout,

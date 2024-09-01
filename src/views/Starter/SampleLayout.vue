@@ -10,10 +10,10 @@
             icon: 'ni ni-shop text-primary',
           }"
         >
-          <sidebar-item :link="{ name: 'Lam bai test tam ly', path: '/exam' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Thu tuc hanh chinh', path: '/program' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Chăm sóc', path: '/post' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'So do', path: '/map' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Lam bai test tam ly', path: '/home/exam' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Thu tuc hanh chinh', path: '/home/program' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'Chăm sóc', path: '/home/post' }"></sidebar-item>
+          <sidebar-item :link="{ name: 'So do', path: '/home/map' }"></sidebar-item>
         </sidebar-item>
       </template>
     </side-bar>
