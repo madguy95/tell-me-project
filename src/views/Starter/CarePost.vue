@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-default">
+  <div class="">
     <base-header class="pb-3 pt-5 pt-md-8 bg-default"> </base-header>
     <b-container fluid class="mt-3" style="min-height: calc(100vh - 100px)">
       <div class="container">
@@ -117,5 +117,8 @@ export default {
 .card-img-top {
   max-height: 200px; /* Set the max height of the image */
   object-fit: cover; /* Optional: Ensure the image covers the area without stretching */
+}
+.btn-link {
+  color: #1276a8;
 }
 </style>

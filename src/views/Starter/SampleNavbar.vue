@@ -19,7 +19,7 @@
       aria-current="page"
       class="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block active router-link-active"
     >
-      {{ $route.name }}
+      <!-- {{ $route.name }} -->
     </a>
 
     <!-- Navbar links -->

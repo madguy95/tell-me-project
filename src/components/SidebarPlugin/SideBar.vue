@@ -6,13 +6,13 @@
     <div class="container-fluid">
       <!--Toggler-->
       <navbar-toggle-button @click.native="showSidebar"> </navbar-toggle-button>
-      <router-link class="navbar-brand" to="/">
+      <router-link class="navbar-brand" to="/home/dashboard">
         <img :src="logo" class="navbar-brand-img" alt="..." />
       </router-link>
 
       <slot name="mobile-right">
         <ul class="nav align-items-center d-md-none">
-          <base-dropdown class="nav-item" menu-on-right tag="li" title-tag="a">
+          <!-- <base-dropdown class="nav-item" menu-on-right tag="li" title-tag="a">
             <a
               slot="title-container"
               class="nav-link nav-link-icon"
@@ -28,7 +28,7 @@
             <a class="dropdown-item" href="#">Another action</a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Something else here</a>
-          </base-dropdown>
+          </base-dropdown> -->
           <div class="login-button-container">
             <b-button variant="default" 
               >Đăng Nhập</b-button
@@ -79,7 +79,7 @@
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
             <div class="col-6 collapse-brand">
-              <router-link to="/">
+              <router-link to="/home/dashboard">
                 <img :src="logo" />
               </router-link>
             </div>

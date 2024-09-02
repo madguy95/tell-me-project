@@ -1,117 +1,108 @@
 <template>
   <div class="" style="">
-    <base-header class="pb-3 pt-5 pt-md-8 bg-default">
-      <b-carousel
-        id="carousel-1"
-        v-model="slide"
-        :interval="4000"
-        controls
-        indicators
-        background="#ababab"
-        img-width="1024"
-        img-height="340"
-        style="text-shadow: 1px 1px 2px #333"
-        @sliding-start="onSlideStart"
-        @sliding-end="onSlideEnd"
-        class="my-carousel"
-      >
-        <!-- Text slides with image -->
-        <b-carousel-slide
-          caption="First slide"
-          text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-          img-src="https://picsum.photos/1024/340/?image=52"
-        ></b-carousel-slide>
-
-        <!-- Slides with custom text -->
-        <b-carousel-slide img-src="https://picsum.photos/1024/340/?image=54">
-          <h1>Hello world!</h1>
-        </b-carousel-slide>
-
-        <!-- Slides with image only -->
-        <b-carousel-slide
-          img-src="https://picsum.photos/1024/340/?image=58"
-        ></b-carousel-slide>
-
-        <!-- Slides with img slot -->
-        <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-        <b-carousel-slide>
-          <template #img>
-            <img
-              class="d-block img-fluid w-100"
-              width="1024"
-              src="https://picsum.photos/1024/340/?image=55"
-              alt="image slot"
-            />
-          </template>
-        </b-carousel-slide>
-
-        <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-        <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            eros felis, tincidunt a tincidunt eget, convallis vel est. Ut
-            pellentesque ut lacus vel interdum.
-          </p>
-        </b-carousel-slide>
-      </b-carousel>
-    </base-header>
+    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
     <b-container fluid class="mt-3">
-      <b-row
-        class="d-flex align-items-center justify-content-center flex-column"
-      >
-        <b-col><h3 class="custom-text">Khảo sát sức khỏe tâm thần</h3></b-col>
-        <b-col xl="6" md="6" class="mb-3">
-          <router-link :to="{ name: 'exam' }">
-            <b-button class="button-start text-center">
-              <i
-                class="fa-regular fa-file-lines my-2"
-                style="font-size: 2rem"
-              ></i>
-              <strong>BẮT ĐẦU</strong>
-            </b-button>
-          </router-link>
-        </b-col>
-      </b-row>
-      <div><h3 class="custom-text">Trạm thông tin</h3></div>
-      <b-row class="d-flex align-items-center justify-content-center">
-        <b-col md="6" xl="6">
-          <b-row
-            class="d-flex align-items-center justify-content-center"
-            xl="6"
+      <div class="container">
+        <b-carousel
+          id="carousel-1"
+          v-model="slide"
+          :interval="4000"
+          controls
+          indicators
+          background="#ababab"
+          img-width="1024"
+          img-height="360"
+          @sliding-start="onSlideStart"
+          @sliding-end="onSlideEnd"
+          class="my-carousel"
+          style="max-width: 100%; min-height: 241px; max-height: 360px; "
+        >
+          <!-- Text slides with image -->
+          <b-carousel-slide
+            caption="First slide"
+            text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+            img-src="https://picsum.photos/1024/360/?image=52"
+          ></b-carousel-slide>
+
+          <!-- Slides with custom text -->
+          <b-carousel-slide img-src="https://picsum.photos/1024/360/?image=54">
+            <h1>Hello world!</h1>
+          </b-carousel-slide>
+
+          <!-- Slides with image only -->
+          <b-carousel-slide
+            img-src="https://picsum.photos/1024/360/?image=58"
+          ></b-carousel-slide>
+
+          <!-- Slides with img slot -->
+          <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
+          <b-carousel-slide>
+            <template #img>
+              <img
+                class="d-block img-fluid w-100"
+                src="https://picsum.photos/1024/360/?image=55"
+                alt="image slot"
+              />
+            </template>
+          </b-carousel-slide>
+
+          <!-- Slide with blank fluid image to maintain slide aspect ratio -->
+          <b-carousel-slide
+            caption="Blank Image"
+            img-blank
+            img-alt="Blank image"
           >
-            <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
-              <router-link :to="{ name: 'program' }">
-                <base-button icon class="button-common">
-                  <span class="btn-inner--icon"
-                    ><i class="fa-regular fa-file-lines my-2"></i
-                  ></span>
-                  <span class="btn-inner--text">Thủ tục hành chính</span>
-                </base-button>
-              </router-link>
-            </b-col>
-            <b-col cols="6" sm="6" md="6" xl="6" class="mb-3">
-              <router-link :to="{ name: 'map' }">
-                <base-button icon class="button-common">
-                  <span class="btn-inner--icon"
-                    ><i class="fa-solid fa-map-location-dot my-2"></i
-                  ></span>
-                  <span class="btn-inner--text">Sơ đồ</span>
-                </base-button>
-              </router-link>
-            </b-col>
-          </b-row>
-        </b-col>
-        <b-col cols="12" md="6" xl="6" class="mb-3">
-          <router-link :to="{ name: 'program' }">
-            <base-button icon class="button-common">
-              <span class="btn-inner--icon"
-                ><i class="fas fa-hand-holding-medical my-2"></i>
-              </span>
-              <span class="btn-inner--text">Chăm sóc bệnh nhân</span>
-            </base-button>
-          </router-link>
-        </b-col>
-      </b-row>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Suspendisse eros felis, tincidunt a tincidunt eget, convallis vel
+              est. Ut pellentesque ut lacus vel interdum.
+            </p>
+          </b-carousel-slide>
+        </b-carousel>
+        <b-row
+          class="mt-3 d-flex align-items-center justify-content-center flex-column"
+        >
+          <b-col><h3 class="custom-text">Khảo sát sức khỏe tâm thần</h3></b-col>
+          <b-col xl="6" md="6" class="mb-3">
+            <router-link :to="{ name: 'exam' }">
+              <b-button class="button-start text-center">
+                <strong>BẮT ĐẦU</strong>
+              </b-button>
+            </router-link>
+          </b-col>
+        </b-row>
+        <div class="mt-4"><h3 class="custom-text">Trạm thông tin</h3></div>
+        <b-row class="d-flex align-items-center justify-content-center">
+          <b-col md="6" xl="6">
+            <b-row
+              class="d-flex align-items-center justify-content-center"
+              xl="6"
+            >
+              <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
+                <router-link :to="{ name: 'program' }">
+                  <base-button icon class="button-common">
+                    <span class="btn-inner--text">Thủ tục hành chính</span>
+                  </base-button>
+                </router-link>
+              </b-col>
+              <b-col cols="6" sm="6" md="6" xl="6" class="mb-3">
+                <router-link :to="{ name: 'map' }">
+                  <base-button icon class="button-common">
+                    <span class="btn-inner--text">Sơ đồ</span>
+                  </base-button>
+                </router-link>
+              </b-col>
+            </b-row>
+          </b-col>
+          <b-col cols="12" md="6" xl="6" class="mb-3">
+            <router-link :to="{ name: 'post' }">
+              <base-button icon class="button-common">
+                <span class="btn-inner--text">Chăm sóc bệnh nhân</span>
+              </base-button>
+            </router-link>
+          </b-col>
+        </b-row>
+      </div>
     </b-container>
   </div>
 </template>
@@ -143,6 +134,12 @@ export default {
   border: 2px solid #aed0f5; /* Màu viền (có thể thay đổi theo ý muốn) */
   border-radius: 15px; /* Làm cho viền có góc bo tròn */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng cho carousel */
+    width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .my-carousel .carousel-control-prev,
@@ -153,8 +150,12 @@ export default {
 .my-carousel .carousel-inner {
   border-radius: 15px; /* Bo tròn hình ảnh bên trong carousel */
 }
+
 .my-carousel .carousel-inner img {
   border-radius: 15px; /* Bo tròn hình ảnh bên trong carousel */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Đảm bảo ảnh phủ đầy khung mà không bị méo */
 }
 .my-carousel .carousel-control-prev-icon,
 .my-carousel .carousel-control-next-icon {
@@ -196,9 +197,14 @@ export default {
   color: #ffffff;
 }
 .button-common {
-  height: 75px;
+  /* Thủ tục hành chính */
+  min-height: 75px;
   width: 100%;
   color: #fff;
-  background: linear-gradient(90deg, #62c0ef 0%, #3263ce 100%);
+  background-color: #1276a8;
+  font-family: "FS Magistral";
+  font-size: 23px;
+  line-height: 26px;
+  text-align: center;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-default" >
+  <div class="" >
     <base-header class="pb-3 pt-5 pt-md-8 bg-default"> </base-header>
     <b-container fluid class="mt-3" style="min-height: calc(100vh - 100px)">
       <div>

@@ -5,16 +5,40 @@
       <template slot-scope="props" slot="links">
         <sidebar-item
           :link="{
-            name: 'Home',
-            path:'/',
-            icon: 'ni ni-shop text-primary',
+            name: 'Trang chủ',
+            path: '/home/dashboard',
+            icon: 'fas fa-home',
           }"
         >
-          <sidebar-item :link="{ name: 'Lam bai test tam ly', path: '/home/exam' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Thu tuc hanh chinh', path: '/home/program' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'Chăm sóc', path: '/home/post' }"></sidebar-item>
-          <sidebar-item :link="{ name: 'So do', path: '/home/map' }"></sidebar-item>
         </sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Làm bài test tâm lý',
+            path: '/home/exam',
+            icon: 'fa-regular fa-file-lines',
+          }"
+        ></sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Thủ tục hành chính',
+            path: '/home/program',
+            icon: 'fa-regular fa-file-lines',
+          }"
+        ></sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Chăm sóc sức khoẻ',
+            path: '/home/post',
+            icon: 'fas fa-hand-holding-medical',
+          }"
+        ></sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Sơ đồ',
+            path: '/home/map',
+            icon: 'fa-solid fa-map-location-dot',
+          }"
+        ></sidebar-item>
       </template>
     </side-bar>
     <div class="main-content">
@@ -27,24 +51,20 @@
         </fade-transition>
       </div>
       <!-- Các nút nổi -->
-    <div class="floating-buttons">
-      <div class="floating-button hotline-button" >
-        <i class="fas fa-phone"></i> <!-- Biểu tượng hotline -->
-        <span class="button-text">Hotline</span>
+      <div class="floating-buttons">
+        <div class="floating-button hotline-button">
+          <i class="fas fa-phone-volume"></i>
+          <span class="button-text">Hotline tư vấn</span>
+        </div>
       </div>
-      <div class="floating-button support-button" >
-        <i class="fas fa-life-ring"></i> <!-- Biểu tượng hỗ trợ -->
-        <span class="button-text">Hỗ Trợ</span>
-      </div>
-    </div>
       <content-footer v-if="!$route.meta.hideFooter"></content-footer>
     </div>
   </div>
 </template>
 <script>
 /* eslint-disable no-new */
-import PerfectScrollbar from 'perfect-scrollbar';
-import 'perfect-scrollbar/css/perfect-scrollbar.css';
+import PerfectScrollbar from "perfect-scrollbar";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 function hasElement(className) {
   return document.getElementsByClassName(className).length > 0;
@@ -61,10 +81,10 @@ function initScrollbar(className) {
   }
 }
 
-import DashboardNavbar from './SampleNavbar.vue';
-import ContentFooter from './SampleFooter.vue';
-import DashboardContent from '../Layout/Content.vue';
-import { FadeTransition } from 'vue2-transitions';
+import DashboardNavbar from "./SampleNavbar.vue";
+import ContentFooter from "./SampleFooter.vue";
+import DashboardContent from "../Layout/Content.vue";
+import { FadeTransition } from "vue2-transitions";
 
 export default {
   components: {
@@ -76,17 +96,17 @@ export default {
   methods: {
     initScrollbar() {
       let docClasses = document.body.classList;
-      let isWindows = navigator.platform.startsWith('Win');
+      let isWindows = navigator.platform.startsWith("Win");
       if (isWindows) {
         // if we are on windows OS we activate the perfectScrollbar function
-        initScrollbar('scrollbar-inner');
+        initScrollbar("scrollbar-inner");
 
-        docClasses.add('perfect-scrollbar-on');
+        docClasses.add("perfect-scrollbar-on");
       } else {
-        docClasses.add('perfect-scrollbar-off');
+        docClasses.add("perfect-scrollbar-off");
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -106,7 +126,7 @@ export default {
   justify-content: center;
   width: 50px;
   height: 50px;
-  background-color: #007bff; /* Màu nền của nút */
+  background-color: #1276a8; /* Màu nền của nút */
   color: white;
   border-radius: 50%; /* Hình dạng tròn */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Thêm bóng cho nút */
@@ -122,9 +142,10 @@ export default {
 .floating-button .button-text {
   position: absolute;
   left: -30px; /* Hiển thị bên dưới nút */
+  top: 45px;
   white-space: nowrap;
   display: none;
-  background-color: #1172da;
+  background-color: #1276a8;
   color: white;
   padding: 5px;
   border-radius: 5px;

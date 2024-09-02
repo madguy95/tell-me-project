@@ -18,6 +18,11 @@
       </b-col>
     </b-row>
     <b-row class=""> <h1 class="mt-3 project-name">Tell me</h1></b-row>
+    <b-row class="">
+      <b-col>
+        <h3 class="mt-3 welcome-text">Hỗ trợ chăm sóc sức khỏe tinh thần cho người nhà người bệnh điều trị nội trú</h3>
+      </b-col>
+    </b-row>
     <!-- Select Box -->
     <b-row class="">
       <b-form-group label="" class="mt-3">
@@ -29,7 +34,7 @@
         >
           <template #first>
             <b-form-select-option :value="null" disabled
-              >-- Benh vien --</b-form-select-option
+              >-- Bệnh viện --</b-form-select-option
             >
           </template>
           <i class="fa-solid fa-chevron-down"></i>
@@ -121,7 +126,7 @@ h1 {
   line-height: 67px;
   text-align: center;
 
-  color: #0036a5;
+  color: #00297B;
 }
 .select-box-bv {
   position: relative;
@@ -135,6 +140,6 @@ h1 {
   text-align: center;
   border-radius: 1rem;
   color: #ffffff;
-  background: linear-gradient(180deg, #62c0ef 0%, #3263ce 100%); 
+  background-color: #1276A8; 
 }
 </style>

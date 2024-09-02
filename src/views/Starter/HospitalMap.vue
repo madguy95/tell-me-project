@@ -33,9 +33,9 @@ export default {
     return {
       scale: 1,
       locations: [
-        { name: 'Emergency Room', x: 100, y: 150, width: 200, height: 150 },
-        { name: 'Pediatrics', x: 400, y: 300, width: 150, height: 100 },
-        { name: 'Radiology', x: 600, y: 500, width: 180, height: 120 },
+        { name: 'Khu A: Khu vực khám nội', x: 100, y: 150, width: 200, height: 150 },
+        { name: 'Khu B: Khu vực khám ngoại', x: 400, y: 300, width: 150, height: 100 },
+        { name: 'Khu C: Làm thủ tục', x: 600, y: 500, width: 180, height: 120 },
         // Thêm các địa điểm khác tại đây
       ]
     };

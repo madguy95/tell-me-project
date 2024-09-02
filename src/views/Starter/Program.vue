@@ -1,8 +1,7 @@
 <template>
-  <div class="bg-default">
-    <base-header class="pb-3 pt-5 pt-md-8 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 100px)">
-      <div class="container">
+  <div class="">
+    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
+    <b-container fluid class="mt-3">  <div class="container">
         <b-list-group>
           <b-list-group-item
             v-for="item in items"
@@ -10,7 +9,6 @@
             class="my-list-item"
           >
             <b-button
-              variant="primary"
               class="w-100 text-left"
               @click="toggle(item.id)"
             >
