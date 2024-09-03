@@ -15,7 +15,7 @@
           @sliding-start="onSlideStart"
           @sliding-end="onSlideEnd"
           class="my-carousel"
-          style="max-width: 100%; min-height: 241px; max-height: 360px; "
+          style="max-width: 100%; min-height: 241px; max-height: 360px"
         >
           <!-- Text slides with image -->
           <b-carousel-slide
@@ -134,7 +134,7 @@ export default {
   border: 2px solid #aed0f5; /* Màu viền (có thể thay đổi theo ý muốn) */
   border-radius: 15px; /* Làm cho viền có góc bo tròn */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng cho carousel */
-    width: 100%;
+  width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
@@ -165,9 +165,7 @@ export default {
   /* Khảo sát sức khỏe tâm thần */
 
   width: 100%;
-  height: 36px;
-  left: 20px;
-  top: 412px;
+  min-height: 36px;
 
   font-family: "FS Magistral";
   font-style: normal;
@@ -204,7 +202,7 @@ export default {
   background-color: #1276a8;
   font-family: "FS Magistral";
   font-size: 23px;
-  line-height: 26px;
+  line-height: 23px;
   text-align: center;
 }
 </style>

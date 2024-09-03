@@ -1,5 +1,5 @@
 <template>
-  <div class="" style="height: 100vh">
+  <div class="">
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
     <b-container fluid class="mt-3">
       <div class="container">
@@ -9,7 +9,7 @@
         <div class="result-box">
           <LevelIndicators :level="currentLevel" />
           <p class="result-text">
-            Chúc mừng, bạn đã tự điều chỉnh cân bằng cảm xúc rất tốt!
+            {{results[currentLevel].message}}
           </p>
         </div>
         <div>
@@ -23,11 +23,11 @@
             :key="index"
           >
             <template v-if="solution.type === 'program'">
-              <p class="solution-text">{{ solution.text }}</p>
+              <p class="solution-text">- {{ solution.text }}</p>
               <img :src="solution.url" />
             </template>
             <template v-if="solution.type === 'video'">
-              <p class="solution-text">{{ solution.text }}</p>
+              <p class="solution-text">- {{ solution.text }}</p>
               <b-embed
                 type="iframe"
                 aspect="16by9"
@@ -51,7 +51,7 @@
             <h1 class="text-center text-title">Có thể bạn sẽ cần</h1>
           </div>
           <b-row>
-            <b-col cols="6">
+            <b-col cols="6" class="d-flex justify-content-center">
               <b-link href="#" class="icon-link d-flex">
                 <div class="image-container">
                   <img src="img/icons/group.png" />
@@ -62,7 +62,7 @@
                 </div>
               </b-link>
             </b-col>
-            <b-col cols="6">
+            <b-col cols="6" class="d-flex justify-content-center">
               <b-link href="#" class="icon-link d-flex">
                 <div class="image-container">
                   <img src="img/icons/care.png" />
@@ -109,6 +109,7 @@ export default {
       point: this.$route.query.point | 0,
       results: {
         1: {
+          message: "Chúc mừng, bạn đã tự điều chỉnh cân bằng cảm xúc rất tốt.",
           advice:
             "Hãy cố gắng duy trì thể trạng sức khỏe tâm thần hiện tại để cùng đồng hành với bệnh nhân bạn nhé! Bạn có thể tìm thấy các thông tin hữu ích cho quá trình chăm bệnh khi trở lại Trang chủ và nhấn vào mục Trạm thông tin.",
           solutions: [],
@@ -118,6 +119,7 @@ export default {
           },
         },
         2: {
+          message: "Bạn có mức độ căng thẳng nhẹ. Chúng tôi khuyến khích bạn nên tìm kiến sự hỗ trợ tâm lý như nói chuyện với gia đình, bạn bè để chia sẻ cảm xúc.",
           advice:
             "Trò chuyện, chia sẻ với những người xung quanh có thể giúp bạn tìm thấy sự đồng cảm và ổn định hơn về tâm lý. Bạn có thể tham gia Cộng đồng người nhà người bệnh để cùng trò chuyện, trao đổi với  các chuyên gia và người nhà người bệnh khác.",
           solutions: [],
@@ -127,6 +129,7 @@ export default {
           },
         },
         3: {
+          message: "Bạn có mức độ căng thẳng tâm lí cao. Bạn nên thực hành các liệu pháp thư giãn hoặc tìm đến bác sĩ tư vấn tâm lí.",
           advice:
             "Một số hoạt động có thể có ích cho tình trạng tâm lý hiện tại của bạn:",
           solutions: [
@@ -147,6 +150,7 @@ export default {
           },
         },
         4: {
+          message: "Bạn đang có mức độ căng thẳng tâm lí rất cao, bạn nên đến gặp bác sĩ tâm lí hoặc đến bệnh viện để được đánh giá thêm.",
           advice:
             "Bạn cần nghiêm túc quan tâm đến vấn đề tâm lý của mình để đảm bảo sức khỏe bản thân cũng như quá trình chăm sóc cho người bệnh. Bằng cách nhấn vào nút Liên hệ ngay dưới đây, bạn sẽ được gặp gỡ các <strong style=\"color: #F79C33;\">chuyên gia</strong> uy tín có thể đánh giá và hỗ trợ tình hình tâm lý hiện tại cho bạn.",
           solutions: [],

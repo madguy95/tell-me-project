@@ -49,26 +49,38 @@ export default {
       items: [
         {
           id: 1,
-          title: "Nhập viện",
+          title: "Khám bệnh và xét nghiệm",
           subItems: [
-            { id: 1, text: "Mục con 1" },
-            { id: 2, text: "Mục con 2" },
+            { id: 1, text: "Đăng ký khám theo yêu cầu" },
+            { id: 2, text: "Đăng ký khám bảo hiểm y tế" },
+            { id: 3, text: "Làm thủ tục TH cấp cứu" },
           ],
         },
         {
           id: 2,
-          title: "Xuất viện",
+          title: "Nhập viện",
           subItems: [
-            { id: 3, text: "Mục con 3" },
-            { id: 4, text: "Mục con 4" },
+            { id: 1, text: "Làm thủ tục nhập viện" },
+            { id: 2, text: "Hình thức ngoại trú" },
+            { id: 3, text: "Hình thức nội trú" },
           ],
         },
         {
           id: 3,
+          title: "Xuất viện",
+          subItems: [
+            { id: 1, text: "Thủ tục xuất viện" },
+            { id: 2, text: "Nhận hồ sơ bệnh án" },
+            { id: 3, text: "Các loại hình thức thanh toán và chi phí" },
+            { id: 4, text: "Đặt lịch tái khám" },
+          ],
+        },
+        {
+          id: 4,
           title: "Khác",
           subItems: [
-            { id: 5, text: "Mục con 5" },
-            { id: 6, text: "Mục con 6" },
+            { id: 1, text: "Thủ tục chuyển viện" },
+            { id: 2, text: "Yêu cầu bản sao hồ sơ y tế" },
           ],
         },
       ],

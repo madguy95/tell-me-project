@@ -22,7 +22,7 @@
           :link="{
             name: 'Thủ tục hành chính',
             path: '/home/program',
-            icon: 'fa-regular fa-file-lines',
+            icon: 'fas fa-briefcase',
           }"
         ></sidebar-item>
         <sidebar-item

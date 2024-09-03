@@ -103,17 +103,17 @@
           <li class="nav-item">
             <a
               class="nav-link"
-              href="https://www.creative-tim.com/learning-lab/bootstrap-vue/alerts/argon-dashboard"
+              href="#"
             >
-              <i class="ni ni-spaceship"></i> Facebook
+              <i class="fab fa-facebook"></i> Trang Facebook
             </a>
           </li>
           <li class="nav-item">
             <a
               class="nav-link"
-              href="https://www.creative-tim.com/learning-lab/bootstrap-vue/colors/argon-dashboard"
+              href="#"
             >
-              <i class="ni ni-palette"></i> Hotline: 01237859574
+              <i class="fas fa-phone"></i> Hotline: 01237859574
             </a>
           </li>
         </ul>
