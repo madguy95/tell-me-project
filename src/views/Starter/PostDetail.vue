@@ -13,7 +13,7 @@
           </b-card-text>
           <b-card-img :src="post.image" alt="Post image" class="mb-3" />
           <router-link to="/home/post">
-            <b-button class="btn-common">Back to Posts</b-button>
+            <b-button class="btn-common">Quay lại</b-button>
           </router-link>
         </b-card>
       </div>
@@ -21,18 +21,25 @@
   </div>
 </template>
 <script>
+import {POST_ARR} from '@/constants'
 export default {
   name: "PostDetail",
-  components: {},
-  data() {
-    return {
-      post: {
+  props: {
+    postData: {
+      type: Object,
+      default: {
         title: "Sample Post Title",
         date: "September 1, 2024",
         image: "img/infographic.png",
         content:
           "This is the full content of the post. It contains detailed information about the subject matter. It can be quite long and includes all the information you want to convey to your readers.",
       },
+    },
+  },
+  components: {},
+  data() {
+    return {
+      post: POST_ARR[this.$route.params.id - 1],
     };
   },
   methods: {
@@ -43,6 +50,9 @@ export default {
       return this.openItem === id;
     },
   },
+  created() {
+    console.log(this.$route)
+  }
 };
 </script>
 <style scoped>

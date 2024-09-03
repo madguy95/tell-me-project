@@ -34,7 +34,7 @@
         >
           <template #first>
             <b-form-select-option :value="null" disabled
-              >-- Bệnh viện --</b-form-select-option
+              >Chọn Bệnh viện</b-form-select-option
             >
           </template>
           <i class="fa-solid fa-chevron-down"></i>
@@ -96,15 +96,10 @@ h1 {
 .welcome-text {
   /* Chào mừng bạn đến với website dự án */
 
-  width: 334px;
-  left: calc(50% - 334px / 2 + 0.5px);
-  top: 59.86%;
-  bottom: 37.44%;
-
   font-family: "FS Magistral";
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 1.2em;
   line-height: 23px;
   /* identical to box height */
   text-align: center;
@@ -113,11 +108,6 @@ h1 {
 }
 .project-name {
   /* TELL ME */
-
-  width: 222px;
-  left: calc(50% - 222px / 2 - 0.5px);
-  top: 64.44%;
-  bottom: 27.7%;
 
   font-family: "FS Magistral";
   font-style: normal;

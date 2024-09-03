@@ -6,6 +6,7 @@
     <div class="container-fluid">
       <!--Toggler-->
       <navbar-toggle-button @click.native="showSidebar"> </navbar-toggle-button>
+
       <router-link class="navbar-brand" to="/home/dashboard">
         <img :src="logo" class="navbar-brand-img" alt="..." />
       </router-link>
@@ -30,9 +31,13 @@
             <a class="dropdown-item" href="#">Something else here</a>
           </base-dropdown> -->
           <div class="login-button-container">
-            <b-button variant="default" 
-              >Đăng Nhập</b-button
-            >
+            <router-link class="navbar-brand" to="/home/dashboard">
+              <b-button variant="default">{{
+                $route.path === "/home/dashboard"
+                  ? "Đăng Nhập"
+                  : "Trang chủ"
+              }}</b-button>
+            </router-link>
           </div>
           <!-- <base-dropdown class="nav-item" menu-on-right tag="li" title-tag="a">
                         <a slot="title-container" class="nav-link" href="#" role="button">
@@ -101,18 +106,12 @@
         <!--Navigation-->
         <ul class="navbar-nav mb-md-3">
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="#"
-            >
+            <a class="nav-link" href="#">
               <i class="fab fa-facebook"></i> Trang Facebook
             </a>
           </li>
           <li class="nav-item">
-            <a
-              class="nav-link"
-              href="#"
-            >
+            <a class="nav-link" href="#">
               <i class="fas fa-phone"></i> Hotline: 01237859574
             </a>
           </li>

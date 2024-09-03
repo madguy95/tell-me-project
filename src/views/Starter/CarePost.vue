@@ -23,7 +23,7 @@
               <router-link
                 :to="{ name: 'PostDetail', params: { id: post.id } }"
               >
-                <a href="#" class="btn btn-link px-0">View more</a>
+                <a href="#" class="btn btn-link px-0">Xem thêm</a>
               </router-link>
             </b-card>
           </b-col>
@@ -35,7 +35,7 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-
+import {POST_ARR} from '@/constants'
 export default {
   name: "post-page",
   components: {
@@ -44,57 +44,7 @@ export default {
   },
   data() {
     return {
-      posts: [
-        {
-          id: 1,
-          title: "Post Title 1",
-          date: "September 1, 2024",
-          summary:
-            "This is a summary of the first post. It gives a brief overview of the content.",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          id: 2,
-          title: "Post Title 2",
-          date: "August 30, 2024",
-          summary:
-            "This is a summary of the second post. It provides an overview of the topic discussed.",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          id: 3,
-          title: "Post Title 3",
-          date: "August 29, 2024",
-          summary:
-            "This is a summary of the third post. It includes key points of the article.",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          id: 4,
-          title: "Post Title 1",
-          date: "September 1, 2024",
-          summary:
-            "This is a summary of the first post. It gives a brief overview of the content.",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          id: 5,
-          title: "Post Title 2",
-          date: "August 30, 2024",
-          summary:
-            "This is a summary of the second post. It provides an overview of the topic discussed.",
-          image: "https://via.placeholder.com/150",
-        },
-        {
-          id: 6,
-          title: "Post Title 3",
-          date: "August 29, 2024",
-          summary:
-            "This is a summary of the third post. It includes key points of the article.",
-          image: "https://via.placeholder.com/150",
-        },
-        // Thêm nhiều bài đăng nếu cần
-      ],
+      posts: POST_ARR,
     };
   },
   methods: {

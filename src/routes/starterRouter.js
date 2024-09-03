@@ -9,6 +9,8 @@ import PostDetail from '../views/Starter/PostDetail.vue';
 import Program from '../views/Starter/Program.vue';
 import MapPage from '../views/Starter/Map.vue';
 import WelcomePage from '../views/Starter/Welcome.vue';
+import Report from '../views/Starter/Report.vue';
+import ProgramDetail from '../views/Starter/ProgramDetail.vue';
 
 Vue.use(Router);
 
@@ -60,6 +62,17 @@ export default new Router({
           name: 'PostDetail',
           components: { default: PostDetail },
           props: true
+        },
+        {
+          path: 'programdetail/:id',
+          name: 'ProgramDetail',
+          components: { default: ProgramDetail },
+          props: true
+        },
+        {
+          path: 'report',
+          name: 'Report',
+          components: { default: Report },
         },
       ]
     }

@@ -19,24 +19,17 @@
         >
           <!-- Text slides with image -->
           <b-carousel-slide
-            caption="First slide"
-            text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-            img-src="https://picsum.photos/1024/360/?image=52"
+            img-src="img/banner/banner1.png"
           ></b-carousel-slide>
 
           <!-- Slides with custom text -->
-          <b-carousel-slide img-src="https://picsum.photos/1024/360/?image=54">
-            <h1>Hello world!</h1>
+          <b-carousel-slide img-src="img/banner/banner2.png">
+            <!-- <h1>Yoga Cười</h1> -->
           </b-carousel-slide>
-
-          <!-- Slides with image only -->
-          <b-carousel-slide
-            img-src="https://picsum.photos/1024/360/?image=58"
-          ></b-carousel-slide>
 
           <!-- Slides with img slot -->
           <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-          <b-carousel-slide>
+          <!-- <b-carousel-slide>
             <template #img>
               <img
                 class="d-block img-fluid w-100"
@@ -44,10 +37,10 @@
                 alt="image slot"
               />
             </template>
-          </b-carousel-slide>
+          </b-carousel-slide> -->
 
           <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-          <b-carousel-slide
+          <!-- <b-carousel-slide
             caption="Blank Image"
             img-blank
             img-alt="Blank image"
@@ -57,7 +50,7 @@
               Suspendisse eros felis, tincidunt a tincidunt eget, convallis vel
               est. Ut pellentesque ut lacus vel interdum.
             </p>
-          </b-carousel-slide>
+          </b-carousel-slide> -->
         </b-carousel>
         <b-row
           class="mt-3 d-flex align-items-center justify-content-center flex-column"
@@ -170,7 +163,7 @@ export default {
   font-family: "FS Magistral";
   font-style: normal;
   font-weight: 500;
-  font-size: 27.5px;
+  font-size: 1.5em;
   line-height: 36px;
   /* identical to box height */
   text-align: center;
@@ -201,7 +194,7 @@ export default {
   color: #fff;
   background-color: #1276a8;
   font-family: "FS Magistral";
-  font-size: 23px;
+  font-size: 1em;
   line-height: 23px;
   text-align: center;
 }

@@ -23,9 +23,8 @@
           </template>
           <p class="alert-content">
             Bạn sắp được chuyển tới bài Kiểm tra BSRS-5, một công cụ sàng lọc
-            hiệu quả để xác định bệnh lý tâm thần trong các cơ sở sàng lọc sức
-            khỏe tại bệnh viện. Vui lòng nhấn “Tiếp tục” để thực hiện bài kiểm
-            tra.
+            hiệu quả để xác định bệnh lý tâm thần trong các cơ sở bệnh viện. Vui
+            lòng nhấn “Tiếp tục” để thực hiện bài kiểm tra.
           </p>
           <b-row>
             <b-col cols="6">
@@ -57,8 +56,8 @@
                 <p class="content">{{ questions[currentQuestion].question }}</p>
               </div>
               <h4 class="sub-note mt-2">
-                Anh/ chị hãy nhớ lại 1 cách chi tiết trong một tuần gần đây( bao
-                gồm cả hôm nay), mức độ mà những vấn đề sau khiến anh/ chị cảm
+                Anh/chị hãy nhớ lại 1 cách chi tiết trong một tuần gần đây (bao
+                gồm cả hôm nay), mức độ mà những vấn đề sau khiến anh/chị cảm
                 thấy buồn phiền hoặc lo lắng. Xin vui lòng lựa chọn những câu
                 trả lời phù hợp nhất với tình trạng của anh/chị.
               </h4>
@@ -111,7 +110,9 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-
+import { db } from "@/plugins/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
+import axios from "axios";
 export default {
   name: "exam-page",
   components: {
@@ -220,7 +221,27 @@ export default {
       if (this.questions[this.questions.length - 1].answer >= 2) {
         point = 15;
       }
+      this.submitSurvey(point);
       this.$router.push({ name: "result", query: { point: point } });
+    },
+    async submitSurvey(point) {
+      try {
+        const response = await axios.get("https://api.ipify.org?format=json");
+        const ip = response.data.ip;
+        const colRef = collection(db, "surveys");
+        const dataObj = {
+          userId: ip,
+          point: point,
+          timestamp: new Date(),
+        };
+        console.log(dataObj);
+        const docRef = await addDoc(colRef, dataObj);
+        console.log("Document was created with ID:", docRef.id);
+        console.log("Kết quả khảo sát đã được lưu thành công!");
+        this.selectedResult = null;
+      } catch (error) {
+        console.error("Lỗi khi lưu khảo sát: ", error);
+      }
     },
   },
 };

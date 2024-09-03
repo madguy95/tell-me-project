@@ -39,6 +39,13 @@
             icon: 'fa-solid fa-map-location-dot',
           }"
         ></sidebar-item>
+        <sidebar-item
+          :link="{
+            name: 'Thống kê',
+            path: '/home/report',
+            icon: 'fas fa-chart-pie',
+          }"
+        ></sidebar-item>
       </template>
     </side-bar>
     <div class="main-content">

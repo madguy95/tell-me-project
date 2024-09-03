@@ -115,7 +115,7 @@ export default {
           solutions: [],
           action: {
             text: "Quay lại trang chủ",
-            url: "/",
+            url: "/home/dashboard",
           },
         },
         2: {
@@ -125,7 +125,7 @@ export default {
           solutions: [],
           action: {
             text: "Tham gia ngay",
-            url: "/",
+            url: "/home/dashboard",
           },
         },
         3: {
@@ -146,7 +146,7 @@ export default {
           ],
           action: {
             text: "Quay lại trang chủ",
-            url: "/",
+            url: "/home/dashboard",
           },
         },
         4: {
@@ -156,7 +156,7 @@ export default {
           solutions: [],
           action: {
             text: "Liên hệ ngay",
-            url: "/",
+            url: "/home/dashboard",
           },
         },
       },
