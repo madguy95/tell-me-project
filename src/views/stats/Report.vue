@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3">
+    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
         <h3>Thống kê tỉ lệ người nhà bệnh nhân ở các mức độ khác nhau</h3>
        <Pie :chart-data="data" :chart-options="options" />
@@ -33,7 +33,7 @@ export const options = {
   maintainAspectRatio: false
 }
 export default {
-  name: "report-page",
+  name: "ReportPage",
   components: {
     StatsCard,
     RouteBreadCrumb,

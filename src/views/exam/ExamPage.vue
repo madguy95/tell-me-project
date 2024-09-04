@@ -1,7 +1,7 @@
 <template>
-  <div class="" style="height: 100vh">
+  <div class="" style="">
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3">
+    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
         <b-modal
           v-model="show"
@@ -114,7 +114,7 @@ import { db } from "@/plugins/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import axios from "axios";
 export default {
-  name: "exam-page",
+  name: "ExamPage",
   components: {
     StatsCard,
     RouteBreadCrumb,
@@ -212,7 +212,7 @@ export default {
       this.show = false;
     },
     handleCancel() {
-      this.$router.push("/home/dashboard");
+      this.$router.push("/home");
     },
     clickFinish() {
       let point = this.questions
@@ -247,9 +247,6 @@ export default {
 };
 </script>
 <style>
-.starter-page {
-  min-height: calc(100vh - 380px);
-}
 .custom-radio {
   display: block;
   margin-bottom: 0.5rem;

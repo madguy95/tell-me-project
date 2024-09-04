@@ -53,10 +53,6 @@
     <b-navbar-nav class="align-items-center ml-auto ml-md-0">
       <b-form
         class="navbar-search form-inline mr-sm-3"
-        :class="{
-          'navbar-search-dark': type === 'default',
-          'navbar-search-light': type === 'light',
-        }"
         id="navbar-search-main"
       >
         <b-form-group class="mb-0">
@@ -72,7 +68,13 @@
         </b-form-group>
       </b-form>
       <div class="login-button-container">
-        <b-button variant="default" >Đăng Nhập</b-button>
+        <router-link class="navbar-brand" to="/home">
+        <b-button variant="default" >{{
+                $route.path === "/home"
+                  ? "Đăng Nhập"
+                  : "Trang chủ"
+              }}</b-button>
+        </router-link>
       </div>
       <!-- <base-dropdown
         menu-on-right

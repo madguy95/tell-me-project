@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3">
+    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
         <div>
           <h1 class="text-center text-title">Kết quả</h1>
@@ -54,7 +54,7 @@
             <b-col cols="6" class="d-flex justify-content-center">
               <b-link href="#" class="icon-link d-flex">
                 <div class="image-container">
-                  <img src="img/icons/group.png" />
+                  <img src="/img/icons/group.png" />
                 </div>
                 <div class="d-flex flex-column ml-1">
                   <span>Cộng đồng</span>
@@ -65,7 +65,7 @@
             <b-col cols="6" class="d-flex justify-content-center">
               <b-link href="#" class="icon-link d-flex">
                 <div class="image-container">
-                  <img src="img/icons/care.png" />
+                  <img src="/img/icons/care.png" />
                 </div>
                 <div class="d-flex flex-column ml-1">
                   <span>Phương pháp</span>
@@ -80,14 +80,10 @@
   </div>
 </template>
 <script>
-import LevelIndicators from "@/views/Starter/LevelIndicators.vue";
-// Hàm để tạo số ngẫu nhiên từ 1 đến 4
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+import LevelIndicators from "@/views/exam/LevelIndicators.vue";
 
 export default {
-  name: "ResultsComponent",
+  name: "ResultPage",
   components: {
     LevelIndicators,
   },
@@ -115,7 +111,7 @@ export default {
           solutions: [],
           action: {
             text: "Quay lại trang chủ",
-            url: "/home/dashboard",
+            url: "/home",
           },
         },
         2: {
@@ -125,7 +121,7 @@ export default {
           solutions: [],
           action: {
             text: "Tham gia ngay",
-            url: "/home/dashboard",
+            url: "/home",
           },
         },
         3: {
@@ -136,7 +132,7 @@ export default {
             {
               type: "program",
               text: "Tham gia chương trinh Yoga cười",
-              url: "img/brand/slide1.png",
+              url: "/img/brand/slide1.png",
             },
             {
               type: "video",
@@ -146,7 +142,7 @@ export default {
           ],
           action: {
             text: "Quay lại trang chủ",
-            url: "/home/dashboard",
+            url: "/home",
           },
         },
         4: {
@@ -156,7 +152,7 @@ export default {
           solutions: [],
           action: {
             text: "Liên hệ ngay",
-            url: "/home/dashboard",
+            url: "/home",
           },
         },
       },

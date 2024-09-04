@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3">
+    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
         <b-list-group>
           <b-list-group-item
@@ -26,7 +26,7 @@
                   <li v-for="subItem in item.subItems" :key="subItem.id">
                     <template v-if="subItem.img">
                       <router-link
-                        :to="{ name: 'ProgramDetail', params: { id: subItem.img } }"
+                        :to="{ name: 'procedure-detail', params: { id: subItem.img } }"
                       >
                         <a href="#">{{
                           subItem.text
@@ -49,7 +49,7 @@ import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
 
 export default {
-  name: "program-page",
+  name: "ProcedureList",
   components: {
     StatsCard,
     RouteBreadCrumb,

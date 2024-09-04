@@ -1,35 +1,33 @@
 <template>
   <div class="" style="">
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3">
+    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
-        <b-carousel
-          id="carousel-1"
-          v-model="slide"
-          :interval="4000"
-          controls
-          indicators
-          background="#ababab"
-          img-width="1024"
-          img-height="360"
-          @sliding-start="onSlideStart"
-          @sliding-end="onSlideEnd"
-          class="my-carousel"
-          style="max-width: 100%; min-height: 241px; max-height: 360px"
-        >
-          <!-- Text slides with image -->
-          <b-carousel-slide
-            img-src="img/banner/banner1.png"
-          ></b-carousel-slide>
+        <div class="d-flex justify-content-center">
+          <b-carousel
+            id="carousel-1"
+            :interval="4000"
+            controls
+            indicators
+            background="#ababab"
+            img-width="1024"
+            img-height="360"
+            class="my-carousel"
+            style="max-width: 100%; min-height: 241px; max-height: 50vh"
+          >
+            <!-- Text slides with image -->
+            <b-carousel-slide
+              img-src="/img/banner/banner1.png"
+            ></b-carousel-slide>
 
-          <!-- Slides with custom text -->
-          <b-carousel-slide img-src="img/banner/banner2.png">
-            <!-- <h1>Yoga Cười</h1> -->
-          </b-carousel-slide>
+            <!-- Slides with custom text -->
+            <b-carousel-slide img-src="/img/banner/banner2.png">
+              <!-- <h1>Yoga Cười</h1> -->
+            </b-carousel-slide>
 
-          <!-- Slides with img slot -->
-          <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-          <!-- <b-carousel-slide>
+            <!-- Slides with img slot -->
+            <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
+            <!-- <b-carousel-slide>
             <template #img>
               <img
                 class="d-block img-fluid w-100"
@@ -39,8 +37,8 @@
             </template>
           </b-carousel-slide> -->
 
-          <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-          <!-- <b-carousel-slide
+            <!-- Slide with blank fluid image to maintain slide aspect ratio -->
+            <!-- <b-carousel-slide
             caption="Blank Image"
             img-blank
             img-alt="Blank image"
@@ -51,7 +49,8 @@
               est. Ut pellentesque ut lacus vel interdum.
             </p>
           </b-carousel-slide> -->
-        </b-carousel>
+          </b-carousel>
+        </div>
         <b-row
           class="mt-3 d-flex align-items-center justify-content-center flex-column"
         >
@@ -72,7 +71,7 @@
               xl="6"
             >
               <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
-                <router-link :to="{ name: 'program' }">
+                <router-link :to="{ name: 'procedure' }">
                   <base-button icon class="button-common">
                     <span class="btn-inner--text">Thủ tục hành chính</span>
                   </base-button>
@@ -88,7 +87,7 @@
             </b-row>
           </b-col>
           <b-col cols="12" md="6" xl="6" class="mb-3">
-            <router-link :to="{ name: 'post' }">
+            <router-link :to="{ name: 'health-post' }">
               <base-button icon class="button-common">
                 <span class="btn-inner--text">Chăm sóc bệnh nhân</span>
               </base-button>
@@ -104,7 +103,7 @@ import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
 
 export default {
-  name: "starter-page",
+  name: "HomePage",
   components: {
     StatsCard,
     RouteBreadCrumb,
@@ -121,7 +120,7 @@ export default {
 </script>
 <style>
 .starter-page {
-  min-height: calc(100vh - 380px);
+  /* min-height: calc(100vh - 380px); */
 }
 .my-carousel {
   border: 2px solid #aed0f5; /* Màu viền (có thể thay đổi theo ý muốn) */

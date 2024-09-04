@@ -7,7 +7,7 @@
       <!--Toggler-->
       <navbar-toggle-button @click.native="showSidebar"> </navbar-toggle-button>
 
-      <router-link class="navbar-brand" to="/home/dashboard">
+      <router-link class="navbar-brand" to="/home">
         <img :src="logo" class="navbar-brand-img" alt="..." />
       </router-link>
 
@@ -31,9 +31,9 @@
             <a class="dropdown-item" href="#">Something else here</a>
           </base-dropdown> -->
           <div class="login-button-container">
-            <router-link class="navbar-brand" to="/home/dashboard">
+            <router-link class="navbar-brand" to="/home">
               <b-button variant="default">{{
-                $route.path === "/home/dashboard"
+                $route.path === "/home"
                   ? "Đăng Nhập"
                   : "Trang chủ"
               }}</b-button>
@@ -84,7 +84,7 @@
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
             <div class="col-6 collapse-brand">
-              <router-link to="/home/dashboard">
+              <router-link to="/home">
                 <img :src="logo" />
               </router-link>
             </div>
@@ -131,7 +131,7 @@ export default {
   props: {
     logo: {
       type: String,
-      default: "img/logo.png",
+      default: "/img/logo.png",
       description: "Sidebar app logo",
     },
     autoClose: {

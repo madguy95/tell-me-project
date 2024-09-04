@@ -6,7 +6,7 @@
           <div
             class="panzoom-container"
           >
-            <img src="img/so-do-bv.jpg" alt="Hospital Map" class="panzoom-image"/>
+            <img src="/img/so-do-bv.jpg" alt="Hospital Map" class="panzoom-image"/>
           </div>
         </b-col>
         <b-col md="4">

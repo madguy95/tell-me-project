@@ -1,23 +1,21 @@
 <template>
   <div class="" >
-    <base-header class="pb-3 pt-5 pt-md-8 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 100px)">
-      <div>
-          <HospitalMap />
-        </div>
+    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
+    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
+      <div class="container image-scroll">
+        <img :src="`/img/program/program${imageURl}.png`" />
+      </div>
     </b-container>
   </div>
 </template>
 <script>
-import HospitalMap from '@/views/Starter/HospitalMap.vue';
-
 export default {
-  name: 'Map',
+  name: 'ProcedureDetail',
   components: {
-    HospitalMap
   },
   data() {
     return {
+      imageURl: this.$route.params.id,
       results: [
         {
           id: 1,
@@ -42,5 +40,9 @@ export default {
 <style>
 .starter-page {
   min-height: calc(100vh - 380px);
+}
+.image-scroll {
+  overflow: hidden;
+  overflow-x: scroll;
 }
 </style>

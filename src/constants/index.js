@@ -5,7 +5,7 @@ export const POST_ARR = [
       date: "September 1, 2024",
       summary:
         "Chăm sóc răng miệng cho bệnh nhân ung thư.",
-      image: "img/infographic/ifg1.png",
+      image: "/img/infographic/ifg1.png",
     },
     {
       id: 2,
@@ -13,7 +13,7 @@ export const POST_ARR = [
       date: "August 30, 2024",
       summary:
         "Hướng dẫn bệnh nhân tự tập sau phẫu thuật.",
-      image: "img/infographic/ifg2.png",
+      image: "/img/infographic/ifg2.png",
     },
     {
       id: 3,
@@ -21,7 +21,7 @@ export const POST_ARR = [
       date: "August 29, 2024",
       summary:
         "Lưu ý cho người nhà bệnh nhân ung thư.",
-      image: "img/infographic/ifg3.png",
+      image: "/img/infographic/ifg3.png",
     },
     {
       id: 4,
@@ -29,6 +29,6 @@ export const POST_ARR = [
       date: "September 1, 2024",
       summary:
         "Những quan niệm sai lầm phổ biến về ung thư.",
-      image: "img/infographic/ifg4.png",
+      image: "/img/infographic/ifg4.png",
     }
 ]

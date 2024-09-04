@@ -6,7 +6,7 @@
         <sidebar-item
           :link="{
             name: 'Trang chủ',
-            path: '/home/dashboard',
+            path: '/home',
             icon: 'fas fa-home',
           }"
         >
@@ -21,14 +21,14 @@
         <sidebar-item
           :link="{
             name: 'Thủ tục hành chính',
-            path: '/home/program',
+            path: '/home/procedure',
             icon: 'fas fa-briefcase',
           }"
         ></sidebar-item>
         <sidebar-item
           :link="{
             name: 'Chăm sóc sức khoẻ',
-            path: '/home/post',
+            path: '/home/health-post',
             icon: 'fas fa-hand-holding-medical',
           }"
         ></sidebar-item>

@@ -1,7 +1,7 @@
 <template>
   <div class="">
-    <base-header class="pb-3 pt-5 pt-md-8 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 100px)">
+    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
+    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
         <b-row>
           <b-col
@@ -21,7 +21,7 @@
               <b-card-sub-title>{{ post.date }}</b-card-sub-title>
               <b-card-text>{{ post.summary }}</b-card-text>
               <router-link
-                :to="{ name: 'PostDetail', params: { id: post.id } }"
+                :to="{ name: 'health-post-detail', params: { id: post.id } }"
               >
                 <a href="#" class="btn btn-link px-0">Xem thêm</a>
               </router-link>
@@ -37,7 +37,7 @@ import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
 import {POST_ARR} from '@/constants'
 export default {
-  name: "post-page",
+  name: "HealthPostList",
   components: {
     StatsCard,
     RouteBreadCrumb,

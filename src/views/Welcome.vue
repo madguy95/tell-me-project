@@ -6,7 +6,7 @@
       <!-- Image -->
 
       <img
-        src="img/welcome.png"
+        src="/img/welcome.png"
         alt="Welcome Image"
         class="img-fluid welcome-image"
       />
@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     onChangeSelectBox() {
-      this.$router.push({ name: "dashboard" });
+      this.$router.push({ name: "home" });
     },
   },
 };

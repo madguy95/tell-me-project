@@ -122,10 +122,10 @@ export default {
     },
     isActive() {
       if (this.$route && this.$route.path) {
-        console.log(this.$route.path)
-        console.log(this.link)
+        // console.log(this.$route.path)
+        // console.log(this.link)
         let matchingRoute = this.$route.path === this.link.path
-        console.log(matchingRoute)
+        // console.log(matchingRoute)
         return matchingRoute
       }
       return false

@@ -1,20 +1,22 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import DashboardLayout from '../views/Starter/SampleLayout.vue';
-import Starter from '../views/Starter/SamplePage.vue';
-import Exam from '../views/Starter/ExamPage.vue';
-import Result from '../views/Starter/Result.vue';
-import CarePost from '../views/Starter/CarePost.vue';
-import PostDetail from '../views/Starter/PostDetail.vue';
-import Program from '../views/Starter/Program.vue';
-import MapPage from '../views/Starter/Map.vue';
-import WelcomePage from '../views/Starter/Welcome.vue';
-import Report from '../views/Starter/Report.vue';
-import ProgramDetail from '../views/Starter/ProgramDetail.vue';
+import HomePage from '../views/home/HomePage.vue';
+import ExamPage from '../views/exam/ExamPage.vue';
+import ResultPage from '../views/exam/Result.vue';
+import HealthPostList from '../views/health-care/HealthPostList.vue';
+import HealthPostDetail from '../views/health-care/HealthPostDetail.vue';
+import MapPage from '../views/map/Map.vue';
+import WelcomePage from '../views/Welcome.vue';
+import Report from '../views/stats/Report.vue';
+import ProcedureList from '../views/procedure/ProcedureList.vue';
+import ProcedureDetail from '../views/procedure/ProcedureDetail.vue';
 
 Vue.use(Router);
 
 export default new Router({
+
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -24,50 +26,50 @@ export default new Router({
     {
       path: '/home',
       name: 'home',
-      redirect: '/dashboard',
+      redirect: '/home',
       component: DashboardLayout,
       children: [
         {
-          path: 'dashboard',
+          path: '',
           name: 'dashboard',
-          components: { default: Starter }
+          components: { default: HomePage }
         },
         {
           path: 'exam',
           name: 'exam',
-          components: { default: Exam }
+          components: { default: ExamPage }
         },
         {
-          path: 'post',
-          name: 'post',
-          components: { default: CarePost }
+          path: 'result',
+          name: 'result',
+          components: { default: ResultPage }
         },
         {
-          path: 'program',
-          name: 'program',
-          components: { default: Program }
+          path: 'health-post',
+          name: 'health-post',
+          components: { default: HealthPostList }
+        },
+        {
+          path: 'health-post/:id',
+          name: 'health-post-detail',
+          components: { default: HealthPostDetail },
+          props: true
+        },
+        {
+          path: 'procedure',
+          name: 'procedure',
+          components: { default: ProcedureList }
+        },
+        {
+          path: 'procedure/:id',
+          name: 'procedure-detail',
+          components: { default: ProcedureDetail },
+          props: true
         },
         {
           path: 'map',
           name: 'map',
           components: { default: MapPage }
-        },
-        {
-          path: 'result',
-          name: 'result',
-          components: { default: Result }
-        },
-        {
-          path: 'postdetail/:id',
-          name: 'PostDetail',
-          components: { default: PostDetail },
-          props: true
-        },
-        {
-          path: 'programdetail/:id',
-          name: 'ProgramDetail',
-          components: { default: ProgramDetail },
-          props: true
         },
         {
           path: 'report',
