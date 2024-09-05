@@ -5,6 +5,7 @@
         <b-col md="8">
           <div
             class="panzoom-container"
+            v-viewer="{movable: false, rotatable:false, scalable: false}"
           >
             <img src="/img/so-do-bv.jpg" alt="Hospital Map" class="panzoom-image"/>
           </div>
