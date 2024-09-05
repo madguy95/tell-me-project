@@ -248,35 +248,66 @@ export default {
 </script>
 <style>
 .custom-radio {
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 0.5rem;
   width: 100%;
   min-height: 57px;
   border: 0.1em solid #1276a8;
   border-radius: 0.5em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
+
 .custom-control-label {
-  border-left: 0.1em solid #1276a8;
+  border-left: 0.1em solid #89b9d1;
   align-content: center;
   padding-left: 1em;
   flex: 1 1;
-}
-.custom-control-label::before {
-  /* top: 0.625rem; */
-  left: -2.1rem;
+  min-height: 48px;
+
+  /* Radio text */
+  font-family: "FS Magistral";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 21px;
+  /* identical to box height */
+  text-align: justify;
+
+  color: #00297b;
 }
 
-.custom-radio .custom-control-input:checked ~ .custom-control-label::before {
+.custom-radio input[type="radio"] + .custom-control-label::before {
+  position: absolute;
+  left: -2.25rem;
+  top: 1.5rem;
+  width: 1.5rem;
+  /* Adjust size */
+  height: 1.5rem;
+  /* Adjust size */
+  border-radius: 50%;
+  border: 1px solid #1276a8;
+  /* Outer border color */
+  background-color: #fff;
+  /* Inner circle color when checked */
+  transform: translateY(-50%);
+}
+
+.custom-radio input[type="radio"]:checked + .custom-control-label::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23f79c33'/%3e%3c/svg%3e");
   background-color: #f79c33;
-  align-content: center;
-  justify-content: center;
+  /* Inner dot color when checked */
+  position: absolute;
+  left: -1.5rem;
+  top: 1.5rem;
+  width: 1rem;
+  /* Adjust size */
+  height: 1rem;
+  /* Adjust size */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
 }
-.custom-radio .form-check-input {
-  accent-color: #a76936; /* Thay đổi màu của radio button */
-}
+
 .alert-content {
   /* Vector */
   font-family: "FS Magistral";
@@ -290,33 +321,36 @@ export default {
 
   background: #1276a8;
 }
+
 .header-modal,
 .content-modal {
   background: #1276a8 !important;
   color: #ffffff;
 }
+
 .header-text {
   color: #fff;
 }
+
 .btn-common {
   border-radius: 0.75rem;
   color: #fff;
   min-height: 57px;
 }
+
 .btn-cancel {
   background: #66c2f0;
 }
+
 .btn-yes {
   background: #f79c33;
 }
+
 .modal-backdrop {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.5
-  ) !important; /* Màu trắng mờ với opacity 0.5 */
+  background-color: rgba(255, 255, 255, 0.5) !important;
+  /* Màu trắng mờ với opacity 0.5 */
 }
+
 .container {
   background-color: #fff;
 }
@@ -333,6 +367,7 @@ export default {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
 }
+
 .question-box p {
   color: #ffffff;
   font-family: "FS Magistral";
@@ -340,6 +375,7 @@ export default {
   font-weight: 700;
   font-size: 20px;
 }
+
 .question-box .content {
   font-family: "FS Magistral";
   font-style: normal;
@@ -348,6 +384,7 @@ export default {
   line-height: 21px;
   text-align: justify;
 }
+
 .sub-note {
   /* Anh/chị hãy nhớ lại một cách chi tiết trong một tuần gần đây (bao gồm cả hôm nay), mức độ mà những vấn đề sau khiến anh/chị cảm thấy buồn phiền hoặc lo lắng. Xin vui lòng lựa chọn câu trả lời phù hợp nhất với tình trạng của anh/chị. */
   font-family: "FS Magistral";
@@ -362,6 +399,7 @@ export default {
 
   opacity: 0.75;
 }
+
 .btn-back,
 .btn-next {
   /* Group 6 */
@@ -375,8 +413,7 @@ export default {
 }
 
 .btn-finish {
-  background: #f79c33 !important
-  ;
+  background: #f79c33 !important;
   width: 128px;
   height: 36px;
   min-height: 36px;

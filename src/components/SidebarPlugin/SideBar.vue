@@ -102,7 +102,7 @@
         <!--Divider-->
         <hr class="my-3" />
         <!--Heading-->
-        <h6 class="navbar-heading text-muted">More</h6>
+        <h6 class="navbar-heading text-muted">Liên Hệ</h6>
         <!--Navigation-->
         <ul class="navbar-nav mb-md-3">
           <li class="nav-item">
@@ -131,7 +131,7 @@ export default {
   props: {
     logo: {
       type: String,
-      default: "/img/logo.png",
+      default: "/img/logo.svg",
       description: "Sidebar app logo",
     },
     autoClose: {
