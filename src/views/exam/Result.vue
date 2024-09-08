@@ -38,13 +38,20 @@
           </div>
         </div>
         <div v-if="results[currentLevel].action" class="mt-3">
-          <router-link :to="results[currentLevel].action.url">
+          <router-link :to="results[currentLevel].action.url" v-if="results[currentLevel].action.url">
             <base-button icon class="button-common">
               <span class="btn-inner--text">{{
                 results[currentLevel].action.text
               }}</span>
             </base-button>
           </router-link>
+          <b-link :href="results[currentLevel].action.externalUrl" v-if="results[currentLevel].action.externalUrl">
+          <base-button icon class="button-common"  >
+              <span class="btn-inner--text">{{
+                results[currentLevel].action.text
+              }}</span>
+            </base-button>
+            </b-link>
         </div>
         <div class="need-more mt-3">
           <div>
@@ -52,7 +59,7 @@
           </div>
           <b-row>
             <b-col cols="6" class="d-flex justify-content-center">
-              <b-link href="#" class="icon-link d-flex">
+              <b-link href="https://www.facebook.com/groups/532634242676812" class="icon-link d-flex">
                 <div class="image-container">
                   <img src="/img/icons/group.png" />
                 </div>
@@ -152,7 +159,7 @@ export default {
           solutions: [],
           action: {
             text: "Liên hệ ngay",
-            url: "/home",
+            externalUrl: "https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit",
           },
         },
       },

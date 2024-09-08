@@ -106,13 +106,18 @@
         <!--Navigation-->
         <ul class="navbar-nav mb-md-3">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="https://www.facebook.com/duantellmehmu">
               <i class="fab fa-facebook"></i> Trang Facebook
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="fas fa-phone"></i> Hotline: 01237859574
+              <i class="fas fa-envelope"></i> Email: duantellme.hmu@gmail.com
+            </a>
+          </li> 
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fas fa-phone"></i> Hotline: 0375458921 (Ms. Thu Trang)
             </a>
           </li>
         </ul>

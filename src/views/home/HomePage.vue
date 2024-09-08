@@ -3,6 +3,46 @@
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
     <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
+        <b-modal
+            v-model="show"
+            title="Thông báo"
+            ok-title="Tiếp tục"
+            header-class="header-modal"
+            content-class="content-modal"
+            title-class="title-modal"
+            cancel-title="Trở về"
+            @ok="handleConfirm"
+            @cancel="handleCancel"
+            hide-footer
+            centered
+          >
+            <template #modal-header>
+              <div class="d-block w-100 text-center">
+                <h3 class="header-text">Thông báo</h3>
+              </div>
+            </template>
+            <p class="alert-content">
+              Website hiện đang trong quá trình phát triển nên không tránh khỏi những sai sót. Bạn có chắc chắn muốn truy cập?
+            </p>
+            <b-row>
+              <b-col cols="6">
+                <b-button
+                  class="btn-common btn-cancel"
+                  block
+                  @click="handleCancel"
+                  >Trở về</b-button
+                >
+              </b-col>
+              <b-col cols="6">
+                <b-button
+                  class="btn-common btn-yes"
+                  block
+                  @click="handleConfirm"
+                  >Tiếp tục</b-button
+                >
+              </b-col>
+            </b-row>
+          </b-modal>
         <div class="d-flex justify-content-center">
           <b-carousel
             id="carousel-1"
@@ -24,7 +64,10 @@
             <b-carousel-slide img-src="/img/banner/banner2.png">
               <!-- <h1>Yoga Cười</h1> -->
             </b-carousel-slide>
-
+            <!-- Slides with custom text -->
+            <b-carousel-slide img-src="/img/banner/banner3.png">
+              <!-- <h1>Yoga Cười</h1> -->
+            </b-carousel-slide>
             <!-- Slides with img slot -->
             <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
             <!-- <b-carousel-slide>
@@ -109,11 +152,19 @@ export default {
     RouteBreadCrumb,
   },
   data() {
-    return {};
+    return {
+      show: true
+    };
   },
-  method: {
+  methods: {
     goToRoute() {
       this.$router.push({ name: "exam" });
+    },
+    handleConfirm() {
+      this.show = false;
+    },
+    handleCancel() {
+      this.$router.push("/");
     },
   },
 };
