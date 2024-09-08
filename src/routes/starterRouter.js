@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import DashboardLayout from '../views/Starter/SampleLayout.vue';
 import HomePage from '../views/home/HomePage.vue';
+import ExamList from '../views/exam/ExamList.vue';
 import ExamPage from '../views/exam/ExamPage.vue';
 import ResultPage from '../views/exam/Result.vue';
 import HealthPostList from '../views/health-care/HealthPostList.vue';
@@ -33,6 +34,11 @@ export default new Router({
           path: '',
           name: 'dashboard',
           components: { default: HomePage }
+        },
+        {
+          path: 'exam-list',
+          name: 'exam-list',
+          components: { default: ExamList }
         },
         {
           path: 'exam',

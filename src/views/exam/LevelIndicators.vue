@@ -27,10 +27,15 @@ export default {
       type: Number,
       default: 0,
     },
+    maxLevel: 
+    {
+      type: Number,
+      default: 4,
+    },
   },
   data() {
     return {
-      levels: [1, 2, 3, 4], // Định nghĩa 5 mức độ
+      levels: [...Array.from({length: this.maxLevel}, (_, i) => i + 1)], // Định nghĩa 5 mức độ
       currentLevel: this.level,
     };
   },
@@ -41,7 +46,7 @@ export default {
   },
   methods: {
     getIndicatorColor(index) {
-      const colors = ["#1276A8", "#D6D600", "#F79C33", "#A83A12"]; // Các màu cho từng mức độ
+      const colors = ["#1276A8", "#D6D600", "#F79C33", "#A83A12", "#FF0000"]; // Các màu cho từng mức độ
       return this.currentLevel >= index + 1
         ? colors[this.currentLevel - 1]
         : "#e0e0e0";

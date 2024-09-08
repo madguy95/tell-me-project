@@ -259,7 +259,6 @@ export default {
         //   this.items[index].subItems.map(() => false)
         // );
       }
-      console.log("parent");
     },
     toggleSub(index, subIndex) {
       if (this.openItemsSub[index][subIndex] !== undefined) {
@@ -271,7 +270,6 @@ export default {
       } else {
         this.$set(this.openItemsSub[index], subIndex, true);
       }
-      console.log("sub");
     },
     isOpen(index) {
       return this.openItems[index] !== undefined

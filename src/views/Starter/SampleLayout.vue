@@ -14,7 +14,7 @@
         <sidebar-item
           :link="{
             name: 'Làm bài test tâm lý',
-            path: '/home/exam',
+            path: '/home/exam-list',
             icon: 'fa-regular fa-file-lines',
           }"
         ></sidebar-item>

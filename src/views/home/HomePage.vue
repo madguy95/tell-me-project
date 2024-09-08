@@ -99,7 +99,7 @@
         >
           <b-col><h3 class="custom-text">Khảo sát sức khỏe tâm thần</h3></b-col>
           <b-col xl="6" md="6" class="mb-3">
-            <router-link :to="{ name: 'exam' }">
+            <router-link :to="{ name: 'exam-list' }">
               <b-button class="button-start text-center">
                 <strong>BẮT ĐẦU</strong>
               </b-button>

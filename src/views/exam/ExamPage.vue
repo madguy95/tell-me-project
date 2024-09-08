@@ -22,9 +22,10 @@
             </div>
           </template>
           <p class="alert-content">
-            Bạn sắp được chuyển tới bài Kiểm tra BSRS-5, một công cụ sàng lọc
-            hiệu quả để xác định bệnh lý tâm thần trong các cơ sở bệnh viện. Vui
-            lòng nhấn “Tiếp tục” để thực hiện bài kiểm tra.
+            Bạn sắp được chuyển tới các câu hỏi của bài kiểm tra
+            <strong>{{ examIds.join(", ") }}</strong
+            >. Vui lòng nhấn Tiếp tục để bắt đầu quá trình kiểm tra hoặc Trở về
+            để chọn lại bài kiểm tra sẽ thực hiện.
           </p>
           <b-row>
             <b-col cols="6">
@@ -49,17 +50,17 @@
                 <p>
                   {{
                     currentQuestion !== questions.length - 1
-                      ? `Câu hỏi ${currentQuestion + 1}:`
+                      ? `${questions[currentQuestion].type} - Câu ${questions[currentQuestion].numb}:`
                       : `***`
                   }}
                 </p>
-                <p class="content">{{ questions[currentQuestion].question }}</p>
+                <p class="content">
+                  Anh/ chị có gặp tình trạng:
+                  {{ questions[currentQuestion].question }}
+                </p>
               </div>
               <h4 class="sub-note mt-2">
-                Anh/chị hãy nhớ lại 1 cách chi tiết trong một tuần gần đây (bao
-                gồm cả hôm nay), mức độ mà những vấn đề sau khiến anh/chị cảm
-                thấy buồn phiền hoặc lo lắng. Xin vui lòng lựa chọn những câu
-                trả lời phù hợp nhất với tình trạng của anh/chị.
+                {{ questionData[questions[currentQuestion].type].questionNote }}
               </h4>
               <b-form-radio-group v-model="questions[currentQuestion].answer">
                 <b-form-radio
@@ -113,6 +114,9 @@ import StatsCard from "@/components/Cards/StatsCard";
 import { db } from "@/plugins/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import axios from "axios";
+import { QUESTION_ARR, RESULT_ARR } from "../../constants";
+import _ from "lodash";
+
 export default {
   name: "ExamPage",
   components: {
@@ -121,79 +125,22 @@ export default {
   },
   data() {
     return {
+      examIds: this.$route.query.id || [],
       show: true,
       currentQuestion: 0,
       selectedAnswer: 0,
-      questions: [
-        {
-          question:
-            "Khó ngủ, ví dụ khó đi vào giấc ngủ, dễ bị tỉnh giấc hoặc thức dậy sớm?",
-          options: [
-            "Hoàn toàn không",
-            "Một chút",
-            "Vừa phải",
-            "Nhiều",
-            "Rất nhiều",
-          ],
-          answer: 0,
-        },
-        {
-          question: "Cảm thấy lo lắng, căng thẳng?",
-          options: [
-            "Hoàn toàn không",
-            "Một chút",
-            "Vừa phải",
-            "Nhiều",
-            "Rất nhiều",
-          ],
-          answer: 0,
-        },
-        {
-          question: "Cảm thấy dễ nổi cáu hoặc bực mình?",
-          options: [
-            "Hoàn toàn không",
-            "Một chút",
-            "Vừa phải",
-            "Nhiều",
-            "Rất nhiều",
-          ],
-          answer: 0,
-        },
-        {
-          question: "Cảm thấy buồn rầu, tâm trạng chán nản?",
-          options: [
-            "Hoàn toàn không",
-            "Một chút",
-            "Vừa phải",
-            "Nhiều",
-            "Rất nhiều",
-          ],
-          answer: 0,
-        },
-        {
-          question: "Cảm thấy thua kém người khác?",
-          options: [
-            "Hoàn toàn không",
-            "Một chút",
-            "Vừa phải",
-            "Nhiều",
-            "Rất nhiều",
-          ],
-          answer: 0,
-        },
-        {
-          question: "Anh chị có ý tưởng về việc tự sát không?",
-          options: [
-            "Hoàn toàn không",
-            "Một chút",
-            "Vừa phải",
-            "Nhiều",
-            "Rất nhiều",
-          ],
-          answer: 0,
-        },
-      ],
+      questions: [],
+      questionData: _.cloneDeep(RESULT_ARR),
     };
+  },
+  computed: {},
+  created() {
+    this.questions = this.examIds.reduce((acc, examId) => {
+      if (QUESTION_ARR[examId]) {
+        return acc.concat(_.cloneDeep(QUESTION_ARR[examId]));
+      }
+      return acc;
+    }, []);
   },
   methods: {
     goToPreviousQuestion() {
@@ -215,29 +162,34 @@ export default {
       this.$router.push("/home");
     },
     clickFinish() {
-      let point = this.questions
-        .slice(0, -1)
-        .reduce((total, el) => el.answer + total, 0);
-      if (this.questions[this.questions.length - 1].answer >= 2) {
-        point = 15;
-      }
-      this.submitSurvey(point);
-      this.$router.push({ name: "result", query: { point: point } });
+      let pointObj = this.questions.reduce((total, el) => {
+        if (!total[el.type]) {
+          total[el.type] = 0;
+        }
+        if (el.type === "PHQ-9" && el.oneForAll && el.answer >= 1)
+          total[el.type] = el.answer + 20;
+        total[el.type] = el.answer + total[el.type];
+        return total;
+      }, {});
+      this.submitSurvey(pointObj);
+      // console.log(this.questions);
+      // console.log(pointObj);
+      this.$router.push({ name: "result", query: { ...pointObj } });
     },
-    async submitSurvey(point) {
+    async submitSurvey(pointObj) {
       try {
         const response = await axios.get("https://api.ipify.org?format=json");
         const ip = response.data.ip;
         const colRef = collection(db, "surveys");
         const dataObj = {
           userId: ip,
-          point: point,
+          result: pointObj,
           timestamp: new Date(),
         };
-        console.log(dataObj);
+        // console.log(dataObj);
         const docRef = await addDoc(colRef, dataObj);
-        console.log("Document was created with ID:", docRef.id);
-        console.log("Kết quả khảo sát đã được lưu thành công!");
+        // console.log("Document was created with ID:", docRef.id);
+        // console.log("Kết quả khảo sát đã được lưu thành công!");
         this.selectedResult = null;
       } catch (error) {
         console.error("Lỗi khi lưu khảo sát: ", error);
@@ -258,7 +210,7 @@ export default {
   border-radius: 0.5em;
 }
 
-.custom-control-label {
+.custom-radio .custom-control-label {
   border-left: 0.1em solid #89b9d1;
   align-content: center;
   padding-left: 1em;
