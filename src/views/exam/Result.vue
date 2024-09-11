@@ -80,7 +80,7 @@
           <b-row>
             <b-col cols="6" class="d-flex justify-content-center">
               <b-link
-                href="https://www.facebook.com/groups/532634242676812"
+                href="https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu"
                 class="icon-link d-flex"
               >
                 <div class="image-container">
@@ -163,7 +163,7 @@ export default {
           solutions: [],
           action: {
             text: "Tham gia ngay",
-            externalUrl: "https://www.facebook.com/groups/532634242676812",
+            externalUrl: "https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu",
           },
         },
         3: {
