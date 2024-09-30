@@ -2,6 +2,12 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getAuth, signInAnonymously } from "firebase/auth";
+
+
+// src/firebase.js
+import { setUser } from '@/store/user';
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,4 +29,19 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 // init firestore service
 const db = getFirestore()
-export { db, analytics };
+const auth = getAuth();
+
+
+const loginAnonymously = () => {
+  return signInAnonymously(auth)
+  .then((userCredential) => {
+    const user = userCredential.user;
+    setUser(user);  // Lưu thông tin người dùng vào singleton
+    return user;
+  })
+  .catch((error) => {
+    console.error("Error signing in anonymously:", error);
+    throw error;
+  });
+};
+export { db, analytics, loginAnonymously };

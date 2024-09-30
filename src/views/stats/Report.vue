@@ -25,10 +25,11 @@
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
 import { collection, onSnapshot, updateDoc } from "firebase/firestore";
-import { db } from "@/plugins/firebaseConfig";
+import { db, loginAnonymously } from "@/plugins/firebaseConfig";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "vue-chartjs";
 import _ from "lodash";
+import { getUser } from "@/store/user";
 
 Chart.register(ArcElement, Tooltip, Legend);
 export const DATA_DEFAUT = {
@@ -84,6 +85,7 @@ export default {
       data: _.cloneDeep(DATA_DEFAUT),
       options: options,
       items: [],
+      user: null,
     };
   },
   methods: {
@@ -95,41 +97,52 @@ export default {
     },
     async getUsers() {
       // use 'collection()' instead of 'doc()'
-      const dataArr = {
-        "GAD-7": [0, 0, 0, 0],
-        "PHQ-9": [0, 0, 0, 0, 0],
-        "BSRS-5": [0, 0, 0, 0],
-      };
-      onSnapshot(collection(db, "surveys"), (snap) => {
-        snap.forEach((doc) => {
-          // this.users.push(doc.data())
-          // console.log(doc.ref);
-          const data = doc.data();
-          if (!data.result) {
-            updateDoc(doc.ref, { result: { "BSRS-5": data.point } });
-          }
-          Object.keys(data.result).forEach((name) => {
-            if (name === "PHQ-9" && data.result[name] >= 20) {
-              dataArr[name][4]++;
-            } else if (data.result[name] >= 15) {
-              dataArr[name][3]++;
-            } else if (data.result[name] >= 10) {
-              dataArr[name][2]++;
-            } else if (data.result[name] >= 6) {
-              dataArr[name][1]++;
-            } else {
-              dataArr[name][0]++;
+      if (this.user) {
+        const dataArr = {
+          "GAD-7": [0, 0, 0, 0],
+          "PHQ-9": [0, 0, 0, 0, 0],
+          "BSRS-5": [0, 0, 0, 0],
+        };
+        onSnapshot(collection(db, "surveys"), (snap) => {
+          snap.forEach((doc) => {
+            // this.users.push(doc.data())
+            // console.log(doc.ref);
+            const data = doc.data();
+            if (!data.result) {
+              updateDoc(doc.ref, { result: { "BSRS-5": data.point } });
             }
+            Object.keys(data.result).forEach((name) => {
+              if (name === "PHQ-9" && data.result[name] >= 20) {
+                dataArr[name][4]++;
+              } else if (data.result[name] >= 15) {
+                dataArr[name][3]++;
+              } else if (data.result[name] >= 10) {
+                dataArr[name][2]++;
+              } else if (data.result[name] >= 6) {
+                dataArr[name][1]++;
+              } else {
+                dataArr[name][0]++;
+              }
+            });
+          });
+          Object.keys(dataArr).forEach((name) => {
+            this.data[name].datasets[0].data = dataArr[name];
           });
         });
-        Object.keys(dataArr).forEach((name) => {
-          this.data[name].datasets[0].data = dataArr[name];
-        });
-      });
+      }
     },
   },
   created() {
     this.getUsers();
+  },
+  mounted() {
+    if (!getUser()) {
+      loginAnonymously().then(() => {
+        this.user = getUser();
+      });
+    } else {
+      this.user = getUser();
+    }
   },
 };
 </script>

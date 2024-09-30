@@ -111,11 +111,12 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import { db } from "@/plugins/firebaseConfig";
+import { db, loginAnonymously } from "@/plugins/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import axios from "axios";
 import { QUESTION_ARR, RESULT_ARR } from "../../constants";
 import _ from "lodash";
+import { getUser } from '@/store/user';
 
 export default {
   name: "ExamPage",
@@ -131,6 +132,7 @@ export default {
       selectedAnswer: 0,
       questions: [],
       questionData: _.cloneDeep(RESULT_ARR),
+      user: null
     };
   },
   computed: {},
@@ -196,6 +198,15 @@ export default {
       }
     },
   },
+  mounted() {
+    if (!getUser()) {
+      loginAnonymously().then(() => {
+        this.user = getUser();
+      });
+    } else {
+      this.user = getUser();
+    }
+  }
 };
 </script>
 <style>
