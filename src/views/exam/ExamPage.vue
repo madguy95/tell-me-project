@@ -116,7 +116,7 @@ import { collection, addDoc } from "firebase/firestore";
 import axios from "axios";
 import { QUESTION_ARR, RESULT_ARR } from "../../constants";
 import _ from "lodash";
-import { getUser } from '@/store/user';
+import { getUser } from "@/store/user";
 
 export default {
   name: "ExamPage",
@@ -132,7 +132,7 @@ export default {
       selectedAnswer: 0,
       questions: [],
       questionData: _.cloneDeep(RESULT_ARR),
-      user: null
+      user: null,
     };
   },
   computed: {},
@@ -187,6 +187,13 @@ export default {
           userId: ip,
           result: pointObj,
           timestamp: new Date(),
+          userInfo: {
+            ...(JSON.parse(localStorage.getItem("userInfo")) || {
+              userType: "A",
+              age: 18,
+              gender: "M",
+            }),
+          },
         };
         // console.log(dataObj);
         const docRef = await addDoc(colRef, dataObj);
@@ -206,7 +213,7 @@ export default {
     } else {
       this.user = getUser();
     }
-  }
+  },
 };
 </script>
 <style>

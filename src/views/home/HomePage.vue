@@ -99,7 +99,7 @@
         >
           <b-col><h3 class="custom-text">Khảo sát sức khỏe tâm thần</h3></b-col>
           <b-col xl="6" md="6" class="mb-3">
-            <router-link :to="{ name: 'exam-list' }">
+            <router-link :to="{ name: 'exam-info' }">
               <b-button class="button-start text-center">
                 <strong>BẮT ĐẦU</strong>
               </b-button>
@@ -153,7 +153,7 @@ export default {
   },
   data() {
     return {
-      show: true
+      show: typeof JSON.parse(sessionStorage.getItem('isShowInDeveloping')) == "boolean" ? JSON.parse(sessionStorage.getItem('isShowInDeveloping')) : true
     };
   },
   methods: {
@@ -161,6 +161,7 @@ export default {
       this.$router.push({ name: "exam" });
     },
     handleConfirm() {
+      sessionStorage.setItem('isShowInDeveloping', false)
       this.show = false;
     },
     handleCancel() {

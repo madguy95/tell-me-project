@@ -7,3 +7,9 @@
 @import "../core/navbars/navbar-search";
 @import "../core/navbars/navbar-dropdown";
 @import "../core/navbars/navbar-collapse";
+
+@media (max-width: 768px) {
+    .navbar-expand .navbar-collapse {
+        display: none !important;
+    }
+}

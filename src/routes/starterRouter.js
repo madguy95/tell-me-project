@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import DashboardLayout from '../views/Starter/SampleLayout.vue';
 import HomePage from '../views/home/HomePage.vue';
+import ExamInfo from '../views/exam/ExamInfo.vue';
 import ExamList from '../views/exam/ExamList.vue';
 import ExamPage from '../views/exam/ExamPage.vue';
 import ResultPage from '../views/exam/Result.vue';
@@ -39,6 +40,11 @@ export default new Router({
           path: 'exam-list',
           name: 'exam-list',
           components: { default: ExamList }
+        },
+        {
+          path: 'exam-info',
+          name: 'exam-info',
+          components: { default: ExamInfo }
         },
         {
           path: 'exam',

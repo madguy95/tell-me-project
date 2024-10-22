@@ -3,17 +3,20 @@
     <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
     <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
+        <div>
+          <b-button @click="exportToExcel">Tải Excel</b-button>
+        </div>
         <b-row>
-          <b-col class="mt-3 text-center">
-            <h3>Thống kê mức độ lo âu của người nhà bệnh nhân</h3>
+          <b-col md="6" class="mt-3 text-center">
+            <h3>Thống kê mức độ lo âu của người nhà bệnh nhân (GAD-7)</h3>
             <Pie :chart-data="data['GAD-7']" :chart-options="options" />
           </b-col>
-          <b-col class="mt-3 text-center">
-            <h3>Thống kê mức độ trầm cảm của người nhà bệnh nhân</h3>
+          <b-col md="6" class="mt-3 text-center">
+            <h3>Thống kê mức độ trầm cảm của người nhà bệnh nhân (PHQ-9)</h3>
             <Pie :chart-data="data['PHQ-9']" :chart-options="options" />
           </b-col>
-          <b-col class="mt-3 text-center">
-            <h3>Thống kê mức độ căng thẳng của người nhà bệnh nhân</h3>
+          <b-col md="6" class="mt-3 text-center">
+            <h3>Thống kê mức độ căng thẳng của người nhà bệnh nhân (BSRS-5)</h3>
             <Pie :chart-data="data['BSRS-5']" :chart-options="options" />
           </b-col>
         </b-row>
@@ -26,12 +29,15 @@ import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
 import { collection, onSnapshot, updateDoc } from "firebase/firestore";
 import { db, loginAnonymously } from "@/plugins/firebaseConfig";
-import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import * as Helpers from "chart.js/helpers";
 import { Pie } from "vue-chartjs";
 import _ from "lodash";
 import { getUser } from "@/store/user";
+import * as XLSX from "xlsx";
 
-Chart.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend);
+// var theHelp = ChartJS.helpers
 export const DATA_DEFAUT = {
   "GAD-7": {
     labels: ["Mức 1", "Mức 2", "Mức 3", "Mức 4"],
@@ -71,6 +77,67 @@ export const DATA_DEFAUT = {
 export const options = {
   responsive: true,
   maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "right",
+      labels: {
+        // Thay đổi văn bản legend ở đây
+        generateLabels: (chart) => {
+          var data = chart.data;
+          if (data.labels.length && data.datasets.length) {
+            const labels = chart.data.labels.map((labelText, i) => {
+              var meta = chart.getDatasetMeta(0);
+              var ds = data.datasets[0];
+              var arc = meta.data[i];
+              var custom = (arc && arc.custom) || {};
+              var getValueAtIndexOrDefault = Helpers.resolve;
+              var arcOpts = chart.options.elements.arc;
+              var fill = custom.backgroundColor
+                ? custom.backgroundColor
+                : getValueAtIndexOrDefault(
+                    [ds.backgroundColor || [], arcOpts.backgroundColor],
+                    chart.$context,
+                    i
+                  );
+              var stroke = custom.borderColor
+                ? custom.borderColor
+                : getValueAtIndexOrDefault(
+                    [ds.borderColor || [], arcOpts.borderColor],
+                    chart.$context,
+                    i
+                  );
+              var bw = custom.borderWidth
+                ? custom.borderWidth
+                : getValueAtIndexOrDefault(
+                    [ds.borderWidth || [], arcOpts.borderWidth],
+                    chart.$context,
+                    i
+                  );
+              return {
+                // And finally :
+                text: `${labelText} (${ds.data[i]})`,
+                fillStyle: fill,
+                strokeStyle: stroke,
+                lineWidth: bw,
+                hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+                index: i,
+              };
+            });
+            // console.log(labels)
+            return labels;
+          }
+          return [];
+        },
+      },
+    },
+    datalabels: {
+      formatter: (value, context) => {
+        const label = context.chart.data.labels[context.dataIndex];
+        return `${label}: ${value}`;
+      },
+      color: "#fff",
+    },
+  },
 };
 export default {
   name: "ReportPage",
@@ -87,6 +154,11 @@ export default {
       items: [],
       user: null,
     };
+  },
+  watch: {
+    user: function (newVal) {
+      if (newVal) this.getUsers();
+    },
   },
   methods: {
     toggle(id) {
@@ -128,8 +200,53 @@ export default {
           Object.keys(dataArr).forEach((name) => {
             this.data[name].datasets[0].data = dataArr[name];
           });
+          this.items = dataArr;
+          // Object.keys(dataArr).map((name) => {
+          //   const dataClone = dataArr[name].reduce((acc, value, index) => {
+          //     acc[`level${index + 1}`] = value;
+          //     return acc;
+          //   }, {});
+          //   return { "Tên bài Test": name, ...dataClone };
+          // });
         });
       }
+    },
+    exportToExcel() {
+      // Chuyển đổi đối tượng thành mảng mảng
+      const sheetData = [];
+
+      // Thêm tiêu đề với style
+      const header = [
+        "Tên bài test",
+        "Mức 1",
+        "Mức 2",
+        "Mức 3",
+        "Mức 4",
+        "Mức 5",
+      ];
+      sheetData.push(header);
+
+      // Thêm dữ liệu
+      for (const key in this.items) {
+        const row = [key]; // Thêm tên chỉ số
+        row.push(...this.items[key]); // Thêm giá trị
+        sheetData.push(row);
+      }
+      const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+      // Thiết lập chiều rộng cột
+      worksheet["!cols"] = [
+        { wch: 15 },
+        { wch: 10 },
+        { wch: 10 },
+        { wch: 10 },
+        { wch: 10 },
+        { wch: 10 },
+      ];
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+      // Xuất file
+      XLSX.writeFile(workbook, "data.xlsx");
     },
   },
   created() {
