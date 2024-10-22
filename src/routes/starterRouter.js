@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import DashboardLayout from '../views/Starter/SampleLayout.vue';
 import HomePage from '../views/home/HomePage.vue';
+import LoginPage from '../views/Pages/Login.vue';
 import ExamInfo from '../views/exam/ExamInfo.vue';
 import ExamList from '../views/exam/ExamList.vue';
 import ExamPage from '../views/exam/ExamPage.vue';
@@ -24,6 +25,11 @@ export default new Router({
       path: '/',
       name: 'welcome',
       component: WelcomePage,
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage,
     },
     {
       path: '/home',

@@ -68,7 +68,7 @@
         </b-form-group>
       </b-form>
       <div class="login-button-container">
-        <router-link class="navbar-brand" to="/home">
+        <router-link class="navbar-brand" :to="$route.path === '/home' ? '/login' : '/home'">
         <b-button variant="default" >{{
                 $route.path === "/home"
                   ? "Đăng Nhập"
