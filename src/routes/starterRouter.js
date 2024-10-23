@@ -1,103 +1,125 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import DashboardLayout from '../views/Starter/SampleLayout.vue';
-import HomePage from '../views/home/HomePage.vue';
-import LoginPage from '../views/Pages/Login.vue';
-import ExamInfo from '../views/exam/ExamInfo.vue';
-import ExamList from '../views/exam/ExamList.vue';
-import ExamPage from '../views/exam/ExamPage.vue';
-import ResultPage from '../views/exam/Result.vue';
-import HealthPostList from '../views/health-care/HealthPostList.vue';
-import HealthPostDetail from '../views/health-care/HealthPostDetail.vue';
-import MapPage from '../views/map/Map.vue';
-import WelcomePage from '../views/Welcome.vue';
-import Report from '../views/stats/Report.vue';
-import ProcedureList from '../views/procedure/ProcedureList.vue';
-import ProcedureDetail from '../views/procedure/ProcedureDetail.vue';
+import Vue from "vue";
+import Router from "vue-router";
+import DashboardLayout from "../views/Starter/SampleLayout.vue";
+import HomePage from "../views/home/HomePage.vue";
+import LoginPage from "../views/Pages/Login.vue";
+import ExamInfo from "../views/exam/ExamInfo.vue";
+import ExamList from "../views/exam/ExamList.vue";
+import ExamPage from "../views/exam/ExamPage.vue";
+import ResultPage from "../views/exam/Result.vue";
+import HealthPostList from "../views/health-care/HealthPostList.vue";
+import HealthPostDetail from "../views/health-care/HealthPostDetail.vue";
+import MapPage from "../views/map/Map.vue";
+import WelcomePage from "../views/Welcome.vue";
+import Report from "../views/stats/Report.vue";
+import Banner from "../views/Admin/Banner.vue";
+import ProcedureList from "../views/procedure/ProcedureList.vue";
+import ProcedureDetail from "../views/procedure/ProcedureDetail.vue";
+import store from "../store/store";
 
 Vue.use(Router);
 
-export default new Router({
-
-  mode: 'history',
+const router = new Router({
+  mode: "history",
   routes: [
     {
-      path: '/',
-      name: 'welcome',
+      path: "/",
+      name: "welcome",
       component: WelcomePage,
     },
     {
-      path: '/login',
-      name: 'login',
+      path: "/login",
+      name: "login",
       component: LoginPage,
     },
     {
-      path: '/home',
-      name: 'home',
-      redirect: '/home',
+      path: "/admin",
+      name: "admin",
+      redirect: "/admin",
+      component: DashboardLayout,
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: "",
+          name: "admin-home",
+          components: { default: Report },
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "banner",
+          name: "admin-banner",
+          components: { default: Banner },
+          meta: { requiresAuth: true },
+        },
+      ],
+    },
+    {
+      path: "/home",
+      name: "home",
+      redirect: "/home",
       component: DashboardLayout,
       children: [
         {
-          path: '',
-          name: 'dashboard',
-          components: { default: HomePage }
+          path: "",
+          name: "dashboard",
+          components: { default: HomePage },
         },
         {
-          path: 'exam-list',
-          name: 'exam-list',
-          components: { default: ExamList }
+          path: "exam-list",
+          name: "exam-list",
+          components: { default: ExamList },
         },
         {
-          path: 'exam-info',
-          name: 'exam-info',
-          components: { default: ExamInfo }
+          path: "exam-info",
+          name: "exam-info",
+          components: { default: ExamInfo },
         },
         {
-          path: 'exam',
-          name: 'exam',
-          components: { default: ExamPage }
+          path: "exam",
+          name: "exam",
+          components: { default: ExamPage },
         },
         {
-          path: 'result',
-          name: 'result',
-          components: { default: ResultPage }
+          path: "result",
+          name: "result",
+          components: { default: ResultPage },
         },
         {
-          path: 'health-post',
-          name: 'health-post',
-          components: { default: HealthPostList }
+          path: "health-post",
+          name: "health-post",
+          components: { default: HealthPostList },
         },
         {
-          path: 'health-post/:id',
-          name: 'health-post-detail',
+          path: "health-post/:id",
+          name: "health-post-detail",
           components: { default: HealthPostDetail },
-          props: true
+          props: true,
         },
         {
-          path: 'procedure',
-          name: 'procedure',
-          components: { default: ProcedureList }
+          path: "procedure",
+          name: "procedure",
+          components: { default: ProcedureList },
         },
         {
-          path: 'procedure/:id',
-          name: 'procedure-detail',
+          path: "procedure/:id",
+          name: "procedure-detail",
           components: { default: ProcedureDetail },
-          props: true
+          props: true,
         },
         {
-          path: 'map',
-          name: 'map',
-          components: { default: MapPage }
+          path: "map",
+          name: "map",
+          components: { default: MapPage },
         },
         {
-          path: 'report',
-          name: 'Report',
+          path: "report",
+          name: "Report",
           components: { default: Report },
         },
-      ]
-    }
+      ],
+    },
   ],
-  scrollBehavior: (to, from ,savedPosition) => {
+  scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) {
       return savedPosition;
     }
@@ -105,5 +127,17 @@ export default new Router({
       return { selector: to.hash };
     }
     return { x: 0, y: 0 };
+  },
+});
+// Router guard to check for authentication
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const isAuthenticated = store.getters.isAuthenticated;
+
+  if (requiresAuth && !isAuthenticated) {
+    next({ path: "/login" });
+  } else {
+    next();
   }
 });
+export default router;

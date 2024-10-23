@@ -4,48 +4,13 @@
     <side-bar>
       <template slot-scope="props" slot="links">
         <sidebar-item
+          v-for="(item, index) in sidebarItems"
           :link="{
-            name: 'Trang chủ',
-            path: '/home',
-            icon: 'fas fa-home',
+           ...item
           }"
+          :key="'sid-' + index"
         >
         </sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Làm bài test tâm lý',
-            path: '/home/exam-list',
-            icon: 'fa-regular fa-file-lines',
-          }"
-        ></sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Thủ tục hành chính',
-            path: '/home/procedure',
-            icon: 'fas fa-briefcase',
-          }"
-        ></sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Chăm sóc sức khoẻ',
-            path: '/home/health-post',
-            icon: 'fas fa-hand-holding-medical',
-          }"
-        ></sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Sơ đồ',
-            path: '/home/map',
-            icon: 'fa-solid fa-map-location-dot',
-          }"
-        ></sidebar-item>
-        <sidebar-item
-          :link="{
-            name: 'Thống kê',
-            path: '/home/report',
-            icon: 'fas fa-chart-pie',
-          }"
-        ></sidebar-item>
       </template>
     </side-bar>
     <div class="main-content">
@@ -93,12 +58,67 @@ import ContentFooter from "./SampleFooter.vue";
 import DashboardContent from "../Layout/Content.vue";
 import { FadeTransition } from "vue2-transitions";
 
+const SIDEBAR_PUBLIC = [
+  {
+    name: "Trang chủ",
+    path: "/home",
+    icon: "fas fa-home",
+  },
+  {
+    name: "Làm bài test tâm lý",
+    path: "/home/exam-list",
+    icon: "fa-regular fa-file-lines",
+  },
+  {
+    name: "Thủ tục hành chính",
+    path: "/home/procedure",
+    icon: "fas fa-briefcase",
+  },
+  {
+    name: "Chăm sóc sức khoẻ",
+    path: "/home/health-post",
+    icon: "fas fa-hand-holding-medical",
+  },
+  {
+    name: "Sơ đồ",
+    path: "/home/map",
+    icon: "fa-solid fa-map-location-dot",
+  },
+  {
+    name: "Thống kê",
+    path: "/home/report",
+    icon: "fas fa-chart-pie",
+  },
+];
+const SIDEBAR_ADMIN = [
+  {
+    name: "Trang chủ",
+    path: "/admin",
+    icon: "fas fa-home",
+  },
+  {
+    name: "Chỉnh sửa Banner",
+    path: "/admin/banner",
+    icon: "fa-regular fa-file-lines",
+  }
+];
 export default {
   components: {
     DashboardNavbar,
     ContentFooter,
     DashboardContent,
     FadeTransition,
+  },
+  data() {
+    return {};
+  },
+  computed: {
+    sidebarItems() {
+      if (this.$route.path.startsWith('/admin')) {
+        return [...SIDEBAR_ADMIN]
+      }
+      return [...SIDEBAR_PUBLIC]
+    }
   },
   methods: {
     initScrollbar() {

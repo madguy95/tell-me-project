@@ -20,6 +20,7 @@ import App from './App.vue';
 
 // router setup
 import router from './routes/starterRouter';
+import store from './store/store'
 import 'viewerjs/dist/viewer.css'
 import VueViewer from 'v-viewer'
 Vue.use(VueViewer)
@@ -29,6 +30,7 @@ Vue.use(DashboardPlugin);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   render: h => h(App),
   router
 });

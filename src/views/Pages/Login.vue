@@ -12,9 +12,18 @@
         </div>
       </b-container> -->
       <div class="separator separator-bottom separator-skew zindex-100">
-        <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
-             xmlns="http://www.w3.org/2000/svg">
-          <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+        <svg
+          x="0"
+          y="0"
+          viewBox="0 0 2560 100"
+          preserveAspectRatio="none"
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polygon
+            class="fill-default"
+            points="2560 0 2560 100 0 100"
+          ></polygon>
         </svg>
       </div>
     </div>
@@ -40,36 +49,52 @@
               <div class="text-center text-muted mb-4">
                 <h1>Welcome to Tell me !</h1>
               </div>
-              <validation-observer v-slot="{handleSubmit}" ref="formValidator">
+              <validation-observer
+                v-slot="{ handleSubmit }"
+                ref="formValidator"
+              >
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
-                  <base-input alternative
-                              class="mb-3"
-                              name="Email"
-                              :rules="{required: true, email: true}"
-                              prepend-icon="ni ni-email-83"
-                              placeholder="Email"
-                              v-model="model.email">
+                  <base-input
+                    alternative
+                    class="mb-3"
+                    name="Email"
+                    :rules="{ required: true, email: true }"
+                    prepend-icon="ni ni-email-83"
+                    placeholder="Email"
+                    v-model="model.email"
+                  >
                   </base-input>
 
-                  <base-input alternative
-                              class="mb-3"
-                              name="Password"
-                              :rules="{required: true, min: 6}"
-                              prepend-icon="ni ni-lock-circle-open"
-                              type="password"
-                              placeholder="Password"
-                              v-model="model.password">
+                  <base-input
+                    alternative
+                    class="mb-3"
+                    name="Password"
+                    :rules="{ required: true, min: 6 }"
+                    prepend-icon="ni ni-lock-circle-open"
+                    type="password"
+                    placeholder="Password"
+                    v-model="model.password"
+                  >
                   </base-input>
 
-                  <b-form-checkbox v-model="model.rememberMe">Remember me</b-form-checkbox>
+                  <b-form-checkbox v-model="model.rememberMe"
+                    >Remember me</b-form-checkbox
+                  >
                   <div class="text-center">
-                    <base-button type="primary" native-type="submit" class="my-4">Sign in</base-button>
+                    <base-button
+                      type="primary"
+                      native-type="submit"
+                      class="my-4"
+                      >Sign in</base-button
+                    >
                   </div>
                 </b-form>
               </validation-observer>
               <b-col cols="6">
-              <router-link to="/dashboard" class="text-dark"><small>Forgot password?</small></router-link>
-            </b-col>
+                <router-link to="/dashboard" class="text-dark"
+                  ><small>Forgot password?</small></router-link
+                >
+              </b-col>
             </b-card-body>
           </b-card>
           <!-- <b-row class="mt-3">
@@ -86,20 +111,31 @@
   </div>
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        model: {
-          email: '',
-          password: '',
-          rememberMe: false
-        }
-      };
-    },
-    methods: {
-      onSubmit() {
-        // this will be called only after form is valid. You can do api call here to login
+import { mapActions } from 'vuex';
+
+export default {
+  data() {
+    return {
+      model: {
+        email: "",
+        password: "",
+        rememberMe: false,
+      },
+    };
+  },
+  computed: {
+  },
+  methods: {
+    ...mapActions(['login']),
+    
+    async onSubmit() {
+      try {
+        await this.login({ email: this.model.email, password: this.model.password });
+        this.$router.push('/admin'); // Redirect on success
+      } catch (err) {
+        this.error = err.message; // Handle login errors
       }
-    }
-  };
+    },
+  },
+};
 </script>

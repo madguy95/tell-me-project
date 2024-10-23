@@ -51,10 +51,7 @@
       </li>
     </b-navbar-nav>
     <b-navbar-nav class="align-items-center ml-auto ml-md-0">
-      <b-form
-        class="navbar-search form-inline mr-sm-3"
-        id="navbar-search-main"
-      >
+      <b-form class="navbar-search form-inline mr-sm-3" id="navbar-search-main">
         <b-form-group class="mb-0">
           <b-input-group class="input-group-alternative input-group-merge">
             <b-form-input placeholder="Tim Kiem" type="text"> </b-form-input>
@@ -67,16 +64,18 @@
           </b-input-group>
         </b-form-group>
       </b-form>
-      <div class="login-button-container">
-        <router-link class="navbar-brand" :to="$route.path === '/home' ? '/login' : '/home'">
-        <b-button variant="default" >{{
-                $route.path === "/home"
-                  ? "Đăng Nhập"
-                  : "Trang chủ"
-              }}</b-button>
+      <div class="login-button-container" v-if="!isAuthenticated">
+        <router-link
+          class="navbar-brand"
+          :to="$route.path === '/home' ? '/login' : '/home'"
+        >
+          <b-button variant="default">{{
+            $route.path === "/home" ? "Đăng Nhập" : "Trang chủ"
+          }}</b-button>
         </router-link>
       </div>
-      <!-- <base-dropdown
+      <base-dropdown
+        v-if="isAuthenticated"
         menu-on-right
         class="nav-item"
         tag="li"
@@ -89,7 +88,7 @@
               <img alt="Image placeholder" src="img/theme/team-4.jpg" />
             </span>
             <b-media-body class="ml-2 d-none d-lg-block">
-              <span class="mb-0 text-sm font-weight-bold">John Snow</span>
+              <span class="mb-0 text-sm font-weight-bold">{{user.email}}</span>
             </b-media-body>
           </b-media>
         </a>
@@ -98,11 +97,11 @@
           <b-dropdown-header class="noti-title">
             <h6 class="text-overflow m-0">Welcome!</h6>
           </b-dropdown-header>
-          <b-dropdown-item href="#!">
+          <b-dropdown-item href="/admin">
             <i class="ni ni-single-02"></i>
-            <span>My profile</span>
+            <span>Admin page</span>
           </b-dropdown-item>
-          <b-dropdown-item href="#!">
+          <!-- <b-dropdown-item href="#!">
             <i class="ni ni-settings-gear-65"></i>
             <span>Settings</span>
           </b-dropdown-item>
@@ -113,20 +112,22 @@
           <b-dropdown-item href="#!">
             <i class="ni ni-support-16"></i>
             <span>Support</span>
-          </b-dropdown-item>
+          </b-dropdown-item> -->
           <div class="dropdown-divider"></div>
-          <b-dropdown-item href="#!">
+          <b-dropdown-item @click="onClickLogout">
             <i class="ni ni-user-run"></i>
-            <span>Logout</span>
+            <span>Đăng xuất</span>
           </b-dropdown-item>
         </template>
-      </base-dropdown> -->
+      </base-dropdown>
     </b-navbar-nav>
   </base-nav>
 </template>
 <script>
 import { CollapseTransition } from "vue2-transitions";
 import { BaseNav, Modal } from "@/components";
+import { mapState, mapActions } from "vuex";
+import { mapGetters } from "vuex/dist/vuex.common.js";
 
 export default {
   components: {
@@ -135,6 +136,8 @@ export default {
     Modal,
   },
   computed: {
+    ...mapState(["user"]),
+    ...mapGetters(["isAuthenticated"]),
     routeName() {
       const { name } = this.$route;
       return this.capitalizeFirstLetter(name);
@@ -152,6 +155,15 @@ export default {
     };
   },
   methods: {
+    ...mapActions(['logout']),
+    async onClickLogout() {
+      try {
+        await this.logout();
+        this.$router.push('/login'); // Redirect on success
+      } catch (err) {
+        this.error = err.message; // Handle login errors
+      }
+    },
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     },
@@ -173,5 +185,8 @@ export default {
 <style scoped>
 .top-navbar {
   top: 0px;
+}
+.navbar-top {
+  z-index: 10 !important;
 }
 </style>

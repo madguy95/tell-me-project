@@ -30,49 +30,50 @@
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="#">Something else here</a>
           </base-dropdown> -->
-          <div class="login-button-container">
+          <div class="login-button-container" v-if="!isAuthenticated">
             <router-link class="navbar-brand" to="/home">
               <b-button variant="default">{{
-                $route.path === "/home"
-                  ? "Đăng Nhập"
-                  : "Trang chủ"
+                $route.path === "/home" ? "Đăng Nhập" : "Trang chủ"
               }}</b-button>
             </router-link>
           </div>
-          <!-- <base-dropdown class="nav-item" menu-on-right tag="li" title-tag="a">
-                        <a slot="title-container" class="nav-link" href="#" role="button">
-                            <div class="media align-items-center">
-                              <span class="avatar avatar-sm rounded-circle">
-                                <img alt="Image placeholder" src="img/theme/team-1.jpg">
-                              </span>
-                            </div>
-                        </a>
+          <base-dropdown v-if="isAuthenticated" class="nav-item" menu-on-right tag="li" title-tag="a">
+            <a slot="title-container" class="nav-link" href="#" role="button">
+              <div class="media align-items-center">
+                <span class="avatar avatar-sm rounded-circle">
+                  <img alt="Image placeholder" src="img/theme/team-4.jpg" />
+                </span>
+              </div>
+            </a>
 
-                        <div class=" dropdown-header noti-title">
-                            <h6 class="text-overflow m-0">Welcome!</h6>
-                        </div>
-                        <router-link to="/profile" class="dropdown-item">
-                            <i class="ni ni-single-02"></i>
-                            <span>My profile</span>
-                        </router-link>
-                        <router-link to="/profile" class="dropdown-item">
-                            <i class="ni ni-settings-gear-65"></i>
-                            <span>Settings</span>
-                        </router-link>
-                        <router-link to="/profile" class="dropdown-item">
-                            <i class="ni ni-calendar-grid-58"></i>
-                            <span>Activity</span>
-                        </router-link>
-                        <router-link to="/profile" class="dropdown-item">
-                            <i class="ni ni-support-16"></i>
-                            <span>Support</span>
-                        </router-link>
-                        <div class="dropdown-divider"></div>
-                        <a href="#!" class="dropdown-item">
-                            <i class="ni ni-user-run"></i>
-                            <span>Logout</span>
-                        </a>
-                    </base-dropdown> -->
+            <div class="dropdown-header noti-title">
+              <h6 class="text-overflow m-0">Welcome!</h6>
+            </div>
+            <div class="dropdown-item">
+              <span class="text-overflow m-0">{{user.email}}</span>
+            </div>
+            <!-- <router-link to="/profile" class="dropdown-item">
+              <i class="ni ni-single-02"></i>
+              <span>My profile</span>
+            </router-link>
+            <router-link to="/profile" class="dropdown-item">
+              <i class="ni ni-settings-gear-65"></i>
+              <span>Settings</span>
+            </router-link>
+            <router-link to="/profile" class="dropdown-item">
+              <i class="ni ni-calendar-grid-58"></i>
+              <span>Activity</span>
+            </router-link>
+            <router-link to="/profile" class="dropdown-item">
+              <i class="ni ni-support-16"></i>
+              <span>Support</span>
+            </router-link> -->
+            <div class="dropdown-divider"></div>
+            <a href="#!"  @click="onClickLogout" class="dropdown-item">
+              <i class="ni ni-user-run"></i>
+              <span>Logout</span>
+            </a>
+          </base-dropdown>
         </ul>
       </slot>
       <slot></slot>
@@ -114,7 +115,7 @@
             <a class="nav-link" href="#">
               <i class="fas fa-envelope"></i> Email: duantellme.hmu@gmail.com
             </a>
-          </li> 
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
               <i class="fas fa-phone"></i> Hotline: 0375458921 (Ms. Thu Trang)
@@ -127,6 +128,7 @@
 </template>
 <script>
 import NavbarToggleButton from "@/components/NavbarToggleButton";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   name: "sidebar",
@@ -151,7 +153,20 @@ export default {
       autoClose: this.autoClose,
     };
   },
+  computed: {
+    ...mapState(["user"]),
+    ...mapGetters(["isAuthenticated"]),
+  },
   methods: {
+    ...mapActions(["logout"]),
+    async onClickLogout() {
+      try {
+        await this.logout();
+        this.$router.push("/login"); // Redirect on success
+      } catch (err) {
+        this.error = err.message; // Handle login errors
+      }
+    },
     closeSidebar() {
       this.$sidebar.displaySidebar(false);
     },

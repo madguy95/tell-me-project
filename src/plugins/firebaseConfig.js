@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from 'firebase/storage';
 import { getAuth, signInAnonymously } from "firebase/auth";
 
 
@@ -30,7 +31,7 @@ const analytics = getAnalytics(app);
 // init firestore service
 const db = getFirestore()
 const auth = getAuth();
-
+const storage = getStorage();
 
 const loginAnonymously = () => {
   return signInAnonymously(auth)
@@ -44,4 +45,4 @@ const loginAnonymously = () => {
     throw error;
   });
 };
-export { db, analytics, loginAnonymously };
+export { db, analytics, loginAnonymously, auth, storage };
