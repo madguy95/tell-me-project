@@ -16,6 +16,7 @@ import Banner from "../views/Admin/Banner.vue";
 import ProcedureList from "../views/procedure/ProcedureList.vue";
 import ProcedureDetail from "../views/procedure/ProcedureDetail.vue";
 import store from "../store/store";
+import ExamConfig from "../views/Admin/ExamConfig.vue";
 
 Vue.use(Router);
 
@@ -49,6 +50,12 @@ const router = new Router({
           path: "banner",
           name: "admin-banner",
           components: { default: Banner },
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "exam-config",
+          name: "exam-config",
+          components: { default: ExamConfig },
           meta: { requiresAuth: true },
         },
       ],

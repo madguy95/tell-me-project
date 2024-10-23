@@ -92,13 +92,18 @@ const SIDEBAR_PUBLIC = [
 ];
 const SIDEBAR_ADMIN = [
   {
-    name: "Trang chủ",
+    name: "Trang admin",
     path: "/admin",
     icon: "fas fa-home",
   },
   {
     name: "Chỉnh sửa Banner",
     path: "/admin/banner",
+    icon: "fa-regular fa-file-lines",
+  },
+  {
+    name: "Chỉnh sửa bài test",
+    path: "/admin/exam-config",
     icon: "fa-regular fa-file-lines",
   }
 ];

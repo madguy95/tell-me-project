@@ -4,45 +4,43 @@
     <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
       <div class="container">
         <b-modal
-            v-model="show"
-            title="Thông báo"
-            ok-title="Tiếp tục"
-            header-class="header-modal"
-            content-class="content-modal"
-            title-class="title-modal"
-            cancel-title="Trở về"
-            @ok="handleConfirm"
-            @cancel="handleCancel"
-            hide-footer
-            centered
-          >
-            <template #modal-header>
-              <div class="d-block w-100 text-center">
-                <h3 class="header-text">Thông báo</h3>
-              </div>
-            </template>
-            <p class="alert-content">
-              Website hiện đang trong quá trình phát triển nên không tránh khỏi những sai sót. Bạn có chắc chắn muốn truy cập?
-            </p>
-            <b-row>
-              <b-col cols="6">
-                <b-button
-                  class="btn-common btn-cancel"
-                  block
-                  @click="handleCancel"
-                  >Trở về</b-button
-                >
-              </b-col>
-              <b-col cols="6">
-                <b-button
-                  class="btn-common btn-yes"
-                  block
-                  @click="handleConfirm"
-                  >Tiếp tục</b-button
-                >
-              </b-col>
-            </b-row>
-          </b-modal>
+          v-model="show"
+          title="Thông báo"
+          ok-title="Tiếp tục"
+          header-class="header-modal"
+          content-class="content-modal"
+          title-class="title-modal"
+          cancel-title="Trở về"
+          @ok="handleConfirm"
+          @cancel="handleCancel"
+          hide-footer
+          centered
+        >
+          <template #modal-header>
+            <div class="d-block w-100 text-center">
+              <h3 class="header-text">Thông báo</h3>
+            </div>
+          </template>
+          <p class="alert-content">
+            Website hiện đang trong quá trình phát triển nên không tránh khỏi
+            những sai sót. Bạn có chắc chắn muốn truy cập?
+          </p>
+          <b-row>
+            <b-col cols="6">
+              <b-button
+                class="btn-common btn-cancel"
+                block
+                @click="handleCancel"
+                >Trở về</b-button
+              >
+            </b-col>
+            <b-col cols="6">
+              <b-button class="btn-common btn-yes" block @click="handleConfirm"
+                >Tiếp tục</b-button
+              >
+            </b-col>
+          </b-row>
+        </b-modal>
         <div class="d-flex justify-content-center">
           <b-carousel
             id="carousel-1"
@@ -57,41 +55,10 @@
           >
             <!-- Text slides with image -->
             <b-carousel-slide
-              img-src="/img/banner/banner1.png"
+              v-for="(imageUrl, index) in banners"
+              :img-src="imageUrl"
+              :key="'banner' + index"
             ></b-carousel-slide>
-
-            <!-- Slides with custom text -->
-            <b-carousel-slide img-src="/img/banner/banner2.png">
-              <!-- <h1>Yoga Cười</h1> -->
-            </b-carousel-slide>
-            <!-- Slides with custom text -->
-            <b-carousel-slide img-src="/img/banner/banner3.png">
-              <!-- <h1>Yoga Cười</h1> -->
-            </b-carousel-slide>
-            <!-- Slides with img slot -->
-            <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-            <!-- <b-carousel-slide>
-            <template #img>
-              <img
-                class="d-block img-fluid w-100"
-                src="https://picsum.photos/1024/360/?image=55"
-                alt="image slot"
-              />
-            </template>
-          </b-carousel-slide> -->
-
-            <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-            <!-- <b-carousel-slide
-            caption="Blank Image"
-            img-blank
-            img-alt="Blank image"
-          >
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse eros felis, tincidunt a tincidunt eget, convallis vel
-              est. Ut pellentesque ut lacus vel interdum.
-            </p>
-          </b-carousel-slide> -->
           </b-carousel>
         </div>
         <b-row
@@ -144,7 +111,19 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
+import {
+  collection,
+  orderBy,
+  query,
+  getDocs,
+} from "firebase/firestore";
+import { db } from "@/plugins/firebaseConfig";
 
+const BANNER_DEFAULT = [
+  "/img/banner/banner1.png",
+  "/img/banner/banner2.png",
+  "/img/banner/banner3.png",
+];
 export default {
   name: "HomePage",
   components: {
@@ -153,15 +132,31 @@ export default {
   },
   data() {
     return {
-      show: typeof JSON.parse(sessionStorage.getItem('isShowInDeveloping')) == "boolean" ? JSON.parse(sessionStorage.getItem('isShowInDeveloping')) : true
+      show:
+        typeof JSON.parse(sessionStorage.getItem("isShowInDeveloping")) ==
+        "boolean"
+          ? JSON.parse(sessionStorage.getItem("isShowInDeveloping"))
+          : true,
+      banners: [...BANNER_DEFAULT],
     };
   },
+  created() {
+    this.fetchImages(); // Fetch images on component creation
+  },
   methods: {
+    async fetchImages() {
+      const imagesCollection = collection(db, "banners");
+      const q = query(imagesCollection, orderBy("order"));
+      const snapshot = await getDocs(q);
+      this.banners = snapshot.docs.map((doc) => doc.data().url) || [
+        ...BANNER_DEFAULT,
+      ];
+    },
     goToRoute() {
       this.$router.push({ name: "exam" });
     },
     handleConfirm() {
-      sessionStorage.setItem('isShowInDeveloping', false)
+      sessionStorage.setItem("isShowInDeveloping", false);
       this.show = false;
     },
     handleCancel() {

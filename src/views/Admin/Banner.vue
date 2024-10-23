@@ -97,8 +97,9 @@ import {
   uploadBytes,
   deleteObject,
 } from "firebase/storage";
-import { db, loginAnonymously, storage } from "@/plugins/firebaseConfig";
+import { db, storage } from "@/plugins/firebaseConfig";
 import _ from "lodash";
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   name: "BannerPage",
@@ -138,7 +139,8 @@ export default {
             });
           } else {
             const file = image.file;
-            const storageRef = ref(storage, `banners/${file.name}`);
+            const uniqueFileName = uuidv4() + "_" + file.name;
+            const storageRef = ref(storage, `banners/${uniqueFileName}`);
             await uploadBytes(storageRef, file);
             const url = await getDownloadURL(storageRef);
             await this.saveImageUrl(url, i); // Save the URL to Firestore
