@@ -6,7 +6,7 @@
         <sidebar-item
           v-for="(item, index) in sidebarItems"
           :link="{
-           ...item
+            ...item,
           }"
           :key="'sid-' + index"
         >
@@ -84,11 +84,6 @@ const SIDEBAR_PUBLIC = [
     path: "/home/map",
     icon: "fa-solid fa-map-location-dot",
   },
-  {
-    name: "Thống kê",
-    path: "/home/report",
-    icon: "fas fa-chart-pie",
-  },
 ];
 const SIDEBAR_ADMIN = [
   {
@@ -97,15 +92,15 @@ const SIDEBAR_ADMIN = [
     icon: "fas fa-home",
   },
   {
-    name: "Chỉnh sửa Banner",
+    name: "Upload Banner",
     path: "/admin/banner",
-    icon: "fa-regular fa-file-lines",
+    icon: "fas fa-images",
   },
   {
     name: "Chỉnh sửa bài test",
     path: "/admin/exam-config",
-    icon: "fa-regular fa-file-lines",
-  }
+    icon: "fas fa-edit",
+  },
 ];
 export default {
   components: {
@@ -119,11 +114,11 @@ export default {
   },
   computed: {
     sidebarItems() {
-      if (this.$route.path.startsWith('/admin')) {
-        return [...SIDEBAR_ADMIN]
+      if (this.$route.path.startsWith("/admin")) {
+        return [...SIDEBAR_ADMIN];
       }
-      return [...SIDEBAR_PUBLIC]
-    }
+      return [...SIDEBAR_PUBLIC];
+    },
   },
   methods: {
     initScrollbar() {

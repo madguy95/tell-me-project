@@ -99,7 +99,7 @@
                 </div>
                 <div class="d-flex flex-column ml-1">
                   <span>Phương pháp</span>
-                  <span class="sub-text">trị liệu tâm lý</span>
+                  <span class="sub-text">hỗ trợ tâm lý</span>
                 </div>
               </b-link>
             </b-col>
@@ -112,7 +112,22 @@
 <script>
 import LevelIndicators from "@/views/exam/LevelIndicators.vue";
 import { RESULT_ARR } from "../../constants";
-import _ from 'lodash';
+import _ from "lodash";
+import { db } from "@/plugins/firebaseConfig";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  doc,
+  query,
+  limit,
+} from "firebase/firestore";
+function decodeHtml(html) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = html;
+  return txt.value;
+}
 const createSubObject = (obj, keys) => {
   return keys.reduce((acc, key) => {
     if (key in obj) {
@@ -142,7 +157,18 @@ export default {
   },
   data() {
     return {
-      pointObj: createSubObject(this.$route.query || {}, ["GAD-7", "PHQ-9", "BSRS-5"]),
+      evaluations: [
+        { minScore: 20, level: 5 },
+        { minScore: 15, level: 4 },
+        { minScore: 10, level: 3 },
+        { minScore: 5, level: 2 },
+        { minScore: 0, level: 1 },
+      ],
+      pointObj: createSubObject(this.$route.query || {}, [
+        "GAD-7",
+        "PHQ-9",
+        "BSRS-5",
+      ]),
       levelResults: { ..._.cloneDeep(RESULT_ARR) },
       results: {
         1: {
@@ -163,7 +189,8 @@ export default {
           solutions: [],
           action: {
             text: "Tham gia ngay",
-            externalUrl: "https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu",
+            externalUrl:
+              "https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu",
           },
         },
         3: {
@@ -220,18 +247,9 @@ export default {
     pointLevel() {
       return Object.keys(this.pointObj).reduce((arr, el) => {
         if (!arr[el]) arr[el] = 0;
-
-        if (this.pointObj[el] >= 20) {
-          arr[el] = 5;
-        } else if (this.pointObj[el] >= 15) {
-          arr[el] = 4;
-        } else if (this.pointObj[el] >= 10) {
-          arr[el] = 3;
-        } else if (this.pointObj[el] >= 5) {
-          arr[el] = 2;
-        } else {
-          arr[el] = 1;
-        }
+        arr[el] = this.evaluations.find(
+          (ev) => ev.minScore <= this.pointObj[el]
+        ).level;
         return arr;
       }, {});
     },
@@ -240,9 +258,34 @@ export default {
     },
   },
   methods: {
+    async loadExams() {
+      const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
+
+      try {
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const firstDoc = querySnapshot.docs[0]; // Get the first document
+          const evaluations = firstDoc.data().evaluations; // Get the first document
+          const resultsClone = { ...this.results };
+          evaluations.forEach((el) => {
+            resultsClone[el.level].advice = decodeHtml(el.solution);
+          });
+          this.results = resultsClone;
+          this.evaluations = evaluations.sort((a, b) => b.level - a.level);
+          console.log(this.evaluations);
+        } else {
+          console.log("No documents found in the collection.");
+        }
+      } catch (error) {
+        console.error("Error getting documents:", error);
+      }
+    },
     currentLevel(point) {
       // console.log(point);
     },
+  },
+  mounted() {
+    this.loadExams();
   },
 };
 </script>

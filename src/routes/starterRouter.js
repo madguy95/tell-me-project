@@ -118,12 +118,7 @@ const router = new Router({
           path: "map",
           name: "map",
           components: { default: MapPage },
-        },
-        {
-          path: "report",
-          name: "Report",
-          components: { default: Report },
-        },
+        }
       ],
     },
   ],

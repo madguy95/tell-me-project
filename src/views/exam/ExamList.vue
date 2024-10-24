@@ -71,6 +71,17 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  doc,
+  query,
+  limit,
+} from "firebase/firestore";
+import { db } from "@/plugins/firebaseConfig";
+
 export default {
   name: "ExamPage",
   components: {
@@ -96,7 +107,30 @@ export default {
       ],
     };
   },
-  methods: {},
+  methods: {
+    async loadExams() {
+      const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
+
+      try {
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const firstDoc = querySnapshot.docs[0]; // Get the first document
+          const dataTest = firstDoc.data();
+          this.options = dataTest.tests.map((el) => ({
+            text: `<div class="checkbox-label"><strong>${el.name} (${el.questions.length} câu hỏi)</strong><br /> ${el.description}</div>`,
+            value: el.code,
+          }));
+        } else {
+          console.log("No documents found in the collection.");
+        }
+      } catch (error) {
+        console.error("Error getting documents:", error);
+      }
+    },
+  },
+  mounted() {
+    this.loadExams();
+  },
 };
 </script>
 <style>
@@ -130,7 +164,9 @@ export default {
   background-color: #1276a8;
   padding-left: 2rem;
 }
-.custom-checkbox .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+.custom-checkbox
+  .custom-control-input:focus:not(:checked)
+  ~ .custom-control-label::before {
   border-color: #0d4460;
 }
 .custom-checkbox input[type="checkbox"] + .custom-control-label::before,

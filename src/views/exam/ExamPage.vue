@@ -56,7 +56,7 @@
                 </p>
                 <p class="content">
                   Anh/ chị có gặp tình trạng:
-                  {{ questions[currentQuestion].question }}
+                  {{ questions[currentQuestion].content }}
                 </p>
               </div>
               <h4 class="sub-note mt-2">
@@ -65,11 +65,11 @@
               <b-form-radio-group v-model="questions[currentQuestion].answer">
                 <b-form-radio
                   class="custom-radio"
-                  v-for="(option, index) in questions[currentQuestion].options"
+                  v-for="(option, index) in questions[currentQuestion].answers"
                   :key="index"
                   :value="index"
                 >
-                  {{ option }}
+                  {{ option.answer }}
                 </b-form-radio>
               </b-form-radio-group>
             </b-form-group>
@@ -111,12 +111,20 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import { db } from "@/plugins/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
 import axios from "axios";
 import { QUESTION_ARR, RESULT_ARR } from "../../constants";
 import _ from "lodash";
 import { mapState } from "vuex";
+import { db } from "@/plugins/firebaseConfig";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  doc,
+  query,
+  limit,
+} from "firebase/firestore";
 
 export default {
   name: "ExamPage",
@@ -138,14 +146,30 @@ export default {
     ...mapState(["user", "testerInfo"]),
   },
   created() {
-    this.questions = this.examIds.reduce((acc, examId) => {
-      if (QUESTION_ARR[examId]) {
-        return acc.concat(_.cloneDeep(QUESTION_ARR[examId]));
-      }
-      return acc;
-    }, []);
+    this.loadExams();
   },
   methods: {
+    async loadExams() {
+      const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
+
+      try {
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          const firstDoc = querySnapshot.docs[0]; // Get the first document
+          const dataTest = firstDoc.data();
+            console.log(this.examIds)
+          this.questions = dataTest.tests
+            .filter((el) => this.examIds.includes(el.code))
+            .map((el) => el.questions.map((q, idx) => ({...q, type: el.code, numb: (idx + 1), answer: 0})))
+            .flat();
+            console.log(this.questions)
+        } else {
+          console.log("No documents found in the collection.");
+        }
+      } catch (error) {
+        console.error("Error getting documents:", error);
+      }
+    },
     goToPreviousQuestion() {
       if (this.currentQuestion > 0) {
         this.currentQuestion -= 1;
@@ -169,9 +193,7 @@ export default {
         if (!total[el.type]) {
           total[el.type] = 0;
         }
-        if (el.type === "PHQ-9" && el.oneForAll && el.answer >= 1)
-          total[el.type] = el.answer + 20;
-        total[el.type] = el.answer + total[el.type];
+        total[el.type] = el.answers[el.answer].score + total[el.type];
         return total;
       }, {});
       await this.submitSurvey(pointObj);
@@ -185,11 +207,11 @@ export default {
         const ip = response.data.ip;
         const colRef = collection(db, "surveys");
         const dataObj = {
-          userId: this.user.uid || 'ANONYMOUS_USER',
+          userId: this.user.uid || "ANONYMOUS_USER",
           requestPublicIp: ip,
           result: pointObj,
           timestamp: new Date(),
-          testerInfo
+          testerInfo,
         };
         // console.log(dataObj);
         const docRef = await addDoc(colRef, dataObj);
