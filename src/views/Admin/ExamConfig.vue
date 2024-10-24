@@ -187,6 +187,7 @@ export default {
             [{ header: [1, 2, false] }],
             ["bold", "italic", "underline"],
             ["link", "image"],
+            [{ 'color': [] }, { 'background': [] }], // Thêm màu cho văn bản
             ["clean"], // Xóa định dạng
           ],
         },
