@@ -27,13 +27,12 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import { collection, onSnapshot, updateDoc } from "firebase/firestore";
-import { db, loginAnonymously } from "@/plugins/firebaseConfig";
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "@/plugins/firebaseConfig";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import * as Helpers from "chart.js/helpers";
 import { Pie } from "vue-chartjs";
 import _ from "lodash";
-import { getUser } from "@/store/user";
 import * as XLSX from "xlsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -115,7 +114,7 @@ export const options = {
                   );
               return {
                 // And finally :
-                text: `${labelText} (${ds.data[i]})`,
+                text: `${labelText} (${ds.data[i] || 0})`,
                 fillStyle: fill,
                 strokeStyle: stroke,
                 lineWidth: bw,
@@ -152,14 +151,9 @@ export default {
       data: _.cloneDeep(DATA_DEFAUT),
       options: options,
       items: [],
-      user: null,
     };
   },
-  watch: {
-    user: function (newVal) {
-      if (newVal) this.getUsers();
-    },
-  },
+  watch: {},
   methods: {
     toggle(id) {
       this.openItem = this.openItem === id ? null : id;
@@ -169,47 +163,44 @@ export default {
     },
     async getUsers() {
       // use 'collection()' instead of 'doc()'
-      if (this.user) {
-        const dataArr = {
-          "GAD-7": [0, 0, 0, 0],
-          "PHQ-9": [0, 0, 0, 0, 0],
-          "BSRS-5": [0, 0, 0, 0],
-        };
-        onSnapshot(collection(db, "surveys"), (snap) => {
-          snap.forEach((doc) => {
-            // this.users.push(doc.data())
-            // console.log(doc.ref);
-            const data = doc.data();
-            if (!data.result) {
-              updateDoc(doc.ref, { result: { "BSRS-5": data.point } });
+      const dataArr = {
+        "GAD-7": [0, 0, 0, 0],
+        "PHQ-9": [0, 0, 0, 0, 0],
+        "BSRS-5": [0, 0, 0, 0],
+      };
+      onSnapshot(collection(db, "surveys"), (snap) => {
+
+        snap.forEach((doc) => {
+          const data = doc.data();
+          // if (!data.result) {
+          //   updateDoc(doc.ref, { result: { "BSRS-5": data.point } });
+          // }
+          Object.keys(data.result).forEach((name) => {
+            if (name === "PHQ-9" && data.result[name] >= 20) {
+              dataArr[name][4]++;
+            } else if (data.result[name] >= 15) {
+              dataArr[name][3]++;
+            } else if (data.result[name] >= 10) {
+              dataArr[name][2]++;
+            } else if (data.result[name] >= 6) {
+              dataArr[name][1]++;
+            } else {
+              dataArr[name][0]++;
             }
-            Object.keys(data.result).forEach((name) => {
-              if (name === "PHQ-9" && data.result[name] >= 20) {
-                dataArr[name][4]++;
-              } else if (data.result[name] >= 15) {
-                dataArr[name][3]++;
-              } else if (data.result[name] >= 10) {
-                dataArr[name][2]++;
-              } else if (data.result[name] >= 6) {
-                dataArr[name][1]++;
-              } else {
-                dataArr[name][0]++;
-              }
-            });
           });
-          Object.keys(dataArr).forEach((name) => {
-            this.data[name].datasets[0].data = dataArr[name];
-          });
-          this.items = dataArr;
-          // Object.keys(dataArr).map((name) => {
-          //   const dataClone = dataArr[name].reduce((acc, value, index) => {
-          //     acc[`level${index + 1}`] = value;
-          //     return acc;
-          //   }, {});
-          //   return { "Tên bài Test": name, ...dataClone };
-          // });
         });
-      }
+        Object.keys(dataArr).forEach((name) => {
+          this.data[name].datasets[0].data = dataArr[name];
+        });
+        this.items = dataArr;
+        // Object.keys(dataArr).map((name) => {
+        //   const dataClone = dataArr[name].reduce((acc, value, index) => {
+        //     acc[`level${index + 1}`] = value;
+        //     return acc;
+        //   }, {});
+        //   return { "Tên bài Test": name, ...dataClone };
+        // });
+      });
     },
     exportToExcel() {
       // Chuyển đổi đối tượng thành mảng mảng
@@ -250,17 +241,9 @@ export default {
     },
   },
   created() {
-    this.getUsers();
+    this.getUsers()
   },
-  mounted() {
-    if (!getUser()) {
-      loginAnonymously().then(() => {
-        this.user = getUser();
-      });
-    } else {
-      this.user = getUser();
-    }
-  },
+  mounted() {},
 };
 </script>
 <style>

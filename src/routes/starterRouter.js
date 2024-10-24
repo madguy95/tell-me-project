@@ -17,6 +17,7 @@ import ProcedureList from "../views/procedure/ProcedureList.vue";
 import ProcedureDetail from "../views/procedure/ProcedureDetail.vue";
 import store from "../store/store";
 import ExamConfig from "../views/Admin/ExamConfig.vue";
+import { auth } from "../plugins/firebaseConfig";
 
 Vue.use(Router);
 
@@ -136,6 +137,22 @@ const router = new Router({
     return { x: 0, y: 0 };
   },
 });
+// Lắng nghe trạng thái xác thực
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // Người dùng đã đăng nhập
+    const storedUser = store.getters.getUser;
+
+    // Kiểm tra UID
+    if (storedUser && user.uid !== storedUser.uid) {
+      store.dispatch("logout");
+      router.push({ path: "/login" });
+    }
+  } else {
+    store.dispatch("logout");
+  }
+});
+
 // Router guard to check for authentication
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
@@ -143,6 +160,9 @@ router.beforeEach((to, from, next) => {
 
   if (requiresAuth && !isAuthenticated) {
     next({ path: "/login" });
+  }
+  if (to.path === "/login" && isAuthenticated) {
+    next({ path: "/home" });
   } else {
     next();
   }

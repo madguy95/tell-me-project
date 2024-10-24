@@ -111,12 +111,12 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import { db, loginAnonymously } from "@/plugins/firebaseConfig";
+import { db } from "@/plugins/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
 import axios from "axios";
 import { QUESTION_ARR, RESULT_ARR } from "../../constants";
 import _ from "lodash";
-import { getUser } from "@/store/user";
+import { mapState } from "vuex";
 
 export default {
   name: "ExamPage",
@@ -132,10 +132,11 @@ export default {
       selectedAnswer: 0,
       questions: [],
       questionData: _.cloneDeep(RESULT_ARR),
-      user: null,
     };
   },
-  computed: {},
+  computed: {
+    ...mapState(["user", "testerInfo"]),
+  },
   created() {
     this.questions = this.examIds.reduce((acc, examId) => {
       if (QUESTION_ARR[examId]) {
@@ -163,7 +164,7 @@ export default {
     handleCancel() {
       this.$router.push("/home");
     },
-    clickFinish() {
+    async clickFinish() {
       let pointObj = this.questions.reduce((total, el) => {
         if (!total[el.type]) {
           total[el.type] = 0;
@@ -173,7 +174,7 @@ export default {
         total[el.type] = el.answer + total[el.type];
         return total;
       }, {});
-      this.submitSurvey(pointObj);
+      await this.submitSurvey(pointObj);
       // console.log(this.questions);
       // console.log(pointObj);
       this.$router.push({ name: "result", query: { ...pointObj } });
@@ -184,16 +185,11 @@ export default {
         const ip = response.data.ip;
         const colRef = collection(db, "surveys");
         const dataObj = {
-          userId: ip,
+          userId: this.user.uid || 'ANONYMOUS_USER',
+          requestPublicIp: ip,
           result: pointObj,
           timestamp: new Date(),
-          userInfo: {
-            ...(JSON.parse(localStorage.getItem("userInfo")) || {
-              userType: "A",
-              age: 18,
-              gender: "M",
-            }),
-          },
+          testerInfo
         };
         // console.log(dataObj);
         const docRef = await addDoc(colRef, dataObj);
@@ -205,15 +201,7 @@ export default {
       }
     },
   },
-  mounted() {
-    if (!getUser()) {
-      loginAnonymously().then(() => {
-        this.user = getUser();
-      });
-    } else {
-      this.user = getUser();
-    }
-  },
+  mounted() {},
 };
 </script>
 <style>

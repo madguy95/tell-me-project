@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from 'firebase/storage';
-import { getAuth, signInAnonymously } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 
 // src/firebase.js
@@ -33,16 +33,4 @@ const db = getFirestore()
 const auth = getAuth();
 const storage = getStorage();
 
-const loginAnonymously = () => {
-  return signInAnonymously(auth)
-  .then((userCredential) => {
-    const user = userCredential.user;
-    setUser(user);  // Lưu thông tin người dùng vào singleton
-    return user;
-  })
-  .catch((error) => {
-    console.error("Error signing in anonymously:", error);
-    throw error;
-  });
-};
-export { db, analytics, loginAnonymously, auth, storage };
+export { db, analytics, auth, storage };

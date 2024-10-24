@@ -8,34 +8,49 @@
             Vui lòng nhập thông tin trước khi làm bài khảo sát.
           </h1>
           <h4 class="sub-note mt-2">
-            Những thông tin này nhằm mục đích thống kê và sàng lọc kết quả, phục vụ mục đích y tế, không
-            sử dụng cho các mục đích khác nhằm đảm bảo thông tin của người dùng.
+            Những thông tin này nhằm mục đích thống kê và sàng lọc kết quả, phục
+            vụ mục đích y tế, không sử dụng cho các mục đích khác nhằm đảm bảo
+            thông tin của người dùng.
           </h4>
         </div>
         <b-form>
           <b-form-group label="" label-for="checkbox-group">
-            <label >Đối tượng: </label>
+            <label>Đối tượng: </label>
             <b-form-select v-model="user.userType" class="mb-3">
-              <b-form-select-option value="A">Người nhà bệnh nhân</b-form-select-option>
+              <b-form-select-option value="A"
+                >Người nhà bệnh nhân</b-form-select-option
+              >
               <b-form-select-option value="B">Bệnh nhân</b-form-select-option>
               <b-form-select-option value="O">Khác</b-form-select-option>
             </b-form-select>
-            <label >Tuổi: </label>
+            <label>Tuổi: </label>
             <b-form-input v-model="user.age" type="number"></b-form-input>
-            <label >Giới tính: </label>
+            <label>Giới tính: </label>
             <b-form-group v-slot="{ ariaDescribedby }">
-              <b-form-radio v-model="user.gender" :aria-describedby="ariaDescribedby" name="some-radios" value="M">Nam</b-form-radio>
-              <b-form-radio v-model="user.gender" :aria-describedby="ariaDescribedby" name="some-radios" value="F">Nữ</b-form-radio>
+              <b-form-radio
+                v-model="user.gender"
+                :aria-describedby="ariaDescribedby"
+                name="some-radios"
+                value="M"
+                >Nam</b-form-radio
+              >
+              <b-form-radio
+                v-model="user.gender"
+                :aria-describedby="ariaDescribedby"
+                name="some-radios"
+                value="F"
+                >Nữ</b-form-radio
+              >
             </b-form-group>
           </b-form-group>
         </b-form>
-          <b-button
-            class="button-start text-center"
-            @click="clickNext"
-            :disabled="!isValid"
-          >
-            <strong>Tiếp tục</strong>
-          </b-button>
+        <b-button
+          class="button-start text-center"
+          @click="clickNext"
+          :disabled="!isValid"
+        >
+          <strong>Tiếp tục</strong>
+        </b-button>
       </div>
     </b-container>
   </div>
@@ -43,6 +58,8 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
+import { mapState, mapActions } from "vuex";
+
 export default {
   name: "ExamInfo",
   components: {
@@ -66,30 +83,28 @@ export default {
           value: "BSRS-5",
         },
       ],
-      user: JSON.parse(localStorage.getItem('userInfo'))
+      user: {},
     };
   },
   computed: {
+    ...mapState(["user", "testerInfo"]),
     isValid() {
-      return this.user.userType && this.user.age && this.user.gender
-    }
+      return this.user.userType && this.user.age && this.user.gender;
+    },
+  },
+  watch: {
+    testerInfo(newVal) {
+      this.user = { ...newVal };
+    },
   },
   methods: {
+    ...mapActions(['setTesterInfo']),
     clickNext() {
-      localStorage.setItem('userInfo', JSON.stringify(this.user));
-      this.$router.push({name: 'exam-list'})
-    }
+      this.setTesterInfo(this.user);
+      this.$router.push({ name: "exam-list" });
+    },
   },
-  created() {
-    if (!localStorage.getItem('userInfo')) {
-      this.user = {
-        userType: 'A',
-        age: 18,
-        gender: 'M'
-      }
-      localStorage.setItem('userInfo', JSON.stringify(this.user));
-    }
-  }
+  created() {},
 };
 </script>
 <style>
@@ -123,7 +138,9 @@ export default {
   background-color: #1276a8;
   padding-left: 2rem;
 }
-.custom-checkbox .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
+.custom-checkbox
+  .custom-control-input:focus:not(:checked)
+  ~ .custom-control-label::before {
   border-color: #0d4460;
 }
 .custom-checkbox input[type="checkbox"] + .custom-control-label::before,
