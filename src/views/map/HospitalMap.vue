@@ -7,11 +7,7 @@
             class="panzoom-container"
             v-viewer="{ movable: false, rotatable: false, scalable: false }"
           >
-            <img
-              src="/img/so-do-bv-01.png"
-              alt="Hospital Map"
-              class="panzoom-image"
-            />
+            <img :src="mapUrl" alt="Hospital Map" class="panzoom-image" />
           </div>
         </b-col>
         <b-col md="4">
@@ -26,11 +22,11 @@
                 :icon="isOpen(index) ? 'chevron-up' : 'chevron-down'"
                 class="mr-2"
               ></b-icon>
-              {{ item.title }}
+              {{ item.name }}
               <b-collapse v-model="openItems[index]">
                 <b-list-group>
                   <b-list-group-item
-                    v-for="(subItem, subIndex) in item.subItems"
+                    v-for="(subItem, subIndex) in item.floors"
                     :key="subIndex"
                     @click.stop="toggleSub(index, subIndex)"
                   >
@@ -42,14 +38,14 @@
                       "
                       class="mr-2"
                     ></b-icon>
-                    {{ subItem.title }}
+                    {{ subItem.name }}
                     <b-collapse v-model="openItemsSub[index][subIndex]">
                       <b-list-group>
                         <b-list-group-item
-                          v-for="(subSubItem, subSubIndex) in subItem.subItems"
+                          v-for="(subSubItem, subSubIndex) in subItem.rooms"
                           :key="subSubIndex"
                         >
-                          {{ subSubItem }}
+                          {{ subSubItem.name }}
                         </b-list-group-item>
                       </b-list-group>
                     </b-collapse>
@@ -65,6 +61,26 @@
 </template>
 
 <script>
+import {
+  collection,
+  orderBy,
+  doc,
+  updateDoc,
+  deleteDoc,
+  query,
+  addDoc,
+  getDocs,
+  where,
+  limit,
+} from "firebase/firestore";
+import {
+  ref,
+  getDownloadURL,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
+import { db, storage } from "@/plugins/firebaseConfig";
 export default {
   components: {},
   data() {
@@ -88,13 +104,14 @@ export default {
         { name: "Khu C: Làm thủ tục", x: 600, y: 500, width: 180, height: 120 },
         // Thêm các địa điểm khác tại đây
       ],
+      mapUrl: "/img/so-do-bv-01.png",
       items: [
         {
-          title: "NHÀ A",
-          subItems: [
+          name: "NHÀ A",
+          floors: [
             {
-              title: "Tầng 1",
-              subItems: [
+              name: "Tầng 1",
+              rooms: [
                 "Khoa khám bệnh Tân Triều",
                 "TT Chẩn đoán hình ảnh",
                 "Khoa Hồi sức cấp cứu",
@@ -102,8 +119,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 2",
-              subItems: [
+              name: "Tầng 2",
+              rooms: [
                 "Khoa Nội soi thăm dò chức năng",
                 "Khoa Khám bệnh theo yêu câu",
                 "TT Chẩn đoán hình ảnh",
@@ -111,8 +128,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 3",
-              subItems: [
+              name: "Tầng 3",
+              rooms: [
                 "Trung tâm đào tạo và chỉ đạo tuyển",
                 "Khoa Sinh hóa – Miễn dịch",
                 "Khoa Huyết học vi sinh",
@@ -122,8 +139,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 4",
-              subItems: [
+              name: "Tầng 4",
+              rooms: [
                 "Giám đốc",
                 "Phó giám đốc",
                 "Phòng Hợp tác quốc tế",
@@ -140,8 +157,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 5",
-              subItems: [
+              name: "Tầng 5",
+              rooms: [
                 "Khoa phẫu thuật gây mê Hồi sức",
                 "Khoa Hồi sức tích cực",
                 "Phòng Quản trị",
@@ -153,11 +170,11 @@ export default {
           ],
         },
         {
-          title: "Nhà B",
-          subItems: [
+          name: "Nhà B",
+          floors: [
             {
-              title: "Tầng 1",
-              subItems: [
+              name: "Tầng 1",
+              rooms: [
                 "Khoa Nội hệ tạo huyết",
                 "Khoa Xạ Lồng ngực",
                 "Trung tâm Nghiên cứu Lâm Sàng",
@@ -165,16 +182,16 @@ export default {
               ],
             },
             {
-              title: "Tầng 2",
-              subItems: [
+              name: "Tầng 2",
+              rooms: [
                 "Khoa Ngoại Tai Mũi Họng",
                 "Khoa Ngoại Thần Kinh",
                 "Khoa Ngoại tổng hợp Quán Sứ",
               ],
             },
             {
-              title: "Tầng 3",
-              subItems: [
+              name: "Tầng 3",
+              rooms: [
                 "Khoa Nội 1",
                 "Khoa Nội nhi",
                 "Khoa Ngoại đầu cổ (Ngoại A)",
@@ -182,8 +199,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 4",
-              subItems: [
+              name: "Tầng 4",
+              rooms: [
                 "Khoa Nội 5",
                 "Khoa Ngoại Phụ khoa (ngoại E)",
                 "Khoa Ngoại vú (Ngoại B)",
@@ -191,8 +208,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 5",
-              subItems: [
+              name: "Tầng 5",
+              rooms: [
                 "Khoa Nội ",
                 "Khoa Xạ 5",
                 "Khoa Ngoại bụng 1",
@@ -200,8 +217,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 6",
-              subItems: [
+              name: "Tầng 6",
+              rooms: [
                 "Khoa Nội 3",
                 "Khoa Nội 6",
                 "Khoa Ngoại tiết niệu",
@@ -209,8 +226,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 7",
-              subItems: [
+              name: "Tầng 7",
+              rooms: [
                 "Khoa Nội 2",
                 "Khoa Ngoại gan mật tụy",
                 "Khoa điều trị A",
@@ -219,11 +236,11 @@ export default {
           ],
         },
         {
-          title: "Nhà C",
-          subItems: [
+          name: "Nhà C",
+          floors: [
             {
-              title: "Tầng 1",
-              subItems: [
+              name: "Tầng 1",
+              rooms: [
                 "Khoa Kiểm soát nhiễm khuẩn",
                 "Căn tin dành cho người bệnh; người nhà người bệnh",
                 "Trung tâm IOT 131",
@@ -233,8 +250,8 @@ export default {
               ],
             },
             {
-              title: "Tầng 2",
-              subItems: [
+              name: "Tầng 2",
+              rooms: [
                 "Trung tâm dinh dưỡng Lâm Sàng",
                 "Căn tin cán bộ nhân viên",
                 "Khoa Kiểm soát nhiễm khuẩn",
@@ -248,6 +265,17 @@ export default {
     };
   },
   methods: {
+    async fetchData() {
+      const mapCol = collection(db, "maps");
+      const q = query(mapCol, where("hospital", "==", "BVK"), limit(1));
+      const snapshot = await getDocs(q);
+      snapshot.forEach((doc) => {
+        const mapData = { id: doc.id, ...doc.data() };
+
+        this.items = mapData.buildings || [];
+        this.mapUrl = mapData.imgUrl || "/img/so-do-bv-01.png";
+      });
+    },
     toggle(index) {
       if (this.openItems[index] !== undefined) {
         this.$set(this.openItems, index, !this.openItems[index]);
@@ -256,7 +284,7 @@ export default {
         // this.$set(
         //   this.openItemsSub,
         //   index,
-        //   this.items[index].subItems.map(() => false)
+        //   this.items[index].rooms.map(() => false)
         // );
       }
     },
@@ -282,6 +310,9 @@ export default {
         ? this.openItemsSub[index][subIndex]
         : false;
     },
+  },
+  created() {
+    this.fetchData();
   },
 };
 </script>

@@ -18,6 +18,7 @@ import ProcedureDetail from "../views/procedure/ProcedureDetail.vue";
 import store from "../store/store";
 import ExamConfig from "../views/Admin/ExamConfig.vue";
 import { auth } from "../plugins/firebaseConfig";
+import MapConfig from "../views/Admin/map-config/MapConfig.vue";
 
 Vue.use(Router);
 
@@ -57,6 +58,12 @@ const router = new Router({
           path: "exam-config",
           name: "exam-config",
           components: { default: ExamConfig },
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "map-config",
+          name: "map-config",
+          components: { default: MapConfig },
           meta: { requiresAuth: true },
         },
       ],

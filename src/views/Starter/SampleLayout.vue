@@ -101,6 +101,11 @@ const SIDEBAR_ADMIN = [
     path: "/admin/exam-config",
     icon: "fas fa-edit",
   },
+  {
+    name: "Up so do benh vien",
+    path: "/admin/map-config",
+    icon: "fas fa-edit",
+  },
 ];
 export default {
   components: {
