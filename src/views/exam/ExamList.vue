@@ -1,31 +1,29 @@
 <template>
-  <div class="" style="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container">
-        <h4 class="sub-note mt-2">
-          Dưới đây là 3 bài kiểm tra có độ tin cậy cao và đang được sử dụng phổ
-          biến tại các cơ sở sàng lọc sức khỏe tại bệnh viện để đánh giá sơ bộ
-          tình trạng sức khỏe tâm thần. Mỗi bài kiểm tra giúp đánh giá một trong
-          các chỉ số khác nhau của sức khỏe tâm thần: lo âu - trầm cảm - căng
-          thẳng. Kết quả tổng thể và khuyến nghị sẽ càng chính xác hơn khi thực
-          hiện được nhiều bài kiểm tra hơn.
-        </h4>
-        <div>
-          <h1 class="text-center text-title">
-            Vui lòng chọn các bài kiểm tra bạn muốn thực hiện
-          </h1>
-        </div>
-        <b-form>
-          <b-form-group label="" label-for="checkbox-group">
-            <b-form-checkbox-group
-              v-model="selectedOptions"
-              :options="options"
-              class="mb-3"
-              disabled-field="notEnabled"
-              html-field="text"
-            ></b-form-checkbox-group>
-            <!-- <b-form-checkbox
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <h4 class="sub-note mt-2">
+      Dưới đây là 3 bài kiểm tra có độ tin cậy cao và đang được sử dụng phổ biến
+      tại các cơ sở sàng lọc sức khỏe tại bệnh viện để đánh giá sơ bộ tình trạng
+      sức khỏe tâm thần. Mỗi bài kiểm tra giúp đánh giá một trong các chỉ số
+      khác nhau của sức khỏe tâm thần: lo âu - trầm cảm - căng thẳng. Kết quả
+      tổng thể và khuyến nghị sẽ càng chính xác hơn khi thực hiện được nhiều bài
+      kiểm tra hơn.
+    </h4>
+    <div>
+      <h1 class="text-center text-title">
+        Vui lòng chọn các bài kiểm tra bạn muốn thực hiện
+      </h1>
+    </div>
+    <b-form>
+      <b-form-group label="" label-for="checkbox-group">
+        <b-form-checkbox-group
+          v-model="selectedOptions"
+          :options="options"
+          class="mb-3"
+          disabled-field="notEnabled"
+          html-field="text"
+        ></b-form-checkbox-group>
+        <!-- <b-form-checkbox
               v-model="checked1"
               name="check-button"
               class="custom-checkbox"
@@ -54,18 +52,16 @@
                 thẳng tâm lý
               </div>
             </b-form-checkbox> -->
-          </b-form-group>
-        </b-form>
-        <router-link :to="{ name: 'exam', query: { id: selectedOptions } }">
-          <b-button
-            class="button-start text-center"
-            :disabled="selectedOptions.length <= 0"
-          >
-            <strong>LÀM BÀI KIỂM TRA</strong>
-          </b-button>
-        </router-link>
-      </div>
-    </b-container>
+      </b-form-group>
+    </b-form>
+    <router-link :to="{ name: 'exam', query: { id: selectedOptions } }">
+      <b-button
+        class="button-start text-center"
+        :disabled="selectedOptions.length <= 0"
+      >
+        <strong>LÀM BÀI KIỂM TRA</strong>
+      </b-button>
+    </router-link>
   </div>
 </template>
 <script>
@@ -109,6 +105,7 @@ export default {
   },
   methods: {
     async loadExams() {
+      this.showLoader();
       const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
 
       try {
@@ -125,6 +122,8 @@ export default {
         }
       } catch (error) {
         console.error("Error getting documents:", error);
+      } finally {
+        this.hideLoader();
       }
     },
   },
@@ -133,8 +132,8 @@ export default {
   },
 };
 </script>
-<style>
-.custom-checkbox {
+<style scoped>
+::v-deep .custom-checkbox {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -144,7 +143,7 @@ export default {
   padding-left: unset;
 }
 
-.custom-checkbox .custom-control-label {
+::v-deep .custom-checkbox .custom-control-label {
   align-content: center;
   flex: 1 1;
   min-height: 48px;
@@ -164,13 +163,18 @@ export default {
   background-color: #1276a8;
   padding-left: 2rem;
 }
-.custom-checkbox
+::v-deep
+  .custom-checkbox
   .custom-control-input:focus:not(:checked)
   ~ .custom-control-label::before {
   border-color: #0d4460;
 }
-.custom-checkbox input[type="checkbox"] + .custom-control-label::before,
-.custom-checkbox
+::v-deep
+  .custom-checkbox
+  input[type="checkbox"]
+  + .custom-control-label::before,
+::v-deep
+  .custom-checkbox
   input[type="checkbox"]:checked
   + .custom-control-label::before {
   position: absolute;
@@ -188,7 +192,10 @@ export default {
   transform: translateY(-50%);
 }
 
-.custom-checkbox input[type="checkbox"]:checked + .custom-control-label::after {
+::v-deep
+  .custom-checkbox
+  input[type="checkbox"]:checked
+  + .custom-control-label::after {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23f79c33' stroke-width='1' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
   background-color: transparent;
   /* Inner dot color when checked */

@@ -1,122 +1,107 @@
 <template>
-  <div class="" style="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container">
-        <b-modal
-          v-model="show"
-          title="Thông báo"
-          ok-title="Tiếp tục"
-          header-class="header-modal"
-          content-class="content-modal"
-          title-class="title-modal"
-          cancel-title="Trở về"
-          @ok="handleConfirm"
-          @cancel="handleCancel"
-          hide-footer
-          centered
-        >
-          <template #modal-header>
-            <div class="d-block w-100 text-center">
-              <h3 class="header-text">Thông báo</h3>
-            </div>
-          </template>
-          <p class="alert-content">
-            Website hiện đang trong quá trình phát triển nên không tránh khỏi
-            những sai sót. Bạn có chắc chắn muốn truy cập?
-          </p>
-          <b-row>
-            <b-col cols="6">
-              <b-button
-                class="btn-common btn-cancel"
-                block
-                @click="handleCancel"
-                >Trở về</b-button
-              >
-            </b-col>
-            <b-col cols="6">
-              <b-button class="btn-common btn-yes" block @click="handleConfirm"
-                >Tiếp tục</b-button
-              >
-            </b-col>
-          </b-row>
-        </b-modal>
-        <div class="d-flex justify-content-center">
-          <b-carousel
-            id="carousel-1"
-            :interval="4000"
-            controls
-            indicators
-            background="#ababab"
-            img-width="1024"
-            img-height="360"
-            class="my-carousel"
-            style="max-width: 100%; min-height: 241px; max-height: 50vh"
-          >
-            <!-- Text slides with image -->
-            <b-carousel-slide
-              v-for="(imageUrl, index) in banners"
-              :img-src="imageUrl"
-              :key="'banner' + index"
-            ></b-carousel-slide>
-          </b-carousel>
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <b-modal
+      v-model="show"
+      title="Thông báo"
+      ok-title="Tiếp tục"
+      header-class="header-modal"
+      content-class="content-modal"
+      title-class="title-modal"
+      cancel-title="Trở về"
+      @ok="handleConfirm"
+      @cancel="handleCancel"
+      hide-footer
+      centered
+    >
+      <template #modal-header>
+        <div class="d-block w-100 text-center">
+          <h3 class="header-text">Thông báo</h3>
         </div>
-        <b-row
-          class="mt-3 d-flex align-items-center justify-content-center flex-column"
-        >
-          <b-col><h3 class="custom-text">Khảo sát sức khỏe tâm thần</h3></b-col>
-          <b-col xl="6" md="6" class="mb-3">
-            <router-link :to="{ name: 'exam-info' }">
-              <b-button class="button-start text-center">
-                <strong>BẮT ĐẦU</strong>
-              </b-button>
+      </template>
+      <p class="alert-content">
+        Website hiện đang trong quá trình phát triển nên không tránh khỏi những
+        sai sót. Bạn có chắc chắn muốn truy cập?
+      </p>
+      <b-row>
+        <b-col cols="6">
+          <b-button class="btn-common btn-cancel" block @click="handleCancel"
+            >Trở về</b-button
+          >
+        </b-col>
+        <b-col cols="6">
+          <b-button class="btn-common btn-yes" block @click="handleConfirm"
+            >Tiếp tục</b-button
+          >
+        </b-col>
+      </b-row>
+    </b-modal>
+    <div class="d-flex justify-content-center">
+      <b-carousel
+        id="carousel-1"
+        :interval="4000"
+        controls
+        indicators
+        background="#ababab"
+        img-width="1024"
+        img-height="360"
+        class="my-carousel"
+        style="max-width: 100%; min-height: 241px; max-height: 50vh"
+      >
+        <!-- Text slides with image -->
+        <b-carousel-slide
+          v-for="(imageUrl, index) in banners"
+          :img-src="imageUrl"
+          :key="'banner' + index"
+        ></b-carousel-slide>
+      </b-carousel>
+    </div>
+    <b-row
+      class="mt-3 d-flex align-items-center justify-content-center flex-column"
+    >
+      <b-col><h3 class="custom-text">Khảo sát sức khỏe tâm thần</h3></b-col>
+      <b-col xl="6" md="6" class="mb-3">
+        <router-link :to="{ name: 'exam-info' }">
+          <b-button class="button-start text-center">
+            <strong>BẮT ĐẦU</strong>
+          </b-button>
+        </router-link>
+      </b-col>
+    </b-row>
+    <div class="mt-4"><h3 class="custom-text">Trạm thông tin</h3></div>
+    <b-row class="d-flex align-items-center justify-content-center">
+      <b-col md="6" xl="6">
+        <b-row class="d-flex align-items-center justify-content-center" xl="6">
+          <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
+            <router-link :to="{ name: 'procedure' }">
+              <base-button icon class="button-common">
+                <span class="btn-inner--text">Thủ tục hành chính</span>
+              </base-button>
             </router-link>
           </b-col>
-        </b-row>
-        <div class="mt-4"><h3 class="custom-text">Trạm thông tin</h3></div>
-        <b-row class="d-flex align-items-center justify-content-center">
-          <b-col md="6" xl="6">
-            <b-row
-              class="d-flex align-items-center justify-content-center"
-              xl="6"
-            >
-              <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
-                <router-link :to="{ name: 'procedure' }">
-                  <base-button icon class="button-common">
-                    <span class="btn-inner--text">Thủ tục hành chính</span>
-                  </base-button>
-                </router-link>
-              </b-col>
-              <b-col cols="6" sm="6" md="6" xl="6" class="mb-3">
-                <router-link :to="{ name: 'map' }">
-                  <base-button icon class="button-common">
-                    <span class="btn-inner--text">Sơ đồ</span>
-                  </base-button>
-                </router-link>
-              </b-col>
-            </b-row>
-          </b-col>
-          <b-col cols="12" md="6" xl="6" class="mb-3">
-            <router-link :to="{ name: 'health-post' }">
+          <b-col cols="6" sm="6" md="6" xl="6" class="mb-3">
+            <router-link :to="{ name: 'map' }">
               <base-button icon class="button-common">
-                <span class="btn-inner--text">Chăm sóc bệnh nhân</span>
+                <span class="btn-inner--text">Sơ đồ</span>
               </base-button>
             </router-link>
           </b-col>
         </b-row>
-      </div>
-    </b-container>
+      </b-col>
+      <b-col cols="12" md="6" xl="6" class="mb-3">
+        <router-link :to="{ name: 'health-post' }">
+          <base-button icon class="button-common">
+            <span class="btn-inner--text">Chăm sóc bệnh nhân</span>
+          </base-button>
+        </router-link>
+      </b-col>
+    </b-row>
   </div>
 </template>
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import {
-  collection,
-  orderBy,
-  query,
-  getDocs,
-} from "firebase/firestore";
+import { collection, orderBy, query, getDocs } from "firebase/firestore";
 import { db } from "@/plugins/firebaseConfig";
 
 const BANNER_DEFAULT = [

@@ -1,27 +1,24 @@
 <template>
-  <div class="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container">
-        <div>
-          <b-button @click="exportToExcel">Tải Excel</b-button>
-        </div>
-        <b-row>
-          <b-col md="6" class="mt-3 text-center">
-            <h3>Thống kê mức độ lo âu của người nhà bệnh nhân (GAD-7)</h3>
-            <Pie :chart-data="data['GAD-7']" :chart-options="options" />
-          </b-col>
-          <b-col md="6" class="mt-3 text-center">
-            <h3>Thống kê mức độ trầm cảm của người nhà bệnh nhân (PHQ-9)</h3>
-            <Pie :chart-data="data['PHQ-9']" :chart-options="options" />
-          </b-col>
-          <b-col md="6" class="mt-3 text-center">
-            <h3>Thống kê mức độ căng thẳng của người nhà bệnh nhân (BSRS-5)</h3>
-            <Pie :chart-data="data['BSRS-5']" :chart-options="options" />
-          </b-col>
-        </b-row>
-      </div>
-    </b-container>
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <h2 class="">Số liệu thống kê</h2>
+    <div>
+      <b-button @click="exportToExcel">Tải Excel</b-button>
+    </div>
+    <b-row>
+      <b-col md="6" class="mt-3 text-center">
+        <h3>Thống kê mức độ lo âu của người nhà bệnh nhân (GAD-7)</h3>
+        <Pie :chart-data="data['GAD-7']" :chart-options="options" />
+      </b-col>
+      <b-col md="6" class="mt-3 text-center">
+        <h3>Thống kê mức độ trầm cảm của người nhà bệnh nhân (PHQ-9)</h3>
+        <Pie :chart-data="data['PHQ-9']" :chart-options="options" />
+      </b-col>
+      <b-col md="6" class="mt-3 text-center">
+        <h3>Thống kê mức độ căng thẳng của người nhà bệnh nhân (BSRS-5)</h3>
+        <Pie :chart-data="data['BSRS-5']" :chart-options="options" />
+      </b-col>
+    </b-row>
   </div>
 </template>
 <script>
@@ -162,6 +159,7 @@ export default {
       return this.openItem === id;
     },
     async getUsers() {
+      this.showLoader()
       // use 'collection()' instead of 'doc()'
       const dataArr = {
         "GAD-7": [0, 0, 0, 0],
@@ -169,7 +167,6 @@ export default {
         "BSRS-5": [0, 0, 0, 0],
       };
       onSnapshot(collection(db, "surveys"), (snap) => {
-
         snap.forEach((doc) => {
           const data = doc.data();
           // if (!data.result) {
@@ -201,6 +198,7 @@ export default {
         //   return { "Tên bài Test": name, ...dataClone };
         // });
       });
+      this.hideLoader()
     },
     exportToExcel() {
       // Chuyển đổi đối tượng thành mảng mảng
@@ -241,16 +239,10 @@ export default {
     },
   },
   created() {
-    this.getUsers()
+    this.getUsers();
   },
   mounted() {},
 };
 </script>
-<style>
-.starter-page {
-  min-height: calc(100vh - 380px);
-}
-.my-list-item {
-  margin-bottom: 10px;
-}
+<style scoped>
 </style>

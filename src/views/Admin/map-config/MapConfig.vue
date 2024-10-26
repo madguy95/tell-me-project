@@ -1,145 +1,125 @@
 <template>
-  <div class="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container mt-5">
-        <h2 class="mb-4">Tải sơ đồ lên</h2>
-        <!-- Sử dụng Bootstrap-Vue input file -->
-        <b-form-file
-          v-model="imageFile"
-          @change="handleImageUpload"
-          class="mb-3"
-        ></b-form-file>
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <h2 class="">Tải sơ đồ lên</h2>
+    <!-- Sử dụng Bootstrap-Vue input file -->
+    <b-form-file
+      v-model="imageFile"
+      @change="handleImageUpload"
+      class="mb-3"
+    ></b-form-file>
 
-        <!-- Hiển thị preview của hình ảnh ngay bên dưới input file -->
-        <div v-if="imagePreview" class="mb-4">
-          <h4>Xem trước hình ảnh:</h4>
-          <b-img :src="imagePreview" alt="Sơ đồ" fluid></b-img>
-          <!-- Hình ảnh được preview -->
+    <!-- Hiển thị preview của hình ảnh ngay bên dưới input file -->
+    <div v-if="imagePreview" class="mb-4">
+      <h4>Xem trước hình ảnh:</h4>
+      <b-img :src="imagePreview" alt="Sơ đồ" fluid></b-img>
+      <!-- Hình ảnh được preview -->
+    </div>
+
+    <h3>Danh sách tòa nhà</h3>
+    <b-list-group class="mb-4">
+      <b-list-group-item
+        v-for="(building, buildingIndex) in buildings"
+        :key="buildingIndex"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <strong>{{ building.name }}</strong>
+          <div>
+            <b-button
+              size="sm"
+              variant="warning"
+              @click="editNode('building', buildingIndex)"
+              >Sửa</b-button
+            >
+            <b-button
+              size="sm"
+              variant="danger"
+              @click="deleteNode('building', buildingIndex)"
+              >Xóa</b-button
+            >
+          </div>
         </div>
-
-        <h3>Danh sách tòa nhà</h3>
-        <b-list-group class="mb-4">
+        <b-list-group class="mt-2">
           <b-list-group-item
-            v-for="(building, buildingIndex) in buildings"
-            :key="buildingIndex"
+            v-for="(floor, floorIndex) in building.floors"
+            :key="floorIndex"
           >
             <div class="d-flex justify-content-between align-items-center">
-              <strong>{{ building.name }}</strong>
+              <span>{{ floor.name }}</span>
               <div>
                 <b-button
                   size="sm"
                   variant="warning"
-                  @click="editNode('building', buildingIndex)"
+                  @click="editNode('floor', buildingIndex, floorIndex)"
                   >Sửa</b-button
                 >
                 <b-button
                   size="sm"
                   variant="danger"
-                  @click="deleteNode('building', buildingIndex)"
+                  @click="deleteNode('floor', buildingIndex, floorIndex)"
                   >Xóa</b-button
                 >
               </div>
             </div>
             <b-list-group class="mt-2">
               <b-list-group-item
-                v-for="(floor, floorIndex) in building.floors"
-                :key="floorIndex"
+                v-for="(room, roomIndex) in floor.rooms"
+                :key="roomIndex"
               >
                 <div class="d-flex justify-content-between align-items-center">
-                  <span>{{ floor.name }}</span>
+                  <span>{{ room.name }}</span>
                   <div>
                     <b-button
                       size="sm"
                       variant="warning"
-                      @click="editNode('floor', buildingIndex, floorIndex)"
+                      @click="
+                        editNode('room', buildingIndex, floorIndex, roomIndex)
+                      "
                       >Sửa</b-button
                     >
                     <b-button
                       size="sm"
                       variant="danger"
-                      @click="deleteNode('floor', buildingIndex, floorIndex)"
+                      @click="
+                        deleteNode('room', buildingIndex, floorIndex, roomIndex)
+                      "
                       >Xóa</b-button
                     >
                   </div>
                 </div>
-                <b-list-group class="mt-2">
-                  <b-list-group-item
-                    v-for="(room, roomIndex) in floor.rooms"
-                    :key="roomIndex"
-                  >
-                    <div
-                      class="d-flex justify-content-between align-items-center"
-                    >
-                      <span>{{ room.name }}</span>
-                      <div>
-                        <b-button
-                          size="sm"
-                          variant="warning"
-                          @click="
-                            editNode(
-                              'room',
-                              buildingIndex,
-                              floorIndex,
-                              roomIndex
-                            )
-                          "
-                          >Sửa</b-button
-                        >
-                        <b-button
-                          size="sm"
-                          variant="danger"
-                          @click="
-                            deleteNode(
-                              'room',
-                              buildingIndex,
-                              floorIndex,
-                              roomIndex
-                            )
-                          "
-                          >Xóa</b-button
-                        >
-                      </div>
-                    </div>
-                  </b-list-group-item>
-                </b-list-group>
-                <b-button
-                  size="sm"
-                  variant="success"
-                  class="mt-2"
-                  @click="addNode('room', buildingIndex, floorIndex)"
-                  >Thêm Phòng</b-button
-                >
               </b-list-group-item>
             </b-list-group>
             <b-button
               size="sm"
               variant="success"
               class="mt-2"
-              @click="addNode('floor', buildingIndex)"
-              >Thêm Tầng</b-button
+              @click="addNode('room', buildingIndex, floorIndex)"
+              >Thêm Phòng</b-button
             >
           </b-list-group-item>
         </b-list-group>
-        <b-button variant="primary" @click="addNode('building')"
-          >Thêm Tòa Nhà</b-button
+        <b-button
+          size="sm"
+          variant="success"
+          class="mt-2"
+          @click="addNode('floor', buildingIndex)"
+          >Thêm Tầng</b-button
         >
-        <b-button variant="primary" @click="saveData"
-          >Lưu</b-button
-        >
+      </b-list-group-item>
+    </b-list-group>
+    <b-button variant="primary" @click="addNode('building')"
+      >Thêm Tòa Nhà</b-button
+    >
+    <b-button variant="primary" @click="saveData">Lưu</b-button>
 
-        <!-- Modal chỉnh sửa -->
-        <b-modal id="editModal" v-model="showModal" title="Chỉnh sửa">
-          <b-form-input v-model="editName" placeholder="Tên"></b-form-input>
-          <template #modal-footer>
-            <b-button variant="secondary" @click="showModal = false"
-              >Đóng</b-button
-            >
-            <b-button variant="primary" @click="saveEdit">Lưu</b-button>
-          </template>
-        </b-modal>
-      </div>
-    </b-container>
+    <!-- Modal chỉnh sửa -->
+    <b-modal id="editModal" v-model="showModal" title="Chỉnh sửa">
+      <b-form-input v-model="editName" placeholder="Tên"></b-form-input>
+      <template #modal-footer>
+        <b-button variant="secondary" @click="showModal = false">Đóng</b-button>
+        <b-button variant="primary" @click="saveEdit">Lưu</b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 <script>
@@ -161,7 +141,7 @@ import {
   uploadBytes,
   deleteObject,
 } from "firebase/storage";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { db, storage } from "@/plugins/firebaseConfig";
 export default {
   data() {
@@ -191,6 +171,7 @@ export default {
   },
   methods: {
     async saveData() {
+      this.showLoader()
       if (this.imageFile) {
         let storageRef;
         if (this.mapData.imgUrl) {
@@ -218,16 +199,19 @@ export default {
         this.mapData.id = docRef.id;
       }
       this.imageFile = null; // Reset file input
+      this.hideLoader()
     },
     async fetchData() {
+      this.showLoader()
       const mapCol = collection(db, "maps");
       const q = query(mapCol, where("hospital", "==", "BVK"), limit(1));
       const snapshot = await getDocs(q);
       snapshot.forEach((doc) => {
         this.mapData = { id: doc.id, ...doc.data() };
-        this.buildings = [...this.mapData.buildings]
-        this.imagePreview = this.mapData.imgUrl
+        this.buildings = [...this.mapData.buildings];
+        this.imagePreview = this.mapData.imgUrl;
       });
+      this.hideLoader()
     },
     handleImageUpload(event) {
       const file = event.target.files[0]; // Lấy file từ input

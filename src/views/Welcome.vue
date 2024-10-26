@@ -81,8 +81,8 @@ export default {
   },
 };
 </script>
-<style>
-.select-box-bv {
+<style scoped>
+::v-deep .select-box-bv {
   position: relative;
   height: 84px;
   font-family: "FS Magistral";
@@ -96,7 +96,7 @@ export default {
   background-color: #1276a8;
 }
 
-.dropdown-toggle::after {
+::v-deep .dropdown-toggle::after {
   display: none;
   /* Remove the default arrow */
 }

@@ -1,81 +1,77 @@
 <template>
-  <div class="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container mt-5">
-        <h2>Upload Banner Images</h2>
-        <b-form>
-          <b-form-group label="Select Images:" label-for="file-input">
-            <b-form-file
-              id="file-input"
-              v-model="files"
-              multiple
-              accept="image/*"
-              @change="previewImages"
-            />
-          </b-form-group>
-        </b-form>
-        <div v-if="imagesWithPreviews.length" class="mt-4">
-          <h4>Image Previews</h4>
-          <div class="image-previews">
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <h2 class="">Tai anh Banner</h2>
+    <b-form>
+      <b-form-group label="Select Images:" label-for="file-input">
+        <b-form-file
+          id="file-input"
+          v-model="files"
+          multiple
+          accept="image/*"
+          @change="previewImages"
+        />
+      </b-form-group>
+    </b-form>
+    <div v-if="imagesWithPreviews.length" class="mt-4">
+      <h4>Image Previews</h4>
+      <div class="image-previews">
+        <b-img
+          v-for="(image, index) in imagesWithPreviews"
+          :key="index"
+          :src="image.url"
+          class="img-thumbnail"
+          alt="Preview"
+          style="max-width: 150px"
+        />
+      </div>
+    </div>
+    <div class="mt-4">
+      <h4>Uploaded Banners</h4>
+      <div class="table-responsive">
+        <!-- Added responsive wrapper -->
+        <b-table :items="imagesWithPreviews" :fields="fields" striped hover>
+          <template #cell(index)="data">
+            {{ data.index + 1 }}
+          </template>
+          <template #cell(preview)="data">
             <b-img
-              v-for="(image, index) in imagesWithPreviews"
-              :key="index"
-              :src="image.url"
+              :src="data.item.url"
               class="img-thumbnail"
               alt="Preview"
               style="max-width: 150px"
             />
-          </div>
-        </div>
-        <div class="mt-4">
-          <h4>Uploaded Banners</h4>
-          <div class="table-responsive">
-            <!-- Added responsive wrapper -->
-            <b-table :items="imagesWithPreviews" :fields="fields" striped hover>
-              <template #cell(index)="data">
-                {{ data.index + 1 }}
-              </template>
-              <template #cell(preview)="data">
-                <b-img
-                  :src="data.item.url"
-                  class="img-thumbnail"
-                  alt="Preview"
-                  style="max-width: 150px"
-                />
-              </template>
-              <template #cell(actions)="data">
-                <b-button
-                  variant="light"
-                  @click="moveUp(data.index)"
-                  :disabled="data.index === 0"
-                >
-                  ↑
-                </b-button>
-                <b-button
-                  variant="light"
-                  @click="moveDown(data.index)"
-                  :disabled="data.index === images.length - 1"
-                >
-                  ↓
-                </b-button>
-                <b-button
-                  @click="removeImage(data.index)"
-                  variant="danger"
-                  class="ml-2"
-                  >Remove</b-button
-                >
-              </template>
-            </b-table>
-          </div>
-
-          <b-button @click="saveImages" type="submit" variant="primary"
-            >Upload and save</b-button
-          >
-          <!-- End of responsive wrapper -->
-        </div>
+          </template>
+          <template #cell(actions)="data">
+            <b-button
+              variant="light"
+              @click="moveUp(data.index)"
+              :disabled="data.index === 0"
+            >
+              ↑
+            </b-button>
+            <b-button
+              variant="light"
+              @click="moveDown(data.index)"
+              :disabled="data.index === images.length - 1"
+            >
+              ↓
+            </b-button>
+            <b-button
+              @click="removeImage(data.index)"
+              variant="danger"
+              class="ml-2"
+              >Remove</b-button
+            >
+          </template>
+        </b-table>
       </div>
-    </b-container>
+
+      <b-button @click="saveImages" type="submit" variant="primary"
+        >Upload and save</b-button
+      >
+      <!-- End of responsive wrapper -->
+    </div>
   </div>
 </template>
 <script>
@@ -99,16 +95,19 @@ import {
 } from "firebase/storage";
 import { db, storage } from "@/plugins/firebaseConfig";
 import _ from "lodash";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import Loader from "@/components/Loader/Loader.vue";
 
 export default {
   name: "BannerPage",
   components: {
     StatsCard,
     RouteBreadCrumb,
+    Loader,
   },
   data() {
     return {
+      isLoading: false,
       files: null,
       images: [],
       originData: [],
@@ -129,7 +128,7 @@ export default {
   },
   methods: {
     async saveImages() {
-      console.log("def");
+      this.isLoading = true;
       if (this.images) {
         for (let i = 0; i < this.images.length; i++) {
           const image = this.images[i];
@@ -152,7 +151,7 @@ export default {
         return;
       }
       for (let i = 0; i < this.originData.length; i++) {
-        const imgOg = this.originData[i]
+        const imgOg = this.originData[i];
         if (!this.images.find((img) => img.id === imgOg.id)) {
           await deleteDoc(doc(db, "banners", imgOg.id));
           await deleteObject(ref(storage, imgOg.url));
@@ -162,11 +161,13 @@ export default {
       this.files = null; // Reset file input
     },
     async fetchImages() {
+      this.isLoading = true;
       const imagesCollection = collection(db, "banners");
       const q = query(imagesCollection, orderBy("order"));
       const snapshot = await getDocs(q);
       this.images = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       this.originData = [...this.images];
+      this.isLoading = false;
     },
     async saveImageUrl(url, order) {
       const bannersCol = collection(db, "banners"); // Store URL and order in Firestore
@@ -202,13 +203,7 @@ export default {
   },
 };
 </script>
-<style>
-.starter-page {
-  min-height: calc(100vh - 380px);
-}
-.my-list-item {
-  margin-bottom: 10px;
-}
+<style scoped>
 .img-thumbnail {
   height: 100px; /* Set thumbnail height */
   object-fit: cover;

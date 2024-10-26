@@ -18,7 +18,8 @@ locale.use(lang);
 
 // vue-bootstrap
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
-
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 // asset imports
 import '@/assets/scss/argon.scss';
 import '@/assets/vendor/nucleo/css/nucleo.css';

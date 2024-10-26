@@ -23,10 +23,17 @@ import router from './routes/starterRouter';
 import store from './store/store'
 import 'viewerjs/dist/viewer.css'
 import VueViewer from 'v-viewer'
+import LoaderPlugin from './plugins/loader'
+import Loader from './components/Loader/Loader.vue'
+import loadingMixin from './mixins/loadingMixin'; 
+// Đăng ký Loader là một global component
+Vue.component('Loader', Loader);
+
 Vue.use(VueViewer)
 // plugin setup
 Vue.use(DashboardPlugin);
-
+Vue.use(LoaderPlugin);
+Vue.mixin(loadingMixin);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

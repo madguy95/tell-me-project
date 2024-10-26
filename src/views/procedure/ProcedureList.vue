@@ -1,47 +1,46 @@
 <template>
-  <div class="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container">
-        <b-list-group>
-          <b-list-group-item
-            v-for="item in items"
-            :key="item.id"
-            class="my-list-item"
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <div class="">
+      <b-list-group>
+        <b-list-group-item
+          v-for="item in items"
+          :key="item.id"
+          class="my-list-item"
+        >
+          <b-button class="w-100 text-left" @click="toggle(item.id)">
+            {{ item.title }}
+            <b-icon
+              :icon="isOpen(item.id) ? 'chevron-up' : 'chevron-down'"
+              class="float-right"
+            />
+          </b-button>
+          <b-collapse
+            :visible="openItem === item.id"
+            :id="'collapse-' + item.id"
+            class="mt-2"
           >
-            <b-button class="w-100 text-left" @click="toggle(item.id)">
-              {{ item.title }}
-              <b-icon
-                :icon="isOpen(item.id) ? 'chevron-up' : 'chevron-down'"
-                class="float-right"
-              />
-            </b-button>
-            <b-collapse
-              :visible="openItem === item.id"
-              :id="'collapse-' + item.id"
-              class="mt-2"
-            >
-              <b-card-body>
-                <ul>
-                  <li v-for="subItem in item.subItems" :key="subItem.id">
-                    <template v-if="subItem.img">
-                      <router-link
-                        :to="{ name: 'procedure-detail', params: { id: subItem.img } }"
-                      >
-                        <a href="#">{{
-                          subItem.text
-                        }}</a>
-                      </router-link>
-                    </template>
-                    <span v-if="!subItem.img">{{ subItem.text }}</span>
-                  </li>
-                </ul>
-              </b-card-body>
-            </b-collapse>
-          </b-list-group-item>
-        </b-list-group>
-      </div>
-    </b-container>
+            <b-card-body>
+              <ul>
+                <li v-for="subItem in item.subItems" :key="subItem.id">
+                  <template v-if="subItem.img">
+                    <router-link
+                      :to="{
+                        name: 'procedure-detail',
+                        params: { id: subItem.img },
+                      }"
+                    >
+                      <a href="#">{{ subItem.text }}</a>
+                    </router-link>
+                  </template>
+                  <span v-if="!subItem.img">{{ subItem.text }}</span>
+                </li>
+              </ul>
+            </b-card-body>
+          </b-collapse>
+        </b-list-group-item>
+      </b-list-group>
+    </div>
   </div>
 </template>
 <script>

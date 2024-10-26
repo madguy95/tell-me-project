@@ -1,111 +1,104 @@
 <template>
-  <div class="" style="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container">
-        <b-modal
-          v-model="show"
-          title="Thông báo"
-          ok-title="Tiếp tục"
-          header-class="header-modal"
-          content-class="content-modal"
-          title-class="title-modal"
-          cancel-title="Trở về"
-          @ok="handleConfirm"
-          @cancel="handleCancel"
-          hide-footer
-          centered
-        >
-          <template #modal-header>
-            <div class="d-block w-100 text-center">
-              <h3 class="header-text">Thông báo</h3>
-            </div>
-          </template>
-          <p class="alert-content">
-            Bạn sắp được chuyển tới các câu hỏi của bài kiểm tra
-            <strong>{{ examIds.join(", ") }}</strong
-            >. Vui lòng nhấn Tiếp tục để bắt đầu quá trình kiểm tra hoặc Trở về
-            để chọn lại bài kiểm tra sẽ thực hiện.
-          </p>
-          <b-row>
-            <b-col cols="6">
-              <b-button
-                class="btn-common btn-cancel"
-                block
-                @click="handleCancel"
-                >Trở về</b-button
-              >
-            </b-col>
-            <b-col cols="6">
-              <b-button class="btn-common btn-yes" block @click="handleConfirm"
-                >Tiếp tục</b-button
-              >
-            </b-col>
-          </b-row>
-        </b-modal>
-        <div>
-          <b-form>
-            <b-form-group>
-              <div class="question-box">
-                <p>
-                  {{
-                    currentQuestion !== questions.length - 1
-                      ? `${questions[currentQuestion].type} - Câu ${questions[currentQuestion].numb}:`
-                      : `***`
-                  }}
-                </p>
-                <p class="content">
-                  Anh/ chị có gặp tình trạng:
-                  {{ questions[currentQuestion].content }}
-                </p>
-              </div>
-              <h4 class="sub-note mt-2">
-                {{ questionData[questions[currentQuestion].type].questionNote }}
-              </h4>
-              <b-form-radio-group v-model="questions[currentQuestion].answer">
-                <b-form-radio
-                  class="custom-radio"
-                  v-for="(option, index) in questions[currentQuestion].answers"
-                  :key="index"
-                  :value="index"
-                >
-                  {{ option.answer }}
-                </b-form-radio>
-              </b-form-radio-group>
-            </b-form-group>
-            <b-row class="justify-content-center">
-              <b-col cols="5" class="text-center">
-                <b-button
-                  class="btn-common btn-back"
-                  :disabled="currentQuestion === 0"
-                  @click="goToPreviousQuestion"
-                >
-                  <i class="fas fa-long-arrow-alt-left"></i>
-                </b-button>
-              </b-col>
-              <b-col
-                cols="5"
-                class="text-center"
-                v-if="currentQuestion !== questions.length - 1"
-              >
-                <b-button class="btn-common btn-next" @click="goToNextQuestion">
-                  <i class="fas fa-long-arrow-alt-right"></i>
-                </b-button>
-              </b-col>
-              <b-col
-                cols="5"
-                class="text-center"
-                v-if="currentQuestion === questions.length - 1"
-              >
-                <b-button class="btn-common btn-finish" @click="clickFinish">
-                  Hoàn Thành
-                </b-button>
-              </b-col>
-            </b-row>
-          </b-form>
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <b-modal
+      v-model="show"
+      title="Thông báo"
+      ok-title="Tiếp tục"
+      header-class="header-modal"
+      content-class="content-modal"
+      title-class="title-modal"
+      cancel-title="Trở về"
+      @ok="handleConfirm"
+      @cancel="handleCancel"
+      hide-footer
+      centered
+    >
+      <template #modal-header>
+        <div class="d-block w-100 text-center">
+          <h3 class="header-text">Thông báo</h3>
         </div>
-      </div>
-    </b-container>
+      </template>
+      <p class="alert-content">
+        Bạn sắp được chuyển tới các câu hỏi của bài kiểm tra
+        <strong>{{ examIds.join(", ") }}</strong
+        >. Vui lòng nhấn Tiếp tục để bắt đầu quá trình kiểm tra hoặc Trở về để
+        chọn lại bài kiểm tra sẽ thực hiện.
+      </p>
+      <b-row>
+        <b-col cols="6">
+          <b-button class="btn-common btn-cancel" block @click="handleCancel"
+            >Trở về</b-button
+          >
+        </b-col>
+        <b-col cols="6">
+          <b-button class="btn-common btn-yes" block @click="handleConfirm"
+            >Tiếp tục</b-button
+          >
+        </b-col>
+      </b-row>
+    </b-modal>
+    <div>
+      <b-form>
+        <b-form-group>
+          <div class="question-box">
+            <p>
+              {{
+                currentQuestion !== questions.length - 1
+                  ? `${questions[currentQuestion].type} - Câu ${questions[currentQuestion].numb}:`
+                  : `***`
+              }}
+            </p>
+            <p class="content">
+              Anh/ chị có gặp tình trạng:
+              {{ questions[currentQuestion].content }}
+            </p>
+          </div>
+          <h4 class="sub-note mt-2">
+            {{ questionData[questions[currentQuestion].type].questionNote }}
+          </h4>
+          <b-form-radio-group v-model="questions[currentQuestion].answer">
+            <b-form-radio
+              class="custom-radio"
+              v-for="(option, index) in questions[currentQuestion].answers"
+              :key="index"
+              :value="index"
+            >
+              {{ option.answer }}
+            </b-form-radio>
+          </b-form-radio-group>
+        </b-form-group>
+        <b-row class="justify-content-center">
+          <b-col cols="5" class="text-center">
+            <b-button
+              class="btn-common btn-back"
+              :disabled="currentQuestion === 0"
+              @click="goToPreviousQuestion"
+            >
+              <i class="fas fa-long-arrow-alt-left"></i>
+            </b-button>
+          </b-col>
+          <b-col
+            cols="5"
+            class="text-center"
+            v-if="currentQuestion !== questions.length - 1"
+          >
+            <b-button class="btn-common btn-next" @click="goToNextQuestion">
+              <i class="fas fa-long-arrow-alt-right"></i>
+            </b-button>
+          </b-col>
+          <b-col
+            cols="5"
+            class="text-center"
+            v-if="currentQuestion === questions.length - 1"
+          >
+            <b-button class="btn-common btn-finish" @click="clickFinish">
+              Hoàn Thành
+            </b-button>
+          </b-col>
+        </b-row>
+      </b-form>
+    </div>
   </div>
 </template>
 <script>
@@ -150,6 +143,7 @@ export default {
   },
   methods: {
     async loadExams() {
+      this.showLoader()
       const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
 
       try {
@@ -157,17 +151,26 @@ export default {
         if (!querySnapshot.empty) {
           const firstDoc = querySnapshot.docs[0]; // Get the first document
           const dataTest = firstDoc.data();
-            console.log(this.examIds)
+          console.log(this.examIds);
           this.questions = dataTest.tests
             .filter((el) => this.examIds.includes(el.code))
-            .map((el) => el.questions.map((q, idx) => ({...q, type: el.code, numb: (idx + 1), answer: 0})))
+            .map((el) =>
+              el.questions.map((q, idx) => ({
+                ...q,
+                type: el.code,
+                numb: idx + 1,
+                answer: 0,
+              }))
+            )
             .flat();
-            console.log(this.questions)
+          console.log(this.questions);
         } else {
           console.log("No documents found in the collection.");
         }
       } catch (error) {
         console.error("Error getting documents:", error);
+      } finally {
+        this.hideLoader()
       }
     },
     goToPreviousQuestion() {
@@ -189,6 +192,7 @@ export default {
       this.$router.push("/home");
     },
     async clickFinish() {
+      this.showLoader()
       let pointObj = this.questions.reduce((total, el) => {
         if (!total[el.type]) {
           total[el.type] = 0;
@@ -220,6 +224,8 @@ export default {
         this.selectedResult = null;
       } catch (error) {
         console.error("Lỗi khi lưu khảo sát: ", error);
+      } finally {
+        this.hideLoader()
       }
     },
   },

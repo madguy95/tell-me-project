@@ -1,27 +1,21 @@
 <template>
-  <div class="bg-default">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 100px)">
-      <div class="container">
-        <b-card>
-          <b-card-title>{{ post.title }}</b-card-title>
-          <b-card-sub-title class="text-muted">{{
-            post.date
-          }}</b-card-sub-title>
-          <b-card-text>
-            {{ post.content }}
-          </b-card-text>
-          <b-card-img :src="post.image" alt="Post image" class="mb-3" />
-          <router-link to="/home/procedure">
-            <b-button class="btn-common">Quay lại</b-button>
-          </router-link>
-        </b-card>
-      </div>
-    </b-container>
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <b-card>
+      <b-card-title>{{ post.title }}</b-card-title>
+      <b-card-sub-title class="text-muted">{{ post.date }}</b-card-sub-title>
+      <b-card-text>
+        {{ post.content }}
+      </b-card-text>
+      <b-card-img :src="post.image" alt="Post image" class="mb-3" />
+      <router-link to="/home/procedure">
+        <b-button class="btn-common">Quay lại</b-button>
+      </router-link>
+    </b-card>
   </div>
 </template>
 <script>
-import {POST_ARR} from '@/constants'
+import { POST_ARR } from "@/constants";
 export default {
   name: "HealthPostDetail",
   props: {
@@ -52,7 +46,7 @@ export default {
   },
   created() {
     // console.log(this.$route)
-  }
+  },
 };
 </script>
 <style scoped>

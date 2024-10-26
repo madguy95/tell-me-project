@@ -30,6 +30,7 @@ export default new Vuex.Store({
     },
     setTesterInfo(state, testerInfo) {
       state.testerInfo = testerInfo
+      localStorage.setItem("testerInfo", JSON.stringify(testerInfo))
     }
   },
   actions: {

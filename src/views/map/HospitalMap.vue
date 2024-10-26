@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="">
     <b-card>
       <b-row>
         <b-col md="8">
@@ -266,6 +266,7 @@ export default {
   },
   methods: {
     async fetchData() {
+      this.showLoader()
       const mapCol = collection(db, "maps");
       const q = query(mapCol, where("hospital", "==", "BVK"), limit(1));
       const snapshot = await getDocs(q);
@@ -275,6 +276,7 @@ export default {
         this.items = mapData.buildings || [];
         this.mapUrl = mapData.imgUrl || "/img/so-do-bv-01.png";
       });
+      this.hideLoader()
     },
     toggle(index) {
       if (this.openItems[index] !== undefined) {

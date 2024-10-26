@@ -129,11 +129,14 @@ export default {
     ...mapActions(['login']),
     
     async onSubmit() {
+      this.$showGlobalLoader()
       try {
         await this.login({ email: this.model.email, password: this.model.password });
         this.$router.push('/admin'); // Redirect on success
       } catch (err) {
         this.error = err.message; // Handle login errors
+      } finally {
+        this.$hideGlobalLoader()
       }
     },
   },

@@ -1,54 +1,53 @@
 <template>
-  <div class="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <h2 class="my-4">Quản lý các bài test và đánh giá</h2>
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <h2 class="">Quản lý các bài test và đánh giá</h2>
 
-      <!-- Tabs for each test type and evaluation -->
-      <b-tabs v-model="activeTab" fill>
-        <!-- Plus button to add new test tab -->
-        <b-tab @click="addNewTest" title="+" disabled> </b-tab>
-        <!-- Existing test tabs -->
-        <b-tab v-for="(test, tIndex) in tests" :key="tIndex" :title="test.code">
-          <b-card class="mt-3">
-            <b-form-input
-              v-model="test.name"
-              placeholder="Nhập tên"
-            ></b-form-input>
-            <b-form-input
-              v-model="test.description"
-              placeholder="Nhập tên"
-            ></b-form-input>
-            <div
-              v-for="(question, qIndex) in test.questions"
-              :key="qIndex"
-              class="mb-3"
+    <!-- Tabs for each test type and evaluation -->
+    <b-tabs v-model="activeTab" fill>
+      <!-- Plus button to add new test tab -->
+      <b-tab @click="addNewTest" title="+" disabled> </b-tab>
+      <!-- Existing test tabs -->
+      <b-tab v-for="(test, tIndex) in tests" :key="tIndex" :title="test.code">
+        <b-card class="mt-3">
+          <b-form-input
+            v-model="test.name"
+            placeholder="Nhập tên"
+          ></b-form-input>
+          <b-form-input
+            v-model="test.description"
+            placeholder="Nhập tên"
+          ></b-form-input>
+          <div
+            v-for="(question, qIndex) in test.questions"
+            :key="qIndex"
+            class="mb-3"
+          >
+            <b-card-header
+              @click="toggleExpand(tIndex, qIndex)"
+              class="d-flex justify-content-between align-items-center"
             >
-              <b-card-header
-                @click="toggleExpand(tIndex, qIndex)"
-                class="d-flex justify-content-between align-items-center"
+              <span>{{ `${qIndex + 1}. ${question.content}` }}</span>
+              <b-button
+                v-if="question.expanded"
+                variant="danger"
+                @click.stop="deleteQuestion(tIndex, qIndex)"
               >
-                <span>{{ `${qIndex + 1}. ${question.content}` }}</span>
-                <b-button
-                  v-if="question.expanded"
-                  variant="danger"
-                  @click.stop="deleteQuestion(tIndex, qIndex)"
-                >
-                  Xóa câu hỏi
-                </b-button>
-              </b-card-header>
+                Xóa câu hỏi
+              </b-button>
+            </b-card-header>
 
-              <b-collapse v-model="question.expanded">
-                <b-card-body>
-                  <b-form-group label="Nội dung câu hỏi:">
-                    <b-form-input
-                      v-model="question.content"
-                      placeholder="Nhập nội dung câu hỏi"
-                    ></b-form-input>
-                  </b-form-group>
+            <b-collapse v-model="question.expanded">
+              <b-card-body>
+                <b-form-group label="Nội dung câu hỏi:">
+                  <b-form-input
+                    v-model="question.content"
+                    placeholder="Nhập nội dung câu hỏi"
+                  ></b-form-input>
+                </b-form-group>
 
-                  <h5>Đáp án và trọng số điểm</h5>
-                  <div class="table-responsive">
+                <h5>Đáp án và trọng số điểm</h5>
+                <div class="table-responsive">
                   <b-table
                     :items="question.answers"
                     :fields="answerFields"
@@ -77,81 +76,78 @@
                     </template>
                   </b-table>
                 </div>
-                  <b-button variant="success" @click="addAnswer(tIndex, qIndex)"
-                    >Thêm đáp án</b-button
-                  >
-                </b-card-body>
-              </b-collapse>
-            </div>
+                <b-button variant="success" @click="addAnswer(tIndex, qIndex)"
+                  >Thêm đáp án</b-button
+                >
+              </b-card-body>
+            </b-collapse>
+          </div>
 
-            <b-button variant="primary" @click="addQuestion(tIndex)"
-              >Thêm câu hỏi mới</b-button
+          <b-button variant="primary" @click="addQuestion(tIndex)"
+            >Thêm câu hỏi mới</b-button
+          >
+        </b-card>
+      </b-tab>
+
+      <!-- Tab for evaluation -->
+      <b-tab title="Đánh giá">
+        <b-card class="mt-3">
+          <h5>Quản lý nội dung đánh giá</h5>
+          <div class="table-responsive">
+            <b-table
+              :items="evaluations"
+              :fields="evaluationFields"
+              striped
+              bordered
+              @row-clicked="toggleRowDetails"
+              responsive
             >
-          </b-card>
-        </b-tab>
+              <template #cell(level)="data">
+                <b-form-input
+                  type="number"
+                  v-model="data.item.level"
+                  disabled
+                ></b-form-input>
+              </template>
+              <template #cell(minScore)="data">
+                <b-form-input
+                  type="number"
+                  v-model="data.item.minScore"
+                ></b-form-input>
+              </template>
+              <template #cell(evaluation)="data">
+                <b-form-textarea
+                  v-model="data.item.evaluation"
+                ></b-form-textarea>
+              </template>
+              <template #cell(actions)="data">
+                <b-button variant="danger" @click="deleteEvaluation(data.index)"
+                  >Xóa</b-button
+                >
+              </template>
+              <template #row-details="{ item }">
+                <b-card v-if="item._showDetails">
+                  <b-card-title>Solutions</b-card-title>
+                  <quill-editor
+                    v-model="item.solution"
+                    :options="editorOptions"
+                  />
+                </b-card>
+              </template>
+            </b-table>
+          </div>
 
-        <!-- Tab for evaluation -->
-        <b-tab title="Đánh giá">
-          <b-card class="mt-3">
-            <h5>Quản lý nội dung đánh giá</h5>
-            <div class="table-responsive">
-              <b-table
-                :items="evaluations"
-                :fields="evaluationFields"
-                striped
-                bordered
-                @row-clicked="toggleRowDetails"
-                responsive
-              >
-                <template #cell(level)="data">
-                  <b-form-input
-                    type="number"
-                    v-model="data.item.level"
-                    disabled
-                  ></b-form-input>
-                </template>
-                <template #cell(minScore)="data">
-                  <b-form-input
-                    type="number"
-                    v-model="data.item.minScore"
-                  ></b-form-input>
-                </template>
-                <template #cell(evaluation)="data">
-                  <b-form-textarea
-                    v-model="data.item.evaluation"
-                  ></b-form-textarea>
-                </template>
-                <template #cell(actions)="data">
-                  <b-button
-                    variant="danger"
-                    @click="deleteEvaluation(data.index)"
-                    >Xóa</b-button
-                  >
-                </template>
-                <template #row-details="{ item }">
-                  <b-card v-if="item._showDetails">
-                    <b-card-title>Solutions</b-card-title>
-                    <quill-editor
-                      v-model="item.solution"
-                      :options="editorOptions"
-                    />
-                  </b-card>
-                </template>
-              </b-table>
-            </div>
+          <b-button variant="success" @click="addEvaluation"
+            >Thêm mức đánh giá</b-button
+          >
+        </b-card>
+      </b-tab>
+    </b-tabs>
 
-            <b-button variant="success" @click="addEvaluation"
-              >Thêm mức đánh giá</b-button
-            >
-          </b-card>
-        </b-tab>
-      </b-tabs>
-
-      <!-- Save button -->
-      <b-button variant="success" class="mt-4" @click="saveChanges"
-        >Lưu thay đổi</b-button
-      >
-    </b-container>
+    <!-- Save button -->
+    <b-button variant="success" class="mt-4" @click="saveChanges"
+      >Lưu thay đổi</b-button
+    >
   </div>
 </template>
 
@@ -177,6 +173,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       editorData: "<p>Hello, Quill!</p>", // Dữ liệu khởi tạo cho editor
       editorOptions: {
         // Cấu hình tùy chọn cho Quill
@@ -187,7 +184,7 @@ export default {
             [{ header: [1, 2, false] }],
             ["bold", "italic", "underline"],
             ["link", "image"],
-            [{ 'color': [] }, { 'background': [] }], // Thêm màu cho văn bản
+            [{ color: [] }, { background: [] }], // Thêm màu cho văn bản
             ["clean"], // Xóa định dạng
           ],
         },
@@ -501,6 +498,7 @@ export default {
       this.evaluations.splice(index, 1);
     },
     async loadExams() {
+      this.isLoading = true
       const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
 
       try {
@@ -513,18 +511,21 @@ export default {
           };
           this.tests = [...this.exams.tests];
           this.evaluations = [...this.exams.evaluations];
-          console.log("First document data:", firstDoc.data());
-          console.log("First document ID:", firstDoc.id);
+          // console.log("First document data:", firstDoc.data());
+          // console.log("First document ID:", firstDoc.id);
         } else {
           console.log("No documents found in the collection.");
         }
       } catch (error) {
         console.error("Error getting documents:", error);
+      } finally {
+        this.isLoading = false
       }
     },
     async saveChanges() {
       // Lưu thay đổi logic ở đây
       try {
+        this.isLoading = true
         const colRef = collection(db, "exams");
         const dataObj = {
           tests: [...this.tests],
@@ -548,9 +549,11 @@ export default {
         this.selectedResult = null;
       } catch (error) {
         console.error("Lỗi khi lưu khảo sát: ", error);
+      } finally {
+        this.isLoading = false
       }
-      console.log("Saved tests:", this.tests);
-      console.log("Saved evaluations:", this.evaluations);
+      // console.log("Saved tests:", this.tests);
+      // console.log("Saved evaluations:", this.evaluations);
     },
     toggleRowDetails(row) {
       const currentState = row._showDetails;

@@ -1,41 +1,31 @@
 <template>
-  <div class="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container">
-        <b-row>
-          <b-col
-            v-for="post in posts"
-            :key="post.id"
-            cols="12"
-            md="4"
-            class="mb-2"
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <b-row>
+      <b-col v-for="post in posts" :key="post.id" cols="12" md="4" class="mb-2">
+        <b-card
+          :title="post.title"
+          :img-src="post.image"
+          img-alt="Card image cap"
+          img-top
+          class="mb-4"
+        >
+          <b-card-sub-title>{{ post.date }}</b-card-sub-title>
+          <b-card-text>{{ post.summary }}</b-card-text>
+          <router-link
+            :to="{ name: 'health-post-detail', params: { id: post.id } }"
           >
-            <b-card
-              :title="post.title"
-              :img-src="post.image"
-              img-alt="Card image cap"
-              img-top
-              class="mb-4"
-            >
-              <b-card-sub-title>{{ post.date }}</b-card-sub-title>
-              <b-card-text>{{ post.summary }}</b-card-text>
-              <router-link
-                :to="{ name: 'health-post-detail', params: { id: post.id } }"
-              >
-                <a href="#" class="btn btn-link px-0">Xem thêm</a>
-              </router-link>
-            </b-card>
-          </b-col>
-        </b-row>
-      </div>
-    </b-container>
+            <a href="#" class="btn btn-link px-0">Xem thêm</a>
+          </router-link>
+        </b-card>
+      </b-col>
+    </b-row>
   </div>
 </template>
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import {POST_ARR} from '@/constants'
+import { POST_ARR } from "@/constants";
 export default {
   name: "HealthPostList",
   components: {
@@ -57,10 +47,7 @@ export default {
   },
 };
 </script>
-<style>
-.starter-page {
-  min-height: calc(100vh - 380px);
-}
+<style scoped>
 .my-list-item {
   margin-bottom: 10px;
 }

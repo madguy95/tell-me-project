@@ -19,10 +19,19 @@
       <div @click="$sidebar.displaySidebar(false)">
         <fade-transition :duration="200" origin="center top" mode="out-in">
           <!-- your content here -->
-          <router-view></router-view>
+          <div>
+            <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
+            <b-container
+              fluid
+              class="mt-3 p-3 postition-relative container-fluid"
+              style="min-height: calc(100vh - 200px)"
+            >
+              <router-view></router-view>
+            </b-container>
+          </div>
         </fade-transition>
       </div>
-      <!-- Các nút nổi -->
+      <!-- Floating button -->
       <div class="floating-buttons">
         <div class="floating-button hotline-button">
           <i class="fas fa-phone-volume"></i>
@@ -66,7 +75,7 @@ const SIDEBAR_PUBLIC = [
   },
   {
     name: "Làm bài test tâm lý",
-    path: "/home/exam-list",
+    path: "/home/exam-info",
     icon: "fa-regular fa-file-lines",
   },
   {
@@ -104,7 +113,7 @@ const SIDEBAR_ADMIN = [
   {
     name: "Up so do benh vien",
     path: "/admin/map-config",
-    icon: "fas fa-edit",
+    icon: "fas fa-map-marker-alt",
   },
 ];
 export default {

@@ -1,112 +1,105 @@
 <template>
-  <div class="">
-    <base-header class="pb-3 pt-3 pt-md-5 bg-default"> </base-header>
-    <b-container fluid class="mt-3" style="min-height: calc(100vh - 200px)">
-      <div class="container">
-        <div>
-          <h1 class="text-center text-title">Kết quả</h1>
-        </div>
-        <div
-          v-for="(value, name, index) in pointLevel"
-          :key="index"
-          class="mt-3 result-box"
-        >
-          <h3 class="text-center result-title">
-            {{ levelResults[name]["title"] }}
-            <span></span>
-          </h3>
-          <h4 class="text-center result-sub-title">
-            {{ levelResults[name]["subTitle"] }}
-          </h4>
-          <LevelIndicators
-            :level="value"
-            :maxLevel="levelResults[name].maxLevel"
-          />
-          <p class="text-center result-text">
-            {{ levelResults[name][value] }}
-          </p>
-        </div>
-        <div>
-          <h1 class="text-center text-title">Khuyến nghị</h1>
-        </div>
-        <div class="">
-          <p class="solution-text" v-html="results[maxLevel].advice"></p>
+  <div class="container-fluid bg-white position-relative pt-3 pb-3">
+    <Loader :visible="isLoading" />
+    <div>
+      <h1 class="text-center text-title">Kết quả</h1>
+    </div>
+    <div
+      v-for="(value, name, index) in pointLevel"
+      :key="index"
+      class="mt-3 result-box"
+    >
+      <h3 class="text-center result-title">
+        {{ levelResults[name]["title"] }}
+        <span></span>
+      </h3>
+      <h4 class="text-center result-sub-title">
+        {{ levelResults[name]["subTitle"] }}
+      </h4>
+      <LevelIndicators :level="value" :maxLevel="levelResults[name].maxLevel" />
+      <p class="text-center result-text">
+        {{ levelResults[name][value] }}
+      </p>
+    </div>
+    <div>
+      <h1 class="text-center text-title">Khuyến nghị</h1>
+    </div>
+    <div class="">
+      <p class="solution-text" v-html="results[maxLevel].advice"></p>
 
-          <div
-            v-for="(solution, index) in results[maxLevel].solutions"
-            :key="index"
-          >
-            <template v-if="solution.type === 'program'">
-              <p class="solution-text">- {{ solution.text }}</p>
-              <img :src="solution.url" />
-            </template>
-            <template v-if="solution.type === 'video'">
-              <p class="solution-text">- {{ solution.text }}</p>
-              <b-embed
-                type="iframe"
-                aspect="16by9"
-                :src="solution.url"
-                allowfullscreen
-              ></b-embed>
-            </template>
-          </div>
-        </div>
-        <div v-if="results[maxLevel].action" class="mt-3">
-          <router-link
-            :to="results[maxLevel].action.url"
-            v-if="results[maxLevel].action.url"
-          >
-            <base-button icon class="button-common">
-              <span class="btn-inner--text">{{
-                results[maxLevel].action.text
-              }}</span>
-            </base-button>
-          </router-link>
-          <b-link
-            :href="results[maxLevel].action.externalUrl"
-            v-if="results[maxLevel].action.externalUrl"
-          >
-            <base-button icon class="button-common">
-              <span class="btn-inner--text">{{
-                results[maxLevel].action.text
-              }}</span>
-            </base-button>
-          </b-link>
-        </div>
-        <div class="need-more mt-3">
-          <div>
-            <h1 class="text-center text-title">Có thể bạn sẽ cần</h1>
-          </div>
-          <b-row>
-            <b-col cols="6" class="d-flex justify-content-center">
-              <b-link
-                href="https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu"
-                class="icon-link d-flex"
-              >
-                <div class="image-container">
-                  <img src="/img/icons/group.png" />
-                </div>
-                <div class="d-flex flex-column ml-1">
-                  <span>Cộng đồng</span>
-                  <span class="sub-text">người nhà người bệnh</span>
-                </div>
-              </b-link>
-            </b-col>
-            <b-col cols="6" class="d-flex justify-content-center">
-              <b-link href="#" class="icon-link d-flex">
-                <div class="image-container">
-                  <img src="/img/icons/care.png" />
-                </div>
-                <div class="d-flex flex-column ml-1">
-                  <span>Phương pháp</span>
-                  <span class="sub-text">hỗ trợ tâm lý</span>
-                </div>
-              </b-link>
-            </b-col>
-          </b-row>
-        </div>
+      <div
+        v-for="(solution, index) in results[maxLevel].solutions"
+        :key="index"
+      >
+        <template v-if="solution.type === 'program'">
+          <p class="solution-text">- {{ solution.text }}</p>
+          <img :src="solution.url" />
+        </template>
+        <template v-if="solution.type === 'video'">
+          <p class="solution-text">- {{ solution.text }}</p>
+          <b-embed
+            type="iframe"
+            aspect="16by9"
+            :src="solution.url"
+            allowfullscreen
+          ></b-embed>
+        </template>
       </div>
-    </b-container>
+    </div>
+    <div v-if="results[maxLevel].action" class="mt-3">
+      <router-link
+        :to="results[maxLevel].action.url"
+        v-if="results[maxLevel].action.url"
+      >
+        <base-button icon class="button-common">
+          <span class="btn-inner--text">{{
+            results[maxLevel].action.text
+          }}</span>
+        </base-button>
+      </router-link>
+      <b-link
+        :href="results[maxLevel].action.externalUrl"
+        v-if="results[maxLevel].action.externalUrl"
+      >
+        <base-button icon class="button-common">
+          <span class="btn-inner--text">{{
+            results[maxLevel].action.text
+          }}</span>
+        </base-button>
+      </b-link>
+    </div>
+    <div class="need-more mt-3">
+      <div>
+        <h1 class="text-center text-title">Có thể bạn sẽ cần</h1>
+      </div>
+      <b-row>
+        <b-col cols="6" class="d-flex justify-content-center">
+          <b-link
+            href="https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu"
+            class="icon-link d-flex"
+          >
+            <div class="image-container">
+              <img src="/img/icons/group.png" />
+            </div>
+            <div class="d-flex flex-column ml-1">
+              <span>Cộng đồng</span>
+              <span class="sub-text">người nhà người bệnh</span>
+            </div>
+          </b-link>
+        </b-col>
+        <b-col cols="6" class="d-flex justify-content-center">
+          <b-link href="#" class="icon-link d-flex">
+            <div class="image-container">
+              <img src="/img/icons/care.png" />
+            </div>
+            <div class="d-flex flex-column ml-1">
+              <span>Phương pháp</span>
+              <span class="sub-text">hỗ trợ tâm lý</span>
+            </div>
+          </b-link>
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 <script>
@@ -248,7 +241,7 @@ export default {
       return Object.keys(this.pointObj).reduce((arr, el) => {
         if (!arr[el]) arr[el] = 0;
         arr[el] = this.evaluations.find(
-          (ev) => ev.minScore <= this.pointObj[el]
+          (ev) => ev.minScore <= +this.pointObj[el]
         ).level;
         return arr;
       }, {});
@@ -259,6 +252,7 @@ export default {
   },
   methods: {
     async loadExams() {
+      this.showLoader()
       const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
 
       try {
@@ -278,6 +272,8 @@ export default {
         }
       } catch (error) {
         console.error("Error getting documents:", error);
+      } finally {
+        this.hideLoader()
       }
     },
     currentLevel(point) {
