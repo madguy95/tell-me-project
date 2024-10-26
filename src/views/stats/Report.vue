@@ -24,7 +24,7 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, getDocs } from "firebase/firestore";
 import { db } from "@/plugins/firebaseConfig";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import * as Helpers from "chart.js/helpers";
@@ -135,6 +135,12 @@ export const options = {
     },
   },
 };
+const USER_TYPE = {
+  A: "Người nhà bệnh nhân",
+  B: "Bệnh nhân",
+  O: "Khác",
+};
+
 export default {
   name: "ReportPage",
   components: {
@@ -148,6 +154,22 @@ export default {
       data: _.cloneDeep(DATA_DEFAUT),
       options: options,
       items: [],
+      fieldsOrder: [
+        "userInfo.userType",
+        "userInfo.gender",
+        "userInfo.age",
+        "result.GAD-7",
+        "result.PHQ-9",
+        "result.BSRS-5",
+      ],
+      headers: [
+        "Người",
+        "Giới tính",
+        "Tuổi",
+        "Bài test GAD-7",
+        "Bài test PHQ-9",
+        "Bài test BSRS-5",
+      ],
     };
   },
   watch: {},
@@ -159,7 +181,7 @@ export default {
       return this.openItem === id;
     },
     async getUsers() {
-      this.showLoader()
+      this.showLoader();
       // use 'collection()' instead of 'doc()'
       const dataArr = {
         "GAD-7": [0, 0, 0, 0],
@@ -198,9 +220,66 @@ export default {
         //   return { "Tên bài Test": name, ...dataClone };
         // });
       });
-      this.hideLoader()
+      this.hideLoader();
     },
-    exportToExcel() {
+    async exportToExcel() {
+      try {
+        const snapshot = await getDocs(collection(db, "surveys"));
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        // Tạo mảng hai chiều cho dữ liệu
+        const sheetData = [];
+
+        // Thêm tên header vào mảng
+        sheetData.push(this.headers);
+
+        // Thêm dữ liệu vào mảng
+        data.forEach((item) => {
+          const row = this.fieldsOrder.map((field) => {
+            const keys = field.split("."); // Tách các trường nếu có sub-object
+            let value = item;
+
+            // Duyệt qua các keys để lấy giá trị
+            keys.forEach((key) => {
+              value = value ? value[key] : value; // Lấy giá trị hoặc gán trống nếu không tồn tại
+            });
+            if (field === "userInfo.userType") {
+              value = USER_TYPE[value];
+            }
+            return (value === undefined || value === null) ? 'N/A' : value; ; // Gán giá trị hoặc gán trống nếu không có
+          });
+          sheetData.push(row); // Thêm hàng vào mảng
+        });
+        // Chuyển đổi dữ liệu thành dạng tương thích với Excel theo thứ tự đã chỉ định
+        // const formattedData = data.map((item) => {
+        //   const formattedItem = {};
+        //   this.fieldsOrder.forEach((field) => {
+        //     const keys = field.split("."); // Tách các trường nếu có sub-object
+        //     let value = item;
+
+        //     // Duyệt qua các keys để lấy giá trị
+        //     keys.forEach((key) => {
+        //       value = value ? value[key] : ""; // Lấy giá trị hoặc gán trống nếu không tồn tại
+        //     });
+        //     if (field === "userInfo.userType") {
+        //       value = USER_TYPE[value];
+        //     }
+        //     formattedItem[field] = value || "N/A"; // Gán giá trị cho trường
+        //   });
+        //   return formattedItem;
+        // });
+
+        const ws = XLSX.utils.aoa_to_sheet(sheetData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        XLSX.writeFile(wb, "data.xlsx");
+      } catch (error) {
+        console.error("Lỗi khi xuất file Excel:", error);
+      }
+    },
+    exportToExcelOld() {
       // Chuyển đổi đối tượng thành mảng mảng
       const sheetData = [];
 
@@ -244,5 +323,4 @@ export default {
   mounted() {},
 };
 </script>
-<style scoped>
-</style>
+<style scoped></style>
