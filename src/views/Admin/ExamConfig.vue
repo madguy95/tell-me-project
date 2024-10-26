@@ -87,19 +87,14 @@
             >Thêm câu hỏi mới</b-button
           >
         </b-card>
-      </b-tab>
-
-      <!-- Tab for evaluation -->
-      <b-tab title="Đánh giá">
         <b-card class="mt-3">
-          <h5>Quản lý nội dung đánh giá</h5>
+          <h5>Quản lý mức độ đánh giá {{ test.name }}</h5>
           <div class="table-responsive">
             <b-table
-              :items="evaluations"
+              :items="test.evaluations"
               :fields="evaluationFields"
               striped
               bordered
-              @row-clicked="toggleRowDetails"
               responsive
             >
               <template #cell(level)="data">
@@ -115,21 +110,27 @@
                   v-model="data.item.minScore"
                 ></b-form-input>
               </template>
-              <template #cell(evaluation)="data">
+              <template #cell(description)="data">
                 <b-form-textarea
-                  v-model="data.item.evaluation"
+                  v-model="data.item.description"
                 ></b-form-textarea>
               </template>
               <template #cell(actions)="data">
-                <b-button variant="danger" @click="deleteEvaluation(data.index)"
-                  >Xóa</b-button
-                >
+                <b-button variant="danger" @click="toggleRowDetails(data)"
+                  >Nội dung
+                  <i
+                    :class="{
+                      'fas fa-chevron-down': !data.item._showDetails,
+                      'fas fa-chevron-up': data.item._showDetails,
+                    }"
+                  ></i
+                ></b-button>
               </template>
               <template #row-details="{ item }">
                 <b-card v-if="item._showDetails">
-                  <b-card-title>Solutions</b-card-title>
+                  <b-card-title>Khuyến nghị</b-card-title>
                   <quill-editor
-                    v-model="item.solution"
+                    v-model="item.content"
                     :options="editorOptions"
                   />
                 </b-card>
@@ -137,9 +138,67 @@
             </b-table>
           </div>
 
-          <b-button variant="success" @click="addEvaluation"
-            >Thêm mức đánh giá</b-button
+          <b-button
+            variant="danger"
+            :disabled="!test.evaluations || test.evaluations.length <= 1"
+            @click="deleteEvaluation(test.code)"
+            >Xóa</b-button
           >
+          <b-button variant="success" @click="addEvaluation(test.code)"
+            >Thêm mức</b-button
+          >
+        </b-card>
+      </b-tab>
+
+      <!-- Tab for evaluation -->
+      <b-tab title="Đánh giá">
+        <b-card class="mt-3">
+          <h5>Quản lý mức độ đánh giá chung</h5>
+          <div class="table-responsive">
+            <b-table
+              :items="generalEvaluations"
+              :fields="generalEvaluationFields"
+              striped
+              bordered
+              responsive
+            >
+              <template #cell(type)="data">
+                <b-form-input
+                  type="number"
+                  v-model="data.item.level"
+                  disabled
+                ></b-form-input>
+              </template>
+              <template #cell(limitLevel)="data">
+                <b-form-input
+                  type="number"
+                  v-model="data.item.limitLevel"
+                ></b-form-input>
+              </template>
+              <template #cell(actions)="data">
+                <b-button variant="danger" @click="toggleRowDetails(data)"
+                  >Nội dung
+                  <i
+                    :class="{
+                      'fas fa-chevron-down': !data.item._showDetails,
+                      'fas fa-chevron-up': data.item._showDetails,
+                    }"
+                  ></i
+                ></b-button>
+              </template>
+              <template #row-details="{ item }">
+                <b-card v-if="item._showDetails">
+                  <b-card-title>Khuyến nghị</b-card-title>
+                  <quill-editor
+                    v-model="item.content"
+                    :options="editorOptions"
+                  />
+                </b-card>
+              </template>
+            </b-table>
+          </div>
+          <b-button variant="danger" @click="deleteEvaluation()">Xóa</b-button>
+          <b-button variant="success" @click="addEvaluation">Thêm mức</b-button>
         </b-card>
       </b-tab>
     </b-tabs>
@@ -167,6 +226,23 @@ import { quillEditor } from "vue-quill-editor";
 import "quill/dist/quill.core.css"; // Quill core CSS
 import "quill/dist/quill.snow.css"; // Quill theme
 import "quill/dist/quill.bubble.css"; // Quill bubble theme (nếu cần)
+import { cloneDeep, cloneDeepWith } from "lodash";
+
+function removeFieldsByName(obj, fieldNames) {
+  return _.cloneDeepWith(obj, (value, key) => {
+    if (fieldNames.includes(key)) {
+      return undefined; // Removes the field if it's in the fieldNames array
+    }
+  });
+}
+
+function setFieldsToDefault(obj, fieldNames, defaultValue) {
+  return _.cloneDeepWith(obj, (value, key) => {
+    if (fieldNames.includes(key)) {
+      return defaultValue; // Sets the field to the default value if its name matches
+    }
+  });
+}
 export default {
   components: {
     quillEditor,
@@ -442,14 +518,38 @@ export default {
         { key: "actions", label: "Hành động" },
       ],
       evaluations: [
-        { minScore: 0, maxScore: 50, evaluation: "Mức đánh giá 1" },
-        { minScore: 51, maxScore: 80, evaluation: "Mức đánh giá 2" },
-        { minScore: 81, maxScore: 100, evaluation: "Mức đánh giá 3" },
+        {
+          minScore: 0,
+          maxScore: 50,
+          description: "Mức đánh giá 1",
+          content: "",
+        },
+        {
+          minScore: 51,
+          maxScore: 80,
+          description: "Mức đánh giá 2",
+          content: "",
+        },
+        {
+          minScore: 81,
+          maxScore: 100,
+          description: "Mức đánh giá 3",
+          content: "",
+        },
       ],
       evaluationFields: [
         { key: "level", label: "Mức độ" },
         { key: "minScore", label: "Diểm vượt quá" },
-        { key: "evaluation", label: "Nội dung đánh giá" },
+        { key: "description", label: "Mô tả" },
+        { key: "actions", label: "Hành động" },
+      ],
+      generalEvaluations: [
+        { type: 1, limitLevel: 2, content: "Mức đánh giá 1" },
+        { type: 2, limitLevel: 10, content: "Mức đánh giá 2" },
+      ],
+      generalEvaluationFields: [
+        { key: "type", label: "Loại" },
+        { key: "limitLevel", label: "Mức độ tối đa" },
         { key: "actions", label: "Hành động" },
       ],
     };
@@ -491,14 +591,45 @@ export default {
       });
       this.activeTab = this.tests.length - 1; // Chuyển tới tab mới
     },
-    addEvaluation() {
-      this.evaluations.push({ minScore: 0, maxScore: 100, evaluation: "" });
+    addEvaluation(code) {
+      const testExam = this.tests.find((el) => el.code === code);
+      if (testExam) {
+        if (!testExam.evaluations) {
+          testExam.evaluations = [];
+        }
+        this.tests.forEach((el) => {
+          if (el.code === code) {
+            el.evaluations.unshift({
+              level: testExam.evaluations.length + 1,
+              minScore: 0,
+              maxScore: 100,
+              evaluation: "",
+              solution: "",
+            });
+          }
+        });
+        this.tests = cloneDeep(this.tests);
+      }
     },
-    deleteEvaluation(index) {
-      this.evaluations.splice(index, 1);
+    deleteEvaluation(code, index) {
+      const testExam = this.tests.find((el) => el.code === code);
+      if (testExam) {
+        if (testExam.evaluations && testExam.evaluations.length > 1) {
+          this.tests.forEach((el) => {
+            if (el.code === code) {
+              el.evaluations.shift();
+            }
+          });
+          this.tests = cloneDeep(this.tests);
+        }
+      } else {
+        if (this.generalEvaluations && this.generalEvaluations.length > 1) {
+          this.generalEvaluations.shift();
+        }
+      }
     },
     async loadExams() {
-      this.isLoading = true
+      this.isLoading = true;
       const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
 
       try {
@@ -510,7 +641,7 @@ export default {
             ...firstDoc.data(),
           };
           this.tests = [...this.exams.tests];
-          this.evaluations = [...this.exams.evaluations];
+          this.generalEvaluations = [...this.exams.generalEvaluations];
           // console.log("First document data:", firstDoc.data());
           // console.log("First document ID:", firstDoc.id);
         } else {
@@ -519,19 +650,22 @@ export default {
       } catch (error) {
         console.error("Error getting documents:", error);
       } finally {
-        this.isLoading = false
+        this.isLoading = false;
       }
     },
     async saveChanges() {
-      // Lưu thay đổi logic ở đây
       try {
-        this.isLoading = true
+        this.isLoading = true;
         const colRef = collection(db, "exams");
-        const dataObj = {
-          tests: [...this.tests],
-          evaluations: [...this.evaluations],
-          timestamp: new Date(),
-        };
+        const dataObj = setFieldsToDefault(
+          {
+            tests: [...this.tests],
+            generalEvaluations: [...this.generalEvaluations],
+            timestamp: new Date(),
+          },
+          ["expanded", "_showDetails"],
+          false
+        );
         if (this.exams.id) {
           const oldDoc = await doc(db, "exams", this.exams.id);
           await updateDoc(oldDoc, dataObj);
@@ -543,26 +677,15 @@ export default {
           ...this.exams,
           ...dataObj,
         };
-        // console.log(dataObj);
-        // console.log("Document was created with ID:", docRef.id);
-        // console.log("Kết quả khảo sát đã được lưu thành công!");
         this.selectedResult = null;
       } catch (error) {
         console.error("Lỗi khi lưu khảo sát: ", error);
       } finally {
-        this.isLoading = false
+        this.isLoading = false;
       }
-      // console.log("Saved tests:", this.tests);
-      // console.log("Saved evaluations:", this.evaluations);
     },
     toggleRowDetails(row) {
-      const currentState = row._showDetails;
-      this.evaluations.forEach((item) => {
-        this.$set(item, "_showDetails", false);
-      });
-      this.$nextTick(() => {
-        row._showDetails = !currentState;
-      });
+      row.toggleDetails();
     },
   },
   mounted() {

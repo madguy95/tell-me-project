@@ -259,14 +259,15 @@ export const QUESTION_ARR = {
 export const RESULT_ARR = {
   "GAD-7": {
     title: "Chỉ số Lo âu",
-    subTitle: "(Thông qua bài kiểm tra âu GAD-7)",
+    subTitle: "(Thông qua bài kiểm tra lo âu GAD-7)",
     questionNote:
       "Trong suốt 2 tuần qua, anh/chị có biểu hiện sau không? Nếu có, các biểu hiện đó gây phiền phức cho anh/chị thường xuyên đến mức độ nào?",
     maxLevel: 4,
     4: "Lo âu trầm trọng",
     3: "Lo âu trung bình",
     2: "Lo âu nhẹ",
-    1: "Không hoặc gần như không có  lo âu",
+    1: "Không hoặc gần như không có lo âu",
+    evaluations: {}
   },
   "PHQ-9": {
     title: "Chỉ số Trầm cảm",
@@ -279,6 +280,7 @@ export const RESULT_ARR = {
     3: "Có nguy cơ trầm cảm",
     2: "Nguy cơ trầm cảm thấp",
     1: "Nguy cơ trầm cảm rất thấp ",
+    evaluations: {}
   },
   "BSRS-5": {
     title: "Chỉ số Căng thẳng",
@@ -290,5 +292,6 @@ export const RESULT_ARR = {
     3: "Căng thẳng vừa",
     2: "Căng thẳng nhẹ",
     1: "Không căng thẳng",
+    evaluations: {}
   },
 };

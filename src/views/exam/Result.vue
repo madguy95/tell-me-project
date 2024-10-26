@@ -24,11 +24,19 @@
     <div>
       <h1 class="text-center text-title">Khuyến nghị</h1>
     </div>
-    <div class="">
-      <p class="solution-text" v-html="results[maxLevel].advice"></p>
+    <div class="solution-text">
+      <ul>
+        <li
+          v-for="(value, name, index) in pointLevel"
+          :key="index"
+          v-html="testLevelContent(name, value)"
+        ></li>
+      </ul>
+      <p class="text-sub-title">Ngoài ra bạn cũng có thể:</p>
+      <p class="solution-text" v-html="results[generalLevel].advice"></p>
 
       <div
-        v-for="(solution, index) in results[maxLevel].solutions"
+        v-for="(solution, index) in results[generalLevel].solutions"
         :key="index"
       >
         <template v-if="solution.type === 'program'">
@@ -46,24 +54,24 @@
         </template>
       </div>
     </div>
-    <div v-if="results[maxLevel].action" class="mt-3">
+    <div v-if="results[generalLevel].action" class="mt-3">
       <router-link
-        :to="results[maxLevel].action.url"
-        v-if="results[maxLevel].action.url"
+        :to="results[generalLevel].action.url"
+        v-if="results[generalLevel].action.url"
       >
         <base-button icon class="button-common">
           <span class="btn-inner--text">{{
-            results[maxLevel].action.text
+            results[generalLevel].action.text
           }}</span>
         </base-button>
       </router-link>
       <b-link
-        :href="results[maxLevel].action.externalUrl"
-        v-if="results[maxLevel].action.externalUrl"
+        :href="results[generalLevel].action.externalUrl"
+        v-if="results[generalLevel].action.externalUrl"
       >
         <base-button icon class="button-common">
           <span class="btn-inner--text">{{
-            results[maxLevel].action.text
+            results[generalLevel].action.text
           }}</span>
         </base-button>
       </b-link>
@@ -116,6 +124,28 @@ import {
   query,
   limit,
 } from "firebase/firestore";
+import { cloneDeep } from "lodash";
+import { clone } from "lodash";
+function findClosestNumber(arr, target) {
+  // Sắp xếp mảng theo thứ tự tăng dần
+  arr.sort((a, b) => a - b);
+
+  // Tìm số gần nhất
+  let closest = arr[0]; // Khởi tạo số gần nhất với phần tử đầu tiên
+  let minDiff = Math.abs(target - closest); // Khởi tạo độ chênh lệch tối thiểu
+
+  for (let i = 1; i < arr.length; i++) {
+    const diff = Math.abs(target - arr[i]); // Tính độ chênh lệch
+
+    // Cập nhật số gần nhất nếu độ chênh lệch nhỏ hơn độ chênh lệch tối thiểu
+    if (diff < minDiff) {
+      minDiff = diff;
+      closest = arr[i];
+    }
+  }
+
+  return +closest;
+}
 function decodeHtml(html) {
   const txt = document.createElement("textarea");
   txt.innerHTML = html;
@@ -150,13 +180,33 @@ export default {
   },
   data() {
     return {
-      evaluations: [
-        { minScore: 20, level: 5 },
-        { minScore: 15, level: 4 },
-        { minScore: 10, level: 3 },
-        { minScore: 5, level: 2 },
-        { minScore: 0, level: 1 },
+      generalEvaluations: [
+        { type: 1, limitLevel: 2, content: "Mức đánh giá 1" },
+        { type: 2, limitLevel: 10, content: "Mức đánh giá 2" },
       ],
+      testsEvaluation: {
+        "GAD-7": [
+          { minScore: 20, level: 5 },
+          { minScore: 15, level: 4 },
+          { minScore: 10, level: 3 },
+          { minScore: 5, level: 2 },
+          { minScore: 0, level: 1 },
+        ],
+        "PHQ-9": [
+          { minScore: 20, level: 5 },
+          { minScore: 15, level: 4 },
+          { minScore: 10, level: 3 },
+          { minScore: 5, level: 2 },
+          { minScore: 0, level: 1 },
+        ],
+        "BSRS-5": [
+          { minScore: 20, level: 5 },
+          { minScore: 15, level: 4 },
+          { minScore: 10, level: 3 },
+          { minScore: 5, level: 2 },
+          { minScore: 0, level: 1 },
+        ],
+      },
       pointObj: createSubObject(this.$route.query || {}, [
         "GAD-7",
         "PHQ-9",
@@ -240,40 +290,64 @@ export default {
     pointLevel() {
       return Object.keys(this.pointObj).reduce((arr, el) => {
         if (!arr[el]) arr[el] = 0;
-        arr[el] = this.evaluations.find(
-          (ev) => ev.minScore <= +this.pointObj[el]
-        ).level;
+        arr[el] =
+          this.testsEvaluation[el].length === 1
+            ? this.testsEvaluation[el][0].level
+            : this.testsEvaluation[el].find(
+                (ev, index) => ev.minScore <= +this.pointObj[el]
+              ).level;
         return arr;
       }, {});
     },
     maxLevel() {
       return Math.max(...Object.values(this.pointLevel));
     },
+    generalLevel() {
+      return findClosestNumber(
+        Object.keys(this.generalEvaluations.map((el) => el.limitlevel)),
+        this.maxLevel
+      );
+    },
+    testLevelContent() {
+      return (name, level) => {
+        return this.levelResults[name]["evaluations"][level]
+          ? this.levelResults[name]["evaluations"][level].content
+          : "";
+      };
+    },
   },
   methods: {
     async loadExams() {
-      this.showLoader()
+      this.showLoader();
       const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
 
       try {
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
           const firstDoc = querySnapshot.docs[0]; // Get the first document
-          const evaluations = firstDoc.data().evaluations; // Get the first document
+          const { generalEvaluations, tests } = firstDoc.data(); // Get the first document
           const resultsClone = { ...this.results };
-          evaluations.forEach((el) => {
-            resultsClone[el.level].advice = decodeHtml(el.solution);
+          tests.forEach((el) => {
+            el.evaluations.forEach((eva) => {
+              this.levelResults[el.code][eva.level] = eva.description;
+              this.levelResults[el.code]["evaluations"][eva.level] = eva;
+            });
+            this.testsEvaluation[el.code] = el.evaluations;
+          });
+          this.levelResults = cloneDeep(this.levelResults);
+          this.testsEvaluation = cloneDeep(this.testsEvaluation);
+          generalEvaluations.forEach((el) => {
+            resultsClone[el.level].advice = decodeHtml(el.content);
           });
           this.results = resultsClone;
-          this.evaluations = evaluations.sort((a, b) => b.level - a.level);
-          console.log(this.evaluations);
+          this.generalEvaluations = generalEvaluations.sort((a, b) => b.level - a.level);
         } else {
           console.log("No documents found in the collection.");
         }
       } catch (error) {
         console.error("Error getting documents:", error);
       } finally {
-        this.hideLoader()
+        this.hideLoader();
       }
     },
     currentLevel(point) {
@@ -374,5 +448,10 @@ export default {
 }
 .result-sub-title {
   font-weight: 500;
+}
+.text-sub-title {
+  color: #00297b;
+  font-family: "FS Magistral";
+  font-weight: 600;
 }
 </style>
