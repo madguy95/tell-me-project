@@ -19,6 +19,8 @@ import store from "../store/store";
 import ExamConfig from "../views/Admin/ExamConfig.vue";
 import { auth } from "../plugins/firebaseConfig";
 import MapConfig from "../views/Admin/map-config/MapConfig.vue";
+import PostList from "../views/Admin/health-care/PostList.vue";
+import PostForm from "../views/Admin/health-care/PostForm.vue";
 
 Vue.use(Router);
 
@@ -64,6 +66,24 @@ const router = new Router({
           path: "map-config",
           name: "map-config",
           components: { default: MapConfig },
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "post-list",
+          name: "post-list",
+          components: { default: PostList },
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "post-detail/:id",
+          name: "post-detail",
+          components: { default: PostForm },
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "post-detail",
+          name: "post-detail",
+          components: { default: PostForm },
           meta: { requiresAuth: true },
         },
       ],

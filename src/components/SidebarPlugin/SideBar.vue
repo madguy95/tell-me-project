@@ -37,7 +37,13 @@
               }}</b-button>
             </router-link>
           </div>
-          <base-dropdown v-if="isAuthenticated" class="nav-item" menu-on-right tag="li" title-tag="a">
+          <base-dropdown
+            v-if="isAuthenticated"
+            class="nav-item"
+            menu-on-right
+            tag="li"
+            title-tag="a"
+          >
             <a slot="title-container" class="nav-link" href="#" role="button">
               <div class="media align-items-center">
                 <span class="avatar avatar-sm rounded-circle">
@@ -50,8 +56,12 @@
               <h6 class="text-overflow m-0">Welcome!</h6>
             </div>
             <div class="dropdown-item">
-              <span class="text-overflow m-0">{{user.email}}</span>
+              <span class="text-overflow m-0">{{ user.email }}</span>
             </div>
+            <router-link to="/admin" class="dropdown-item">
+              <i class="ni ni-single-02"></i>
+              <span>Admin page</span>
+            </router-link>
             <!-- <router-link to="/profile" class="dropdown-item">
               <i class="ni ni-single-02"></i>
               <span>My profile</span>
@@ -69,7 +79,7 @@
               <span>Support</span>
             </router-link> -->
             <div class="dropdown-divider"></div>
-            <a href="#!"  @click="onClickLogout" class="dropdown-item">
+            <a href="#!" @click="onClickLogout" class="dropdown-item">
               <i class="ni ni-user-run"></i>
               <span>Logout</span>
             </a>

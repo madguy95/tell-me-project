@@ -111,9 +111,14 @@ const SIDEBAR_ADMIN = [
     icon: "fas fa-edit",
   },
   {
-    name: "Up so do benh vien",
+    name: "Up sơ đồ bệnh viện",
     path: "/admin/map-config",
     icon: "fas fa-map-marker-alt",
+  },
+  {
+    name: "Up bài đăng chăm sóc",
+    path: "/admin/post-list",
+    icon: "fas fa-rss-square",
   },
 ];
 export default {
