@@ -22,18 +22,19 @@
           >
             <b-card-body>
               <ul>
-                <li v-for="subItem in item.subItems" :key="subItem.id">
-                  <template v-if="subItem.img">
+                <li v-for="(subItem, idx) in item.subItems" :key="subItem.id">
+                  <template v-if="subItem.imageUrl">
                     <router-link
                       :to="{
                         name: 'procedure-detail',
-                        params: { id: subItem.img },
+                        params: { id: item.id },
+                        query: { subIdx: idx}
                       }"
                     >
-                      <a href="#">{{ subItem.text }}</a>
+                      <a href="#">{{ subItem.name }}</a>
                     </router-link>
                   </template>
-                  <span v-if="!subItem.img">{{ subItem.text }}</span>
+                  <span v-if="!subItem.imageUrl">{{ subItem.name }}</span>
                 </li>
               </ul>
             </b-card-body>
@@ -46,7 +47,25 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
+import { orderBy, query } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref as storageRef,
+  deleteObject,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
 
+import { db, storage } from "@/plugins/firebaseConfig";
 export default {
   name: "ProcedureList",
   components: {
@@ -106,7 +125,19 @@ export default {
       ],
     };
   },
+  created() {
+    this.loadItems();
+  },
   methods: {
+    async loadItems() {
+      const snapshot = await getDocs(query(collection(db, "procedure-items"), orderBy("order")));
+      this.items = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        collapse: false,
+        subItems: doc.data().subItems || [],
+      }));
+    },
     toggle(id) {
       this.openItem = this.openItem === id ? null : id;
     },

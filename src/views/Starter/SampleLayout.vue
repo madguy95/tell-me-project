@@ -120,6 +120,11 @@ const SIDEBAR_ADMIN = [
     path: "/admin/post-list",
     icon: "fas fa-rss-square",
   },
+  {
+    name: "Up thông tin thủ tục",
+    path: "/admin/procedure-main",
+    icon: "fas fa-project-diagram",
+  },
 ];
 export default {
   components: {

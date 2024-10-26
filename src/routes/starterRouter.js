@@ -21,6 +21,7 @@ import { auth } from "../plugins/firebaseConfig";
 import MapConfig from "../views/Admin/map-config/MapConfig.vue";
 import PostList from "../views/Admin/health-care/PostList.vue";
 import PostForm from "../views/Admin/health-care/PostForm.vue";
+import ProcedureMain from "../views/Admin/procedure/ProcedureMain.vue";
 
 Vue.use(Router);
 
@@ -84,6 +85,12 @@ const router = new Router({
           path: "post-detail",
           name: "post-detail",
           components: { default: PostForm },
+          meta: { requiresAuth: true },
+        },
+        {
+          path: "procedure-main",
+          name: "procedure-main",
+          components: { default: ProcedureMain },
           meta: { requiresAuth: true },
         },
       ],

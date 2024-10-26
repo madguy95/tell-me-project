@@ -1,18 +1,38 @@
 <template>
   <div class="container-fluid bg-white position-relative pt-3 pb-3">
     <Loader :visible="isLoading" />
+    <router-link to="/home/procedure">
+      <b-button class="">Quay lại</b-button>
+    </router-link>
     <div class="image-scroll">
-      <img :src="`/img/program/program${imageURl}.png`" />
+      <img :src="procedureItemDetail.imageUrl" />
     </div>
   </div>
 </template>
 <script>
+import { db, storage } from "@/plugins/firebaseConfig";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  serverTimestamp,
+  addDoc,
+  collection,
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 export default {
   name: "ProcedureDetail",
   components: {},
   data() {
     return {
-      imageURl: this.$route.params.id,
+      procedureItemDetail: {},
       results: [
         {
           id: 1,
@@ -31,6 +51,30 @@ export default {
         // Thêm các kết quả khác nếu cần
       ],
     };
+  },
+  async created() {
+    const procedureId = this.$route.params.id;
+    const subIdx = this.$route.query.subIdx || 0;
+    if (procedureId) {
+      this.isEditMode = true;
+      await this.fetchPostData(procedureId, subIdx);
+    } else {
+      this.$router.push("/home");
+    }
+  },
+  methods: {
+    async fetchPostData(procedureId, subIdx) {
+      this.showLoader();
+      const postRef = doc(db, "procedure-items", procedureId);
+      const postSnapshot = await getDoc(postRef);
+      if (postSnapshot.exists()) {
+        console.log(postSnapshot.data());
+        this.procedureItemDetail = postSnapshot.data().subItems[subIdx];
+      } else {
+        console.error("Bài viết không tồn tại");
+      }
+      this.hideLoader();
+    },
   },
 };
 </script>
