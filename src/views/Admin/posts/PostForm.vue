@@ -1,8 +1,8 @@
 <template>
   <div class="container-fluid bg-white position-relative pt-3 pb-3">
     <Loader :visible="isLoading" />
-    <router-link to="/admin/post-list">
-      <b-button >Quay lại</b-button>
+    <router-link to="/admin/posts">
+      <b-button>Quay lại</b-button>
     </router-link>
     <h2>{{ isEditMode ? "Cập Nhật Bài Post" : "Thêm Mới Bài Post" }}</h2>
 
@@ -10,7 +10,9 @@
       <b-form-group label="Tiêu Đề">
         <b-form-input v-model="post.title" required></b-form-input>
       </b-form-group>
-
+      <label>Loại bài: </label>
+      <b-form-select v-model="post.type" :options="typeOptions" class="mb-3">
+      </b-form-select>
       <b-form-group label="Nội Dung">
         <b-form-textarea
           v-model="post.content"
@@ -60,20 +62,19 @@ import { db, storage } from "@/plugins/firebaseConfig";
 import {
   doc,
   getDoc,
-  setDoc,
   updateDoc,
   serverTimestamp,
   addDoc,
   collection,
 } from "firebase/firestore";
 import {
-  getStorage,
   ref,
   uploadBytes,
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
 import { v4 as uuidv4 } from "uuid";
+import { COLLECTION_TYPE, POST_COLLECTION_NAME } from "../../../util/constant";
 
 export default {
   data() {
@@ -84,7 +85,12 @@ export default {
         upTime: null,
         image: "",
         videoLink: "",
+        type: COLLECTION_TYPE.HEALTH,
       },
+      typeOptions: [
+        { value: COLLECTION_TYPE.HEALTH, text: "Chăm sóc sức khỏe" },
+        { value: COLLECTION_TYPE.PSYCH, text: "Hỗ trợ tâm lý" },
+      ],
       isEditMode: false,
       imageFile: null,
       imagePreview: "",
@@ -105,7 +111,7 @@ export default {
   methods: {
     async fetchPostData(postId) {
       this.showLoader();
-      const postRef = doc(db, "health-posts", postId);
+      const postRef = doc(db, POST_COLLECTION_NAME, postId);
       const postSnapshot = await getDoc(postRef);
       if (postSnapshot.exists()) {
         this.post = { id: postId, ...postSnapshot.data() };
@@ -146,24 +152,26 @@ export default {
         }
 
         if (this.isEditMode && this.post.id) {
-          const postRef = doc(db, "health-posts", this.post.id);
+          const postRef = doc(db, POST_COLLECTION_NAME, this.post.id);
           await updateDoc(postRef, {
             title: this.post.title,
             content: this.post.content,
             image: this.post.image,
             videoLink: this.post.videoLink,
             upTime: serverTimestamp(),
+            type: this.post.type,
           });
         } else {
-          await addDoc(collection(db, "health-posts"), {
+          await addDoc(collection(db, POST_COLLECTION_NAME), {
             title: this.post.title,
             content: this.post.content,
             image: this.post.image,
             videoLink: this.post.videoLink,
             upTime: serverTimestamp(),
+            type: this.post.type,
           });
         }
-        this.$router.push("/admin/post-list");
+        this.$router.push("/admin/posts");
       } catch (error) {
         console.error("Lỗi khi lưu bài viết:", error);
       } finally {

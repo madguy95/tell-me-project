@@ -85,8 +85,13 @@ const SIDEBAR_PUBLIC = [
   },
   {
     name: "Chăm sóc sức khoẻ",
-    path: "/home/health-post",
+    path: "/home/posts?type=health",
     icon: "fas fa-hand-holding-medical",
+  },
+  {
+    name: "Hỗ trợ tâm lý",
+    path: "/home/posts?type=psych",
+    icon: "fas fa-headset",
   },
   {
     name: "Sơ đồ",
@@ -101,7 +106,7 @@ const SIDEBAR_ADMIN = [
     icon: "fas fa-home",
   },
   {
-    name: "Upload Banner",
+    name: "Tải Banner",
     path: "/admin/banner",
     icon: "fas fa-images",
   },
@@ -111,13 +116,13 @@ const SIDEBAR_ADMIN = [
     icon: "fas fa-edit",
   },
   {
-    name: "Up sơ đồ bệnh viện",
+    name: "Quản lý sơ đồ",
     path: "/admin/map-config",
     icon: "fas fa-map-marker-alt",
   },
   {
-    name: "Up bài đăng chăm sóc",
-    path: "/admin/post-list",
+    name: "Quản lý bài đăng",
+    path: "/admin/posts",
     icon: "fas fa-rss-square",
   },
   {

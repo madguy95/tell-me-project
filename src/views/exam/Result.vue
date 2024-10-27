@@ -96,7 +96,7 @@
           </b-link>
         </b-col>
         <b-col cols="6" class="d-flex justify-content-center">
-          <b-link href="#" class="icon-link d-flex">
+          <b-link href="/home/posts?type=psych" class="icon-link d-flex">
             <div class="image-container">
               <img src="/img/icons/care.png" />
             </div>

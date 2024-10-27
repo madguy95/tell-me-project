@@ -70,28 +70,35 @@
     </b-row>
     <div class="mt-4"><h3 class="custom-text">Trạm thông tin</h3></div>
     <b-row class="d-flex align-items-center justify-content-center">
-      <b-col md="6" xl="6">
-        <b-row class="d-flex align-items-center justify-content-center" xl="6">
-          <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
-            <router-link :to="{ name: 'procedure' }">
-              <base-button icon class="button-common">
-                <span class="btn-inner--text">Thủ tục hành chính</span>
-              </base-button>
-            </router-link>
-          </b-col>
-          <b-col cols="6" sm="6" md="6" xl="6" class="mb-3">
-            <router-link :to="{ name: 'map' }">
-              <base-button icon class="button-common">
-                <span class="btn-inner--text">Sơ đồ</span>
-              </base-button>
-            </router-link>
-          </b-col>
-        </b-row>
+      <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
+        <router-link :to="{ name: 'procedure' }">
+          <base-button icon class="button-common">
+            <span class="btn-inner--text">Thủ tục hành chính</span>
+          </base-button>
+        </router-link>
       </b-col>
-      <b-col cols="12" md="6" xl="6" class="mb-3">
-        <router-link :to="{ name: 'health-post' }">
+      <b-col cols="6" sm="6" md="6" xl="6" class="mb-3">
+        <router-link :to="{ name: 'map' }">
+          <base-button icon class="button-common">
+            <span class="btn-inner--text">Sơ đồ</span>
+          </base-button>
+        </router-link>
+      </b-col>
+      <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
+        <router-link
+          :to="{ name: 'posts', query: { type: COLLECTION_TYPE.HEALTH } }"
+        >
           <base-button icon class="button-common">
             <span class="btn-inner--text">Chăm sóc bệnh nhân</span>
+          </base-button>
+        </router-link>
+      </b-col>
+      <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
+        <router-link
+          :to="{ name: 'posts', query: { type: COLLECTION_TYPE.PSYCH } }"
+        >
+          <base-button icon class="button-common">
+            <span class="btn-inner--text">Phương pháp hỗ trợ tâm lý</span>
           </base-button>
         </router-link>
       </b-col>
@@ -103,6 +110,7 @@ import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
 import { collection, orderBy, query, getDocs } from "firebase/firestore";
 import { db } from "@/plugins/firebaseConfig";
+import { COLLECTION_TYPE } from "../../util/constant";
 
 const BANNER_DEFAULT = [
   "/img/banner/banner1.png",
@@ -117,6 +125,7 @@ export default {
   },
   data() {
     return {
+      COLLECTION_TYPE: { ...COLLECTION_TYPE },
       show:
         typeof JSON.parse(sessionStorage.getItem("isShowInDeveloping")) ==
         "boolean"

@@ -17,33 +17,21 @@
         v-if="post.videoLink"
         allowfullscreen
       ></b-embed>
-      <router-link to="/home/health-post">
+      <router-link to="/home/posts">
         <b-button class="btn-common">Quay lại</b-button>
       </router-link>
     </b-card>
   </div>
 </template>
 <script>
-import { POST_ARR } from "@/constants";
-import { db, storage } from "@/plugins/firebaseConfig";
+import { db } from "@/plugins/firebaseConfig";
 import {
   doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  serverTimestamp,
-  addDoc,
-  collection,
+  getDoc
 } from "firebase/firestore";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
+import { POST_COLLECTION_NAME } from "../../util/constant";
 export default {
-  name: "HealthPostDetail",
+  name: "PostDetail",
   props: {
     postData: {
       type: Object,
@@ -85,7 +73,7 @@ export default {
     },
     async fetchPostData(postId) {
       this.showLoader();
-      const postRef = doc(db, "health-posts", postId);
+      const postRef = doc(db, POST_COLLECTION_NAME, postId);
       const postSnapshot = await getDoc(postRef);
       if (postSnapshot.exists()) {
         this.post = { id: postId, ...postSnapshot.data() };

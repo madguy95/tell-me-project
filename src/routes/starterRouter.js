@@ -7,8 +7,8 @@ import ExamInfo from "../views/exam/ExamInfo.vue";
 import ExamList from "../views/exam/ExamList.vue";
 import ExamPage from "../views/exam/ExamPage.vue";
 import ResultPage from "../views/exam/Result.vue";
-import HealthPostList from "../views/health-care/HealthPostList.vue";
-import HealthPostDetail from "../views/health-care/HealthPostDetail.vue";
+import HealthPostList from "../views/posts/PostList.vue";
+import HealthPostDetail from "../views/posts/PostDetail.vue";
 import MapPage from "../views/map/Map.vue";
 import WelcomePage from "../views/Welcome.vue";
 import Report from "../views/stats/Report.vue";
@@ -19,8 +19,8 @@ import store from "../store/store";
 import ExamConfig from "../views/Admin/ExamConfig.vue";
 import { auth } from "../plugins/firebaseConfig";
 import MapConfig from "../views/Admin/map-config/MapConfig.vue";
-import PostList from "../views/Admin/health-care/PostList.vue";
-import PostForm from "../views/Admin/health-care/PostForm.vue";
+import PostList from "../views/Admin/posts/AdminPostList.vue";
+import PostForm from "../views/Admin/posts/PostForm.vue";
 import ProcedureMain from "../views/Admin/procedure/ProcedureMain.vue";
 
 Vue.use(Router);
@@ -70,20 +70,20 @@ const router = new Router({
           meta: { requiresAuth: true },
         },
         {
-          path: "post-list",
-          name: "post-list",
+          path: "posts",
+          name: "admin-posts",
           components: { default: PostList },
           meta: { requiresAuth: true },
         },
         {
-          path: "post-detail/:id",
-          name: "post-detail",
+          path: "post-form/:id",
+          name: "post-form",
           components: { default: PostForm },
           meta: { requiresAuth: true },
         },
         {
-          path: "post-detail",
-          name: "post-detail",
+          path: "post-form",
+          name: "post-form",
           components: { default: PostForm },
           meta: { requiresAuth: true },
         },
@@ -127,13 +127,13 @@ const router = new Router({
           components: { default: ResultPage },
         },
         {
-          path: "health-post",
-          name: "health-post",
+          path: "posts",
+          name: "posts",
           components: { default: HealthPostList },
         },
         {
-          path: "health-post/:id",
-          name: "health-post-detail",
+          path: "posts/:id",
+          name: "post-detail",
           components: { default: HealthPostDetail },
           props: true,
         },

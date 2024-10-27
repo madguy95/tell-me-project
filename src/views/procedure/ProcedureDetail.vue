@@ -10,23 +10,8 @@
   </div>
 </template>
 <script>
-import { db, storage } from "@/plugins/firebaseConfig";
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  serverTimestamp,
-  addDoc,
-  collection,
-} from "firebase/firestore";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
+import { db } from "@/plugins/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
 export default {
   name: "ProcedureDetail",
   components: {},
@@ -59,7 +44,7 @@ export default {
       this.isEditMode = true;
       await this.fetchPostData(procedureId, subIdx);
     } else {
-      this.$router.push("/home");
+      this.$router.push("/home/procedure");
     }
   },
   methods: {
@@ -68,7 +53,6 @@ export default {
       const postRef = doc(db, "procedure-items", procedureId);
       const postSnapshot = await getDoc(postRef);
       if (postSnapshot.exists()) {
-        console.log(postSnapshot.data());
         this.procedureItemDetail = postSnapshot.data().subItems[subIdx];
       } else {
         console.error("Bài viết không tồn tại");

@@ -39,7 +39,7 @@
       </b-row>
     </b-modal>
     <div>
-      <b-form>
+      <b-form v-if="questions[currentQuestion]">
         <b-form-group>
           <div class="question-box">
             <p>
@@ -113,8 +113,6 @@ import {
   collection,
   addDoc,
   getDocs,
-  updateDoc,
-  doc,
   query,
   limit,
 } from "firebase/firestore";
@@ -151,7 +149,6 @@ export default {
         if (!querySnapshot.empty) {
           const firstDoc = querySnapshot.docs[0]; // Get the first document
           const dataTest = firstDoc.data();
-          console.log(this.examIds);
           this.questions = dataTest.tests
             .filter((el) => this.examIds.includes(el.code))
             .map((el) =>
@@ -163,7 +160,6 @@ export default {
               }))
             )
             .flat();
-          console.log(this.questions);
         } else {
           console.log("No documents found in the collection.");
         }
@@ -215,7 +211,7 @@ export default {
           requestPublicIp: ip,
           result: pointObj,
           timestamp: new Date(),
-          testerInfo,
+          testerInfo: this.testerInfo,
         };
         // console.log(dataObj);
         const docRef = await addDoc(colRef, dataObj);

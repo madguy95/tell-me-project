@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid bg-white position-relative pt-3 pb-3">
     <Loader :visible="isLoading" />
-    <div @scroll="onScroll" class="scroll-container">
+    <div class="">
       <b-row>
         <b-col
           v-for="post in posts"
@@ -19,40 +19,54 @@
           >
             <b-card-sub-title>{{ post.date }}</b-card-sub-title>
             <b-card-text>{{ post.content }}</b-card-text>
-            <router-link
-              :to="{ name: 'health-post-detail', params: { id: post.id } }"
-            >
+            <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
               <a href="#" class="btn btn-link px-0">Xem thêm</a>
             </router-link>
           </b-card>
         </b-col>
       </b-row>
     </div>
+    <b-button @click="fetchPosts" v-if="hasMorePosts">Tải thêm</b-button>
   </div>
 </template>
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import { POST_ARR } from "@/constants";
 import { db } from "@/plugins/firebaseConfig";
 import {
   collection,
   getDocs,
-  deleteDoc,
-  doc,
   query,
   orderBy,
   limit,
   startAfter,
+  where,
 } from "firebase/firestore";
+import { COLLECTION_TYPE, POST_COLLECTION_NAME } from "../../util/constant";
+
 export default {
-  name: "HealthPostList",
+  name: "PostList",
   components: {
     StatsCard,
     RouteBreadCrumb,
   },
+  watch: {
+    // Theo dõi sự thay đổi của query params
+    "$route.query": {
+      handler(newQuery, oldQuery) {
+        // Gọi hàm để tải dữ liệu mới hoặc thực hiện hành động cần thiết
+        this.resetData();
+        if (newQuery && newQuery.type) {
+          this.collectionType = newQuery.type;
+        }
+        this.fetchPosts();
+      },
+      immediate: true, // Gọi hàm ngay khi component được khởi tạo
+    },
+  },
   data() {
     return {
+      collectionType: COLLECTION_TYPE.HEALTH,
       posts: [],
       lastVisibleDoc: null, // Tài liệu cuối cùng của lô dữ liệu hiện tại
       pageSize: 10,
@@ -60,10 +74,14 @@ export default {
       hasMorePosts: true, // Kiểm tra còn dữ liệu để tải hay không
     };
   },
-  async created() {
-    await this.fetchPosts();
-  },
+  async created() {},
   methods: {
+    resetData() {
+      this.posts = [];
+      this.lastVisibleDoc = null;
+      this.isFetching = false;
+      this.hasMorePosts = true;
+    },
     toggle(id) {
       this.openItem = this.openItem === id ? null : id;
     },
@@ -81,7 +99,7 @@ export default {
       if (this.lastVisibleDoc) {
         // Tải các bài tiếp theo bắt đầu từ tài liệu cuối cùng của lần trước
         q = query(
-          collection(db, "health-posts"),
+          collection(db, POST_COLLECTION_NAME),
           orderBy("upTime", "desc"),
           startAfter(this.lastVisibleDoc),
           limit(this.pageSize)
@@ -89,12 +107,14 @@ export default {
       } else {
         // Tải dữ liệu lần đầu
         q = query(
-          collection(db, "health-posts"),
+          collection(db, POST_COLLECTION_NAME),
           orderBy("upTime", "desc"),
           limit(this.pageSize)
         );
       }
-
+      if (this.collectionType) {
+        q = query(q, where("type", "==", this.collectionType));
+      }
       const snapshot = await getDocs(q);
 
       // Kiểm tra nếu không còn dữ liệu
@@ -111,14 +131,6 @@ export default {
       this.hideLoader();
       this.isFetching = false;
     },
-    onScroll(event) {
-      const { scrollTop, clientHeight, scrollHeight } = event.target;
-      //   console.log({ scrollTop, clientHeight, scrollHeight });
-      // Khi cuộn đến cuối bảng, tải thêm dữ liệu
-      if (scrollTop + clientHeight >= scrollHeight - 5) {
-        this.fetchPosts();
-      }
-    },
   },
 };
 </script>
@@ -132,10 +144,6 @@ export default {
 }
 .btn-link {
   color: #1276a8;
-}
-.scroll-container {
-  max-height: 800px; /* Đặt chiều cao cố định cho khu vực cuộn */
-  overflow-y: auto; /* Kích hoạt cuộn dọc */
 }
 
 .mb-3 {

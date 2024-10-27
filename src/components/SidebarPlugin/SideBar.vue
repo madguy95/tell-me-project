@@ -31,7 +31,7 @@
             <a class="dropdown-item" href="#">Something else here</a>
           </base-dropdown> -->
           <div class="login-button-container" v-if="!isAuthenticated">
-            <router-link class="navbar-brand" to="/home">
+            <router-link class="navbar-brand" :to="$route.path === '/home' ? '/login' : '/home'">
               <b-button variant="default">{{
                 $route.path === "/home" ? "Đăng Nhập" : "Trang chủ"
               }}</b-button>

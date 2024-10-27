@@ -32,3 +32,10 @@ export const POST_ARR = [
       image: "/img/infographic/ifg4.png",
     }
 ]
+
+export const COLLECTION_TYPE = Object.freeze({
+  HEALTH: "health",
+  PSYCH: "psych",
+});
+
+export const POST_COLLECTION_NAME = "posts"

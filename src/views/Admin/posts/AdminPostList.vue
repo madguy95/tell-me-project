@@ -2,13 +2,22 @@
   <div class="container-fluid bg-white position-relative pt-3 pb-3">
     <Loader :visible="isLoading" />
     <h2>Danh Sách Bài Post</h2>
-    <b-button variant="primary" @click="$router.push('/admin/post-detail')"
+    <b-button variant="primary" @click="$router.push('/admin/post-form')"
       >Tải Lên Bài Post Mới</b-button
     >
-
+    <div>
+      <label>Loại bài: </label>
+      <b-form-select
+        v-model="collectionType"
+        :options="typeOptions"
+        class="mb-3"
+        @change="onChangeType"
+      >
+      </b-form-select>
+    </div>
     <!-- Bảng hiển thị danh sách post -->
-    <div class="table-container" @scroll="onScroll">
-      <b-table :items="posts" :fields="fields" responsive>
+    <div class="table-container">
+      <b-table :items="posts" :fields="fields" responsive sticky-header>
         <template #table-colgroup="scope">
           <colgroup>
             <col />
@@ -56,7 +65,7 @@
         </template>
       </b-table>
     </div>
-
+    <b-button @click="fetchPosts" :disabled="!hasMorePosts">Tải thêm</b-button>
     <!-- Confirm Delete Modal -->
     <b-modal id="confirmDeleteModal" title="Xác nhận xóa" @ok="deletePost">
       Bạn có chắc chắn muốn xóa bài post này không?
@@ -75,14 +84,17 @@ import {
   orderBy,
   limit,
   startAfter,
+  where,
 } from "firebase/firestore";
+import { COLLECTION_TYPE, POST_COLLECTION_NAME } from "../../../util/constant";
 
 export default {
   data() {
     return {
+      collectionType: "",
       posts: [],
       lastVisibleDoc: null, // Tài liệu cuối cùng của lô dữ liệu hiện tại
-      pageSize: 10,
+      pageSize: 2,
       isFetching: false, // Trạng thái tải dữ liệu
       hasMorePosts: true, // Kiểm tra còn dữ liệu để tải hay không
       fields: [
@@ -93,13 +105,25 @@ export default {
         { key: "videoLink", label: "Video" },
         { key: "actions", label: "Thao Tác", class: "text-center" },
       ],
+      typeOptions: [
+        { value: "", text: "Chọn loại" },
+        { value: COLLECTION_TYPE.HEALTH, text: "Chăm sóc sức khỏe" },
+        { value: COLLECTION_TYPE.PSYCH, text: "Hỗ trợ tâm lý" },
+      ],
       postToDelete: null,
     };
   },
   async created() {
+    if (this.$router.query && this.$router.query.type) {
+      this.collectionType = this.$router.query.type;
+    }
     await this.fetchPosts();
   },
   methods: {
+    onChangeType() {
+      this.resetData();
+      this.fetchPosts();
+    },
     async fetchPosts() {
       // Ngừng tải nếu đang trong quá trình tải hoặc không còn bài viết nào
       if (this.isFetching || !this.hasMorePosts) return;
@@ -111,7 +135,7 @@ export default {
       if (this.lastVisibleDoc) {
         // Tải các bài tiếp theo bắt đầu từ tài liệu cuối cùng của lần trước
         q = query(
-          collection(db, "health-posts"),
+          collection(db, POST_COLLECTION_NAME),
           orderBy("upTime", "desc"),
           startAfter(this.lastVisibleDoc),
           limit(this.pageSize)
@@ -119,10 +143,13 @@ export default {
       } else {
         // Tải dữ liệu lần đầu
         q = query(
-          collection(db, "health-posts"),
+          collection(db, POST_COLLECTION_NAME),
           orderBy("upTime", "desc"),
           limit(this.pageSize)
         );
+      }
+      if (this.collectionType) {
+        q = query(q, where("type", "==", this.collectionType));
       }
 
       const snapshot = await getDocs(q);
@@ -141,16 +168,8 @@ export default {
       this.hideLoader();
       this.isFetching = false;
     },
-    onScroll(event) {
-      const { scrollTop, clientHeight, scrollHeight } = event.target;
-      //   console.log({ scrollTop, clientHeight, scrollHeight });
-      // Khi cuộn đến cuối bảng, tải thêm dữ liệu
-      if (scrollTop + clientHeight + 1 >= scrollHeight) {
-        this.fetchPosts();
-      }
-    },
     editPost(id) {
-      this.$router.push(`/admin/post-detail/${id}`);
+      this.$router.push(`/admin/post-form/${id}`);
     },
     confirmDelete(id) {
       this.postToDelete = id;
@@ -159,7 +178,7 @@ export default {
     async deletePost() {
       if (this.postToDelete) {
         try {
-          await deleteDoc(doc(db, "health-posts", this.postToDelete));
+          await deleteDoc(doc(db, POST_COLLECTION_NAME, this.postToDelete));
           this.posts = this.posts.filter(
             (post) => post.id !== this.postToDelete
           );
@@ -183,9 +202,10 @@ export default {
 </script>
 
 <style scoped>
-.table-container {
-  max-height: calc(100vh - 300px); /* Đặt chiều cao cố định */
-  overflow-y: auto; /* Kích hoạt cuộn dọc */
+::v-deep .table-container .b-table-sticky-header {
+  max-height: calc(100vh - 500px); /* Đặt chiều cao cố định */
+  overflow: hidden;
+  overflow-y: auto;
 }
 
 .table-container .b-table {

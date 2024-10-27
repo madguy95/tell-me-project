@@ -24,7 +24,14 @@
 <script>
 import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
 import StatsCard from "@/components/Cards/StatsCard";
-import { collection, onSnapshot, getDocs } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  getDocs,
+  query,
+  orderBy,
+  Timestamp,
+} from "firebase/firestore";
 import { db } from "@/plugins/firebaseConfig";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import * as Helpers from "chart.js/helpers";
@@ -140,7 +147,15 @@ const USER_TYPE = {
   B: "Bệnh nhân",
   O: "Khác",
 };
-
+function formatDate(value) {
+  // Check if the value is a valid date
+  if (value instanceof Timestamp && !isNaN(value)) {
+    // Convert the date to a string (ISO format)
+    return value.toDate().toISOString(); // or use value.toString() for a more human-readable format
+  } else {
+    return null; // or throw an error or return a default value
+  }
+}
 export default {
   name: "ReportPage",
   components: {
@@ -155,14 +170,16 @@ export default {
       options: options,
       items: [],
       fieldsOrder: [
-        "userInfo.userType",
-        "userInfo.gender",
-        "userInfo.age",
+        "timestamp",
+        "testerInfo.userType",
+        "testerInfo.gender",
+        "testerInfo.age",
         "result.GAD-7",
         "result.PHQ-9",
         "result.BSRS-5",
       ],
       headers: [
+        "Thời gian",
         "Người",
         "Giới tính",
         "Tuổi",
@@ -224,7 +241,9 @@ export default {
     },
     async exportToExcel() {
       try {
-        const snapshot = await getDocs(collection(db, "surveys"));
+        const snapshot = await getDocs(
+          query(collection(db, "surveys"), orderBy("timestamp", "desc"))
+        );
         const data = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -245,10 +264,13 @@ export default {
             keys.forEach((key) => {
               value = value ? value[key] : value; // Lấy giá trị hoặc gán trống nếu không tồn tại
             });
-            if (field === "userInfo.userType") {
+            if (field === "testerInfo.userType") {
               value = USER_TYPE[value];
             }
-            return (value === undefined || value === null) ? 'N/A' : value; ; // Gán giá trị hoặc gán trống nếu không có
+            if (field === "timestamp") {
+              value = formatDate(value);
+            }
+            return value === undefined || value === null ? "N/A" : value; // Gán giá trị hoặc gán trống nếu không có
           });
           sheetData.push(row); // Thêm hàng vào mảng
         });
@@ -270,7 +292,6 @@ export default {
         //   });
         //   return formattedItem;
         // });
-
         const ws = XLSX.utils.aoa_to_sheet(sheetData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
