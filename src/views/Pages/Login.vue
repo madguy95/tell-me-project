@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Header -->
-    <div class="header bg-gradient-success py-7 py-lg-8 pt-lg-9">
+    <div class="header bg-gradient-success py-7 py-lg-8 pt-lg-9 custom-login-header">
       <!-- <b-container>
         <div class="header-body text-center">
           <b-row class="justify-content-center">
@@ -91,9 +91,7 @@
                 </b-form>
               </validation-observer>
               <b-col cols="6">
-                <router-link to="/dashboard" class="text-dark"
-                  ><small>Forgot password?</small></router-link
-                >
+                <small>Forgot password?</small>
               </b-col>
             </b-card-body>
           </b-card>
@@ -142,3 +140,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.custom-login-header {
+  background: linear-gradient(87deg, #172b4d, #b0c1dd 100%) !important
+}
+</style>

@@ -63,24 +63,12 @@
 <script>
 import {
   collection,
-  orderBy,
-  doc,
-  updateDoc,
-  deleteDoc,
   query,
-  addDoc,
   getDocs,
   where,
   limit,
 } from "firebase/firestore";
-import {
-  ref,
-  getDownloadURL,
-  uploadBytes,
-  deleteObject,
-} from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
-import { db, storage } from "@/plugins/firebaseConfig";
+import { db } from "@/plugins/firebaseConfig";
 export default {
   components: {},
   data() {

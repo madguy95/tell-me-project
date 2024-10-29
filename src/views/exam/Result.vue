@@ -32,29 +32,12 @@
           v-html="testLevelContent(name, value)"
         ></li>
       </ul>
-      <p class="text-sub-title">Ngoài ra bạn cũng có thể:</p>
-      <p class="solution-text" v-html="results[generalLevel].advice"></p>
-
-      <div
-        v-for="(solution, index) in results[generalLevel].solutions"
-        :key="index"
-      >
-        <template v-if="solution.type === 'program'">
-          <p class="solution-text">- {{ solution.text }}</p>
-          <img :src="solution.url" />
-        </template>
-        <template v-if="solution.type === 'video'">
-          <p class="solution-text">- {{ solution.text }}</p>
-          <b-embed
-            type="iframe"
-            aspect="16by9"
-            :src="solution.url"
-            allowfullscreen
-          ></b-embed>
-        </template>
-      </div>
+      <p class="text-sub-title" v-if="results[generalLevel] && results[generalLevel].advice">
+        Ngoài ra bạn cũng có thể:
+      </p>
+      <p class="solution-text" v-if="results[generalLevel]"  v-html="results[generalLevel].advice"></p>
     </div>
-    <div v-if="results[generalLevel].action" class="mt-3">
+    <div v-if="results[generalLevel] && results[generalLevel].action" class="mt-3">
       <router-link
         :to="results[generalLevel].action.url"
         v-if="results[generalLevel].action.url"
@@ -115,37 +98,25 @@ import LevelIndicators from "@/views/exam/LevelIndicators.vue";
 import { RESULT_ARR } from "../../constants";
 import _ from "lodash";
 import { db } from "@/plugins/firebaseConfig";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  updateDoc,
-  doc,
-  query,
-  limit,
-} from "firebase/firestore";
+import { collection, getDocs, query, limit } from "firebase/firestore";
 import { cloneDeep } from "lodash";
-import { clone } from "lodash";
-function findClosestNumber(arr, target) {
-  // Sắp xếp mảng theo thứ tự tăng dần
+
+function findClosestGreaterNumber(arr, target) {
+  // Sort the array in ascending order
   arr.sort((a, b) => a - b);
 
-  // Tìm số gần nhất
-  let closest = arr[0]; // Khởi tạo số gần nhất với phần tử đầu tiên
-  let minDiff = Math.abs(target - closest); // Khởi tạo độ chênh lệch tối thiểu
-
-  for (let i = 1; i < arr.length; i++) {
-    const diff = Math.abs(target - arr[i]); // Tính độ chênh lệch
-
-    // Cập nhật số gần nhất nếu độ chênh lệch nhỏ hơn độ chênh lệch tối thiểu
-    if (diff < minDiff) {
-      minDiff = diff;
-      closest = arr[i];
+  // Iterate through the array to find the closest number greater than or equal to the target
+  let closestNumber = null;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] >= target) {
+      closestNumber = arr[i];
+      return closestNumber;
     }
   }
 
-  return +closest;
+  return closestNumber;
 }
+
 function decodeHtml(html) {
   const txt = document.createElement("textarea");
   txt.innerHTML = html;
@@ -160,6 +131,17 @@ const createSubObject = (obj, keys) => {
   }, {});
 };
 
+const ACTIONS = Object.freeze({
+  BACK_HOME: {
+    text: "Quay lại trang chủ",
+    url: "/home",
+  },
+  EXTERNAL: {
+    text: "Liên hệ ngay",
+    externalUrl:
+      "https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit",
+  },
+});
 export default {
   name: "ResultPage",
   components: {
@@ -181,8 +163,18 @@ export default {
   data() {
     return {
       generalEvaluations: [
-        { type: 1, limitLevel: 2, content: "Mức đánh giá 1" },
-        { type: 2, limitLevel: 10, content: "Mức đánh giá 2" },
+        {
+          type: 1,
+          limitLevel: 2,
+          content: "Mức đánh giá 1",
+          action: ACTIONS.BACK_HOME,
+        },
+        {
+          type: 2,
+          limitLevel: 10,
+          content: "Mức đánh giá 2",
+          action: ACTIONS.EXTERNAL,
+        },
       ],
       testsEvaluation: {
         "GAD-7": [
@@ -303,8 +295,8 @@ export default {
       return Math.max(...Object.values(this.pointLevel));
     },
     generalLevel() {
-      return findClosestNumber(
-        Object.keys(this.generalEvaluations.map((el) => el.limitlevel)),
+      return findClosestGreaterNumber(
+        this.generalEvaluations.map((el) => el.limitLevel),
         this.maxLevel
       );
     },
@@ -337,10 +329,15 @@ export default {
           this.levelResults = cloneDeep(this.levelResults);
           this.testsEvaluation = cloneDeep(this.testsEvaluation);
           generalEvaluations.forEach((el) => {
-            resultsClone[el.level].advice = decodeHtml(el.content);
+            resultsClone[el.limitLevel] = {}
+            resultsClone[el.limitLevel].advice = decodeHtml(el.content);
+            resultsClone[el.limitLevel].action =
+              el.level === 1 ? ACTIONS.BACK_HOME : ACTIONS.EXTERNAL;
           });
           this.results = resultsClone;
-          this.generalEvaluations = generalEvaluations.sort((a, b) => b.level - a.level);
+          this.generalEvaluations = cloneDeep(generalEvaluations.sort(
+            (a, b) => b.level - a.level
+          ))
         } else {
           console.log("No documents found in the collection.");
         }
