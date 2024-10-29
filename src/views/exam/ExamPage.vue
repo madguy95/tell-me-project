@@ -177,7 +177,7 @@ export default {
         const ip = response.data.ip
         const colRef = collection(db, 'surveys')
         const dataObj = {
-          userId: this.user.uid || 'ANONYMOUS_USER',
+          userId: this.user? this.user.uid : 'ANONYMOUS_USER',
           requestPublicIp: ip,
           result: pointObj,
           timestamp: new Date(),
