@@ -4,13 +4,7 @@
     <h2 class="">Tai anh Banner</h2>
     <b-form>
       <b-form-group label="Select Images:" label-for="file-input">
-        <b-form-file
-          id="file-input"
-          v-model="files"
-          multiple
-          accept="image/*"
-          @change="previewImages"
-        />
+        <b-form-file id="file-input" v-model="files" multiple accept="image/*" @change="previewImages" />
       </b-form-group>
     </b-form>
     <div v-if="imagesWithPreviews.length" class="mt-4">
@@ -35,76 +29,33 @@
             {{ data.index + 1 }}
           </template>
           <template #cell(preview)="data">
-            <b-img
-              :src="data.item.url"
-              class="img-thumbnail"
-              alt="Preview"
-              style="max-width: 150px"
-            />
+            <b-img :src="data.item.url" class="img-thumbnail" alt="Preview" style="max-width: 150px" />
           </template>
           <template #cell(actions)="data">
-            <b-button
-              variant="light"
-              @click="moveUp(data.index)"
-              :disabled="data.index === 0"
-            >
-              ↑
-            </b-button>
-            <b-button
-              variant="light"
-              @click="moveDown(data.index)"
-              :disabled="data.index === images.length - 1"
-            >
+            <b-button variant="light" @click="moveUp(data.index)" :disabled="data.index === 0"> ↑ </b-button>
+            <b-button variant="light" @click="moveDown(data.index)" :disabled="data.index === images.length - 1">
               ↓
             </b-button>
-            <b-button
-              @click="removeImage(data.index)"
-              variant="danger"
-              class="ml-2"
-              >Remove</b-button
-            >
+            <b-button @click="removeImage(data.index)" variant="danger" class="ml-2">Remove</b-button>
           </template>
         </b-table>
       </div>
 
-      <b-button @click="saveImages" type="submit" variant="primary"
-        >Upload and save</b-button
-      >
+      <b-button @click="saveImages" type="submit" variant="primary">Upload and save</b-button>
       <!-- End of responsive wrapper -->
     </div>
   </div>
 </template>
 <script>
-import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
-import StatsCard from "@/components/Cards/StatsCard";
-import {
-  collection,
-  orderBy,
-  doc,
-  updateDoc,
-  deleteDoc,
-  query,
-  addDoc,
-  getDocs,
-} from "firebase/firestore";
-import {
-  ref,
-  getDownloadURL,
-  uploadBytes,
-  deleteObject,
-} from "firebase/storage";
-import { db, storage } from "@/plugins/firebaseConfig";
-import _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
-import Loader from "@/components/Loader/Loader.vue";
+import { collection, orderBy, doc, updateDoc, deleteDoc, query, addDoc, getDocs } from 'firebase/firestore'
+import { ref, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage'
+import { db, storage } from '@/plugins/firebaseConfig'
+import { v4 as uuidv4 } from 'uuid'
+import Loader from '@/components/Loader/Loader.vue'
 
 export default {
-  name: "BannerPage",
-  components: {
-    StatsCard,
-    RouteBreadCrumb,
-    Loader,
-  },
+  name: 'BannerPage',
+  components: {},
   data() {
     return {
       isLoading: false,
@@ -112,96 +63,94 @@ export default {
       images: [],
       originData: [],
       fields: [
-        { key: "index", label: "Order" },
-        { key: "preview", label: "Preview" },
-        { key: "actions", label: "Actions" },
-      ],
-    };
+        { key: 'index', label: 'Order' },
+        { key: 'preview', label: 'Preview' },
+        { key: 'actions', label: 'Actions' }
+      ]
+    }
   },
   computed: {
     imagesWithPreviews() {
-      return this.images;
-    },
+      return this.images
+    }
   },
   created() {
-    this.fetchImages(); // Fetch images on component creation
+    this.fetchImages() // Fetch images on component creation
   },
   methods: {
     async saveImages() {
-      this.isLoading = true;
+      this.isLoading = true
       if (this.images) {
         for (let i = 0; i < this.images.length; i++) {
-          const image = this.images[i];
+          const image = this.images[i]
           if (image.id) {
-            await updateDoc(doc(db, "banners", image.id), {
-              order: i,
-            });
+            await updateDoc(doc(db, 'banners', image.id), {
+              order: i
+            })
           } else {
-            const file = image.file;
-            const uniqueFileName = uuidv4() + "_" + file.name;
-            const storageRef = ref(storage, `banners/${uniqueFileName}`);
-            await uploadBytes(storageRef, file);
-            const url = await getDownloadURL(storageRef);
-            await this.saveImageUrl(url, i); // Save the URL to Firestore
+            const file = image.file
+            const uniqueFileName = uuidv4() + '_' + file.name
+            const storageRef = ref(storage, `banners/${uniqueFileName}`)
+            await uploadBytes(storageRef, file)
+            const url = await getDownloadURL(storageRef)
+            await this.saveImageUrl(url, i) // Save the URL to Firestore
           }
         }
       }
       if (!this.images || this.images.length <= 0) {
-        console.error("Must be at least 1 image exist");
-        return;
+        console.error('Must be at least 1 image exist')
+        return
       }
       for (let i = 0; i < this.originData.length; i++) {
-        const imgOg = this.originData[i];
+        const imgOg = this.originData[i]
         if (!this.images.find((img) => img.id === imgOg.id)) {
-          await deleteDoc(doc(db, "banners", imgOg.id));
-          await deleteObject(ref(storage, imgOg.url));
+          await deleteDoc(doc(db, 'banners', imgOg.id))
+          await deleteObject(ref(storage, imgOg.url))
         }
       }
-      this.fetchImages();
-      this.files = null; // Reset file input
+      this.fetchImages()
+      this.files = null // Reset file input
     },
     async fetchImages() {
-      this.isLoading = true;
-      const imagesCollection = collection(db, "banners");
-      const q = query(imagesCollection, orderBy("order"));
-      const snapshot = await getDocs(q);
-      this.images = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      this.originData = [...this.images];
-      this.isLoading = false;
+      this.isLoading = true
+      const imagesCollection = collection(db, 'banners')
+      const q = query(imagesCollection, orderBy('order'))
+      const snapshot = await getDocs(q)
+      this.images = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+      this.originData = [...this.images]
+      this.isLoading = false
     },
     async saveImageUrl(url, order) {
-      const bannersCol = collection(db, "banners"); // Store URL and order in Firestore
-      await addDoc(bannersCol, { url, order });
+      const bannersCol = collection(db, 'banners') // Store URL and order in Firestore
+      await addDoc(bannersCol, { url, order })
     },
     previewImages(event) {
-      const files = event.target.files;
+      const files = event.target.files
       Array.from(files)
         .map((file) => URL.createObjectURL(file))
-        .forEach((f, index) =>
-          this.images.unshift({ url: f, file: files[index] })
-        );
+        .forEach((f, index) => this.images.unshift({ url: f, file: files[index] }))
     },
     removeImage(index) {
-      this.images.splice(index, 1);
+      this.images.splice(index, 1)
     },
     moveUp(index) {
       if (index > 0) {
-        const imagesClone = [...this.images];
-        imagesClone[index] = this.images[index - 1];
-        imagesClone[index - 1] = this.images[index];
-        this.images = [...imagesClone];
+        const imagesClone = [...this.images]
+        imagesClone[index] = this.images[index - 1]
+        imagesClone[index - 1] = this.images[index]
+        this.images = [...imagesClone]
       }
     },
     moveDown(index) {
       if (index < this.images.length - 1) {
-        const imagesClone = [...this.images];
-        imagesClone[index] = this.images[index + 1];
-        imagesClone[index + 1] = this.images[index];
-        this.images = [...imagesClone];
+        const imagesClone = [...this.images]
+        imagesClone[index] = this.images[index + 1]
+        imagesClone[index + 1] = this.images[index]
+        this.images = [...imagesClone]
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style scoped>
 .img-thumbnail {

@@ -21,20 +21,15 @@
       </template>
       <p class="alert-content">
         Bạn sắp được chuyển tới các câu hỏi của bài kiểm tra
-        <strong>{{ examIds.join(", ") }}</strong
-        >. Vui lòng nhấn Tiếp tục để bắt đầu quá trình kiểm tra hoặc Trở về để
-        chọn lại bài kiểm tra sẽ thực hiện.
+        <strong>{{ examIds.join(', ') }}</strong
+        >. Vui lòng nhấn Tiếp tục để bắt đầu quá trình kiểm tra hoặc Trở về để chọn lại bài kiểm tra sẽ thực hiện.
       </p>
       <b-row>
         <b-col cols="6">
-          <b-button class="btn-common btn-cancel" block @click="handleCancel"
-            >Trở về</b-button
-          >
+          <b-button class="btn-common btn-cancel" block @click="handleCancel">Trở về</b-button>
         </b-col>
         <b-col cols="6">
-          <b-button class="btn-common btn-yes" block @click="handleConfirm"
-            >Tiếp tục</b-button
-          >
+          <b-button class="btn-common btn-yes" block @click="handleConfirm">Tiếp tục</b-button>
         </b-col>
       </b-row>
     </b-modal>
@@ -70,31 +65,17 @@
         </b-form-group>
         <b-row class="justify-content-center">
           <b-col cols="5" class="text-center">
-            <b-button
-              class="btn-common btn-back"
-              :disabled="currentQuestion === 0"
-              @click="goToPreviousQuestion"
-            >
+            <b-button class="btn-common btn-back" :disabled="currentQuestion === 0" @click="goToPreviousQuestion">
               <i class="fas fa-long-arrow-alt-left"></i>
             </b-button>
           </b-col>
-          <b-col
-            cols="5"
-            class="text-center"
-            v-if="currentQuestion !== questions.length - 1"
-          >
+          <b-col cols="5" class="text-center" v-if="currentQuestion !== questions.length - 1">
             <b-button class="btn-common btn-next" @click="goToNextQuestion">
               <i class="fas fa-long-arrow-alt-right"></i>
             </b-button>
           </b-col>
-          <b-col
-            cols="5"
-            class="text-center"
-            v-if="currentQuestion === questions.length - 1"
-          >
-            <b-button class="btn-common btn-finish" @click="clickFinish">
-              Hoàn Thành
-            </b-button>
+          <b-col cols="5" class="text-center" v-if="currentQuestion === questions.length - 1">
+            <b-button class="btn-common btn-finish" @click="clickFinish"> Hoàn Thành </b-button>
           </b-col>
         </b-row>
       </b-form>
@@ -102,27 +83,16 @@
   </div>
 </template>
 <script>
-import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
-import StatsCard from "@/components/Cards/StatsCard";
-import axios from "axios";
-import { QUESTION_ARR, RESULT_ARR } from "../../constants";
-import _ from "lodash";
-import { mapState } from "vuex";
-import { db } from "@/plugins/firebaseConfig";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  query,
-  limit,
-} from "firebase/firestore";
+import axios from 'axios'
+import { RESULT_ARR } from '../../constants'
+import _ from 'lodash'
+import { mapState } from 'vuex'
+import { db } from '@/plugins/firebaseConfig'
+import { collection, addDoc, getDocs, query, limit } from 'firebase/firestore'
 
 export default {
-  name: "ExamPage",
-  components: {
-    StatsCard,
-    RouteBreadCrumb,
-  },
+  name: 'ExamPage',
+  components: {},
   data() {
     return {
       examIds: this.$route.query.id || [],
@@ -130,25 +100,25 @@ export default {
       currentQuestion: 0,
       selectedAnswer: 0,
       questions: [],
-      questionData: _.cloneDeep(RESULT_ARR),
-    };
+      questionData: _.cloneDeep(RESULT_ARR)
+    }
   },
   computed: {
-    ...mapState(["user", "testerInfo"]),
+    ...mapState(['user', 'testerInfo'])
   },
   created() {
-    this.loadExams();
+    this.loadExams()
   },
   methods: {
     async loadExams() {
       this.showLoader()
-      const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
+      const q = query(collection(db, 'exams'), limit(1)) // Replace "yourCollection" with your actual collection name
 
       try {
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(q)
         if (!querySnapshot.empty) {
-          const firstDoc = querySnapshot.docs[0]; // Get the first document
-          const dataTest = firstDoc.data();
+          const firstDoc = querySnapshot.docs[0] // Get the first document
+          const dataTest = firstDoc.data()
           this.questions = dataTest.tests
             .filter((el) => this.examIds.includes(el.code))
             .map((el) =>
@@ -156,77 +126,77 @@ export default {
                 ...q,
                 type: el.code,
                 numb: idx + 1,
-                answer: 0,
+                answer: 0
               }))
             )
-            .flat();
+            .flat()
         } else {
-          console.log("No documents found in the collection.");
+          console.log('No documents found in the collection.')
         }
       } catch (error) {
-        console.error("Error getting documents:", error);
+        console.error('Error getting documents:', error)
       } finally {
         this.hideLoader()
       }
     },
     goToPreviousQuestion() {
       if (this.currentQuestion > 0) {
-        this.currentQuestion -= 1;
-        this.selectedAnswer = 0; // Reset selected answer
+        this.currentQuestion -= 1
+        this.selectedAnswer = 0 // Reset selected answer
       }
     },
     goToNextQuestion() {
       if (this.currentQuestion < this.questions.length - 1) {
-        this.currentQuestion += 1;
-        this.selectedAnswer = 0; // Reset selected answer
+        this.currentQuestion += 1
+        this.selectedAnswer = 0 // Reset selected answer
       }
     },
     handleConfirm() {
-      this.show = false;
+      this.show = false
     },
     handleCancel() {
-      this.$router.push("/home");
+      this.$router.push('/home')
     },
     async clickFinish() {
       this.showLoader()
       let pointObj = this.questions.reduce((total, el) => {
         if (!total[el.type]) {
-          total[el.type] = 0;
+          total[el.type] = 0
         }
-        total[el.type] = el.answers[el.answer].score + total[el.type];
-        return total;
-      }, {});
-      await this.submitSurvey(pointObj);
+        total[el.type] = el.answers[el.answer].score + total[el.type]
+        return total
+      }, {})
+      await this.submitSurvey(pointObj)
       // console.log(this.questions);
       // console.log(pointObj);
-      this.$router.push({ name: "result", query: { ...pointObj } });
+      this.$router.push({ name: 'result', query: { ...pointObj } })
     },
     async submitSurvey(pointObj) {
       try {
-        const response = await axios.get("https://api.ipify.org?format=json");
-        const ip = response.data.ip;
-        const colRef = collection(db, "surveys");
+        const response = await axios.get('https://api.ipify.org?format=json')
+        const ip = response.data.ip
+        const colRef = collection(db, 'surveys')
         const dataObj = {
-          userId: this.user.uid || "ANONYMOUS_USER",
+          userId: this.user.uid || 'ANONYMOUS_USER',
           requestPublicIp: ip,
           result: pointObj,
           timestamp: new Date(),
-          testerInfo: this.testerInfo,
-        };
+          testerInfo: this.testerInfo
+        }
         // console.log(dataObj);
-        const docRef = await addDoc(colRef, dataObj);
+        const docRef = await addDoc(colRef, dataObj)
         // console.log("Document was created with ID:", docRef.id);
         // console.log("Kết quả khảo sát đã được lưu thành công!");
-        this.selectedResult = null;
+        this.selectedResult = null
       } catch (error) {
-        console.error("Lỗi khi lưu khảo sát: ", error);
+        console.error('Lỗi khi lưu khảo sát: ', error)
       } finally {
         this.hideLoader()
       }
-    },
+    }
   },
-  mounted() {},
-};
+  mounted() {}
+}
 </script>
 <style>
 .custom-radio {
@@ -248,7 +218,7 @@ export default {
   min-height: 48px;
 
   /* Radio text */
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -259,7 +229,7 @@ export default {
   color: #00297b;
 }
 
-.custom-radio input[type="radio"] + .custom-control-label::before {
+.custom-radio input[type='radio'] + .custom-control-label::before {
   position: absolute;
   left: -2.25rem;
   top: 1.5rem;
@@ -275,7 +245,7 @@ export default {
   transform: translateY(-50%);
 }
 
-.custom-radio input[type="radio"]:checked + .custom-control-label::after {
+.custom-radio input[type='radio']:checked + .custom-control-label::after {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23f79c33'/%3e%3c/svg%3e");
   background-color: #f79c33;
   /* Inner dot color when checked */
@@ -292,7 +262,7 @@ export default {
 
 .alert-content {
   /* Vector */
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -340,7 +310,7 @@ export default {
 .question-box {
   background: #1276a8;
   color: #ffffff;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -352,14 +322,14 @@ export default {
 
 .question-box p {
   color: #ffffff;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
 }
 
 .question-box .content {
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -369,7 +339,7 @@ export default {
 
 .sub-note {
   /* Anh/chị hãy nhớ lại một cách chi tiết trong một tuần gần đây (bao gồm cả hôm nay), mức độ mà những vấn đề sau khiến anh/chị cảm thấy buồn phiền hoặc lo lắng. Xin vui lòng lựa chọn câu trả lời phù hợp nhất với tình trạng của anh/chị. */
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: italic;
   font-weight: 300;
   font-size: 12px;

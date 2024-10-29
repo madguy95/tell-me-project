@@ -9,23 +9,14 @@
       <component
         :is="titleTag"
         class="btn-rotate"
-        :class="[{'dropdown-toggle': hasToggle}, titleClasses]"
+        :class="[{ 'dropdown-toggle': hasToggle }, titleClasses]"
         :aria-expanded="isOpen"
         data-toggle="dropdown"
       >
-        <slot name="title" :is-open="isOpen">
-          <i :class="icon"></i> {{ title }}
-        </slot>
+        <slot name="title" :is-open="isOpen"> <i :class="icon"></i> {{ title }} </slot>
       </component>
     </slot>
-    <ul
-      class="dropdown-menu"
-      :class="[
-        { show: isOpen },
-        { 'dropdown-menu-right': menuOnRight },
-        menuClasses
-      ]"
-    >
+    <ul class="dropdown-menu" :class="[{ show: isOpen }, { 'dropdown-menu-right': menuOnRight }, menuClasses]">
       <slot></slot>
     </ul>
   </component>
@@ -78,19 +69,19 @@ export default {
   data() {
     return {
       isOpen: false
-    };
+    }
   },
   methods: {
     toggleDropDown() {
-      this.isOpen = !this.isOpen;
-      this.$emit('change', this.isOpen);
+      this.isOpen = !this.isOpen
+      this.$emit('change', this.isOpen)
     },
     closeDropDown() {
-      this.isOpen = false;
-      this.$emit('change', false);
+      this.isOpen = false
+      this.$emit('change', false)
     }
   }
-};
+}
 </script>
 <style lang="scss" scoped>
 .dropdown {

@@ -10,7 +10,7 @@
   >
     <span class="navbar-toggler-icon"></span>
     <slot>
-        <span></span>
+      <span></span>
     </slot>
   </button>
 </template>
@@ -27,6 +27,6 @@ export default {
       description: 'Whether button is toggled'
     }
   }
-};
+}
 </script>
 <style></style>

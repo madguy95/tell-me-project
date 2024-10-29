@@ -1,12 +1,5 @@
 <template>
-  <b-overlay
-    :show="visible"
-    :opacity="opacity"
-    spinner-medium
-    spinner-variant="primary"
-    :fixed="isFullPage"
-    no-wrap
-  >
+  <b-overlay :show="visible" :opacity="opacity" spinner-medium spinner-variant="primary" :fixed="isFullPage" no-wrap>
   </b-overlay>
 </template>
 
@@ -15,16 +8,16 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: false,
+      default: false
     },
     opacity: {
       type: Number,
-      default: 0.6,
+      default: 0.6
     },
     isFullPage: {
       type: Boolean,
-      default: false,
-    },
-  },
-};
+      default: false
+    }
+  }
+}
 </script>

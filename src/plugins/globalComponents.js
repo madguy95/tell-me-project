@@ -1,8 +1,6 @@
 import BaseInput from '@/components/Inputs/BaseInput.vue';
 import BaseDropdown from '@/components/BaseDropdown.vue';
-import Card from '@/components/Cards/Card.vue';
 import Modal from '@/components/Modal.vue';
-import StatsCard from '@/components/Cards/StatsCard.vue';
 import BaseButton from '@/components/BaseButton.vue';
 import Badge from '@/components/Badge.vue';
 import BaseCheckbox from '@/components/Inputs/BaseCheckbox.vue';
@@ -31,9 +29,7 @@ const GlobalComponents = {
     Vue.component(BasePagination.name, BasePagination);
     Vue.component(BaseProgress.name, BaseProgress);
     Vue.component(BaseRadio.name, BaseRadio);
-    Vue.component(Card.name, Card);
     Vue.component(Modal.name, Modal);
-    Vue.component(StatsCard.name, StatsCard);
     Vue.component(Input.name, Input);
     Vue.component('validation-provider', ValidationProvider)
     Vue.component('validation-observer', ValidationObserver)

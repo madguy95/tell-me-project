@@ -4,17 +4,13 @@
     <div>
       <h1 class="text-center text-title">Kết quả</h1>
     </div>
-    <div
-      v-for="(value, name, index) in pointLevel"
-      :key="index"
-      class="mt-3 result-box"
-    >
+    <div v-for="(value, name, index) in pointLevel" :key="index" class="mt-3 result-box">
       <h3 class="text-center result-title">
-        {{ levelResults[name]["title"] }}
+        {{ levelResults[name]['title'] }}
         <span></span>
       </h3>
       <h4 class="text-center result-sub-title">
-        {{ levelResults[name]["subTitle"] }}
+        {{ levelResults[name]['subTitle'] }}
       </h4>
       <LevelIndicators :level="value" :maxLevel="levelResults[name].maxLevel" />
       <p class="text-center result-text">
@@ -26,36 +22,22 @@
     </div>
     <div class="solution-text">
       <ul>
-        <li
-          v-for="(value, name, index) in pointLevel"
-          :key="index"
-          v-html="testLevelContent(name, value)"
-        ></li>
+        <li v-for="(value, name, index) in pointLevel" :key="index" v-html="testLevelContent(name, value)"></li>
       </ul>
       <p class="text-sub-title" v-if="results[generalLevel] && results[generalLevel].advice">
         Ngoài ra bạn cũng có thể:
       </p>
-      <p class="solution-text" v-if="results[generalLevel]"  v-html="results[generalLevel].advice"></p>
+      <p class="solution-text" v-if="results[generalLevel]" v-html="results[generalLevel].advice"></p>
     </div>
     <div v-if="results[generalLevel] && results[generalLevel].action" class="mt-3">
-      <router-link
-        :to="results[generalLevel].action.url"
-        v-if="results[generalLevel].action.url"
-      >
+      <router-link :to="results[generalLevel].action.url" v-if="results[generalLevel].action.url">
         <base-button icon class="button-common">
-          <span class="btn-inner--text">{{
-            results[generalLevel].action.text
-          }}</span>
+          <span class="btn-inner--text">{{ results[generalLevel].action.text }}</span>
         </base-button>
       </router-link>
-      <b-link
-        :href="results[generalLevel].action.externalUrl"
-        v-if="results[generalLevel].action.externalUrl"
-      >
+      <b-link :href="results[generalLevel].action.externalUrl" v-if="results[generalLevel].action.externalUrl">
         <base-button icon class="button-common">
-          <span class="btn-inner--text">{{
-            results[generalLevel].action.text
-          }}</span>
+          <span class="btn-inner--text">{{ results[generalLevel].action.text }}</span>
         </base-button>
       </b-link>
     </div>
@@ -65,10 +47,7 @@
       </div>
       <b-row>
         <b-col cols="6" class="d-flex justify-content-center">
-          <b-link
-            href="https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu"
-            class="icon-link d-flex"
-          >
+          <b-link href="https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu" class="icon-link d-flex">
             <div class="image-container">
               <img src="/img/icons/group.png" />
             </div>
@@ -94,58 +73,57 @@
   </div>
 </template>
 <script>
-import LevelIndicators from "@/views/exam/LevelIndicators.vue";
-import { RESULT_ARR } from "../../constants";
-import _ from "lodash";
-import { db } from "@/plugins/firebaseConfig";
-import { collection, getDocs, query, limit } from "firebase/firestore";
-import { cloneDeep } from "lodash";
+import LevelIndicators from '@/views/exam/LevelIndicators.vue'
+import { RESULT_ARR } from '../../constants'
+import _ from 'lodash'
+import { db } from '@/plugins/firebaseConfig'
+import { collection, getDocs, query, limit } from 'firebase/firestore'
+import { cloneDeep } from 'lodash'
 
 function findClosestGreaterNumber(arr, target) {
   // Sort the array in ascending order
-  arr.sort((a, b) => a - b);
+  arr.sort((a, b) => a - b)
 
   // Iterate through the array to find the closest number greater than or equal to the target
-  let closestNumber = null;
+  let closestNumber = null
   for (let i = 0; i < arr.length; i++) {
     if (arr[i] >= target) {
-      closestNumber = arr[i];
-      return closestNumber;
+      closestNumber = arr[i]
+      return closestNumber
     }
   }
 
-  return closestNumber;
+  return closestNumber
 }
 
 function decodeHtml(html) {
-  const txt = document.createElement("textarea");
-  txt.innerHTML = html;
-  return txt.value;
+  const txt = document.createElement('textarea')
+  txt.innerHTML = html
+  return txt.value
 }
 const createSubObject = (obj, keys) => {
   return keys.reduce((acc, key) => {
     if (key in obj) {
-      acc[key] = obj[key];
+      acc[key] = obj[key]
     }
-    return acc;
-  }, {});
-};
+    return acc
+  }, {})
+}
 
 const ACTIONS = Object.freeze({
   BACK_HOME: {
-    text: "Quay lại trang chủ",
-    url: "/home",
+    text: 'Quay lại trang chủ',
+    url: '/home'
   },
   EXTERNAL: {
-    text: "Liên hệ ngay",
-    externalUrl:
-      "https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit",
-  },
-});
+    text: 'Liên hệ ngay',
+    externalUrl: 'https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit'
+  }
+})
 export default {
-  name: "ResultPage",
+  name: 'ResultPage',
   components: {
-    LevelIndicators,
+    LevelIndicators
   },
   computed: {
     // currentLevel() {
@@ -166,71 +144,66 @@ export default {
         {
           type: 1,
           limitLevel: 2,
-          content: "Mức đánh giá 1",
-          action: ACTIONS.BACK_HOME,
+          content: 'Mức đánh giá 1',
+          action: ACTIONS.BACK_HOME
         },
         {
           type: 2,
           limitLevel: 10,
-          content: "Mức đánh giá 2",
-          action: ACTIONS.EXTERNAL,
-        },
+          content: 'Mức đánh giá 2',
+          action: ACTIONS.EXTERNAL
+        }
       ],
       testsEvaluation: {
-        "GAD-7": [
+        'GAD-7': [
           { minScore: 20, level: 5 },
           { minScore: 15, level: 4 },
           { minScore: 10, level: 3 },
           { minScore: 5, level: 2 },
-          { minScore: 0, level: 1 },
+          { minScore: 0, level: 1 }
         ],
-        "PHQ-9": [
+        'PHQ-9': [
           { minScore: 20, level: 5 },
           { minScore: 15, level: 4 },
           { minScore: 10, level: 3 },
           { minScore: 5, level: 2 },
-          { minScore: 0, level: 1 },
+          { minScore: 0, level: 1 }
         ],
-        "BSRS-5": [
+        'BSRS-5': [
           { minScore: 20, level: 5 },
           { minScore: 15, level: 4 },
           { minScore: 10, level: 3 },
           { minScore: 5, level: 2 },
-          { minScore: 0, level: 1 },
-        ],
+          { minScore: 0, level: 1 }
+        ]
       },
-      pointObj: createSubObject(this.$route.query || {}, [
-        "GAD-7",
-        "PHQ-9",
-        "BSRS-5",
-      ]),
+      pointObj: createSubObject(this.$route.query || {}, ['GAD-7', 'PHQ-9', 'BSRS-5']),
       levelResults: { ..._.cloneDeep(RESULT_ARR) },
       results: {
         1: {
-          message: "Chúc mừng, bạn đã tự điều chỉnh cân bằng cảm xúc rất tốt.",
+          message: 'Chúc mừng, bạn đã tự điều chỉnh cân bằng cảm xúc rất tốt.',
           advice:
             'Hãy cố gắng duy trì thể trạng sức khỏe tâm thần hiện tại để cùng đồng hành với bệnh nhân bạn nhé! <br>Bạn có thể tìm thấy các thông tin hữu ích cho quá trình chăm bệnh khi trở lại Trang chủ và nhấn vào mục <strong style="color: #F79C33;">Trạm thông tin</strong>.',
           solutions: [],
           action: {
-            text: "Quay lại trang chủ",
-            url: "/home",
-          },
+            text: 'Quay lại trang chủ',
+            url: '/home'
+          }
         },
         2: {
           message:
-            "Bạn có mức độ căng thẳng nhẹ. Chúng tôi khuyến khích bạn nên tìm kiến sự hỗ trợ tâm lý như nói chuyện với gia đình, bạn bè để chia sẻ cảm xúc.",
+            'Bạn có mức độ căng thẳng nhẹ. Chúng tôi khuyến khích bạn nên tìm kiến sự hỗ trợ tâm lý như nói chuyện với gia đình, bạn bè để chia sẻ cảm xúc.',
           advice:
             'Trò chuyện, chia sẻ với những người xung quanh có thể giúp bạn tìm thấy sự đồng cảm và ổn định hơn về tâm lý. <br>Bạn có thể tham gia <strong style="color: #F79C33;">Cộng đồng người nhà người bệnh</strong> để cùng trò chuyện, trao đổi với  các chuyên gia và người nhà người bệnh khác.',
           solutions: [],
           action: {
-            text: "Tham gia ngay",
-            externalUrl:
-              "https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu",
-          },
+            text: 'Tham gia ngay',
+            externalUrl: 'https://www.facebook.com/groups/nguoinhanguoibenh.bvkcosotantrieu'
+          }
         },
         3: {
           message:
-            "Bạn có mức độ căng thẳng tâm lí cao. Bạn nên thực hành các liệu pháp thư giãn hoặc tìm đến bác sĩ tư vấn tâm lí.",
+            'Bạn có mức độ căng thẳng tâm lí cao. Bạn nên thực hành các liệu pháp thư giãn hoặc tìm đến bác sĩ tư vấn tâm lí.',
           advice:
             'Bạn nên có sự tư vấn của chuyên gia tâm lý hoặc bác sĩ chuyên khoa tâm thần để đảm bảo sức khỏe bản thân cũng như quá trình chăm sóc cho người bệnh. <br>Bằng cách nhấn vào nút Liên hệ ngay dưới đây, bạn sẽ được gặp gỡ các <strong style="color: #F79C33;">chuyên gia</strong> uy tín có thể đánh giá và hỗ trợ tình hình tâm lý hiện tại cho bạn.',
           solutions: [
@@ -246,115 +219,107 @@ export default {
             // },
           ],
           action: {
-            text: "Liên hệ ngay",
-            externalUrl:
-              "https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit",
-          },
+            text: 'Liên hệ ngay',
+            externalUrl: 'https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit'
+          }
         },
         4: {
           message:
-            "Bạn đang có mức độ căng thẳng tâm lí rất cao, bạn nên đến gặp bác sĩ tâm lí hoặc đến bệnh viện để được đánh giá thêm.",
+            'Bạn đang có mức độ căng thẳng tâm lí rất cao, bạn nên đến gặp bác sĩ tâm lí hoặc đến bệnh viện để được đánh giá thêm.',
           advice:
             'Bạn cần nghiêm túc quan tâm đến vấn đề tâm lý của mình để đảm bảo sức khỏe bản thân cũng như quá trình chăm sóc cho người bệnh. <br>Bằng cách nhấn vào nút Liên hệ ngay dưới đây, bạn sẽ được gặp gỡ các <strong style="color: #F79C33;">chuyên gia</strong> uy tín có thể đánh giá và hỗ trợ tình hình tâm lý hiện tại cho bạn.',
           solutions: [],
           action: {
-            text: "Liên hệ ngay",
-            externalUrl:
-              "https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit",
-          },
+            text: 'Liên hệ ngay',
+            externalUrl: 'https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit'
+          }
         },
         5: {
           message:
-            "Bạn đang có mức độ căng thẳng tâm lí rất cao, bạn nên đến gặp bác sĩ tâm lí hoặc đến bệnh viện để được đánh giá thêm.",
+            'Bạn đang có mức độ căng thẳng tâm lí rất cao, bạn nên đến gặp bác sĩ tâm lí hoặc đến bệnh viện để được đánh giá thêm.',
           advice:
             'Bạn cần ngay lập tức trao đổi với bác sĩ chuyên khoa tâm thần về tình trạng sức khỏe của bản thân để nhận được liệu pháp điều trị thích hợp. <br>Bằng cách nhấn vào nút Liên hệ ngay dưới đây, bạn sẽ được gặp gỡ các <strong style="color: #F79C33;">chuyên gia</strong> uy tín có thể đánh giá và hỗ trợ tình hình tâm lý hiện tại cho bạn.',
           solutions: [],
           action: {
-            text: "Liên hệ ngay",
-            externalUrl:
-              "https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit",
-          },
-        },
-      },
-    };
+            text: 'Liên hệ ngay',
+            externalUrl: 'https://docs.google.com/document/d/1odSDHdKU44QKUy4vFu9wYsgVJTzi3auyjD6aL6ePHAc/edit'
+          }
+        }
+      }
+    }
   },
   computed: {
     pointLevel() {
       return Object.keys(this.pointObj).reduce((arr, el) => {
-        if (!arr[el]) arr[el] = 0;
+        if (!arr[el]) arr[el] = 0
         arr[el] =
           this.testsEvaluation[el].length === 1
             ? this.testsEvaluation[el][0].level
-            : this.testsEvaluation[el].find(
-                (ev, index) => ev.minScore <= +this.pointObj[el]
-              ).level;
-        return arr;
-      }, {});
+            : this.testsEvaluation[el].find((ev, index) => ev.minScore <= +this.pointObj[el]).level
+        return arr
+      }, {})
     },
     maxLevel() {
-      return Math.max(...Object.values(this.pointLevel));
+      return Math.max(...Object.values(this.pointLevel))
     },
     generalLevel() {
       return findClosestGreaterNumber(
         this.generalEvaluations.map((el) => el.limitLevel),
         this.maxLevel
-      );
+      )
     },
     testLevelContent() {
       return (name, level) => {
-        return this.levelResults[name]["evaluations"][level]
-          ? this.levelResults[name]["evaluations"][level].content
-          : "";
-      };
-    },
+        return this.levelResults[name]['evaluations'][level]
+          ? this.levelResults[name]['evaluations'][level].content
+          : ''
+      }
+    }
   },
   methods: {
     async loadExams() {
-      this.showLoader();
-      const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
+      this.showLoader()
+      const q = query(collection(db, 'exams'), limit(1)) // Replace "yourCollection" with your actual collection name
 
       try {
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(q)
         if (!querySnapshot.empty) {
-          const firstDoc = querySnapshot.docs[0]; // Get the first document
-          const { generalEvaluations, tests } = firstDoc.data(); // Get the first document
-          const resultsClone = { ...this.results };
+          const firstDoc = querySnapshot.docs[0] // Get the first document
+          const { generalEvaluations, tests } = firstDoc.data() // Get the first document
+          const resultsClone = { ...this.results }
           tests.forEach((el) => {
             el.evaluations.forEach((eva) => {
-              this.levelResults[el.code][eva.level] = eva.description;
-              this.levelResults[el.code]["evaluations"][eva.level] = eva;
-            });
-            this.testsEvaluation[el.code] = el.evaluations;
-          });
-          this.levelResults = cloneDeep(this.levelResults);
-          this.testsEvaluation = cloneDeep(this.testsEvaluation);
+              this.levelResults[el.code][eva.level] = eva.description
+              this.levelResults[el.code]['evaluations'][eva.level] = eva
+            })
+            this.testsEvaluation[el.code] = el.evaluations
+          })
+          this.levelResults = cloneDeep(this.levelResults)
+          this.testsEvaluation = cloneDeep(this.testsEvaluation)
           generalEvaluations.forEach((el) => {
             resultsClone[el.limitLevel] = {}
-            resultsClone[el.limitLevel].advice = decodeHtml(el.content);
-            resultsClone[el.limitLevel].action =
-              el.level === 1 ? ACTIONS.BACK_HOME : ACTIONS.EXTERNAL;
-          });
-          this.results = resultsClone;
-          this.generalEvaluations = cloneDeep(generalEvaluations.sort(
-            (a, b) => b.level - a.level
-          ))
+            resultsClone[el.limitLevel].advice = decodeHtml(el.content)
+            resultsClone[el.limitLevel].action = el.level === 1 ? ACTIONS.BACK_HOME : ACTIONS.EXTERNAL
+          })
+          this.results = resultsClone
+          this.generalEvaluations = cloneDeep(generalEvaluations.sort((a, b) => b.level - a.level))
         } else {
-          console.log("No documents found in the collection.");
+          console.log('No documents found in the collection.')
         }
       } catch (error) {
-        console.error("Error getting documents:", error);
+        console.error('Error getting documents:', error)
       } finally {
-        this.hideLoader();
+        this.hideLoader()
       }
     },
     currentLevel(point) {
       // console.log(point);
-    },
+    }
   },
   mounted() {
-    this.loadExams();
-  },
-};
+    this.loadExams()
+  }
+}
 </script>
 <style scoped>
 .starter-page {
@@ -368,7 +333,7 @@ export default {
 .result-text {
   /* Chúc mừng, bạn đã tự điều chỉnh cân bằng cảm xúc rất tốt! */
   margin-top: 1.5em;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -378,7 +343,7 @@ export default {
   color: #00297b;
 }
 .text-title {
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 700;
   font-size: 27.5px;
@@ -391,7 +356,7 @@ export default {
 .solution-text {
   /* Hãy cố gắng duy trì thể trạng sức khỏe tâm thần hiện tại để cùng đồng hành với bệnh nhân bạn nhé! Bạn có thể tìm thấy các thông tin hữu ích cho quá trình chăm bệnh khi trở lại Trang chủ và nhấn vào mục Trạm thông tin. */
 
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -415,7 +380,7 @@ export default {
   object-fit: cover; /* Chỉnh sửa cách hình ảnh fit vào phần tử */
 }
 .need-more span {
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -437,7 +402,7 @@ export default {
 .result-title,
 .result-sub-title {
   color: #00297b;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
 }
 .result-title {
@@ -448,7 +413,7 @@ export default {
 }
 .text-sub-title {
   color: #00297b;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-weight: 600;
 }
 </style>

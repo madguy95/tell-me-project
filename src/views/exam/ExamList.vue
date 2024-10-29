@@ -2,17 +2,13 @@
   <div class="container-fluid bg-white position-relative pt-3 pb-3">
     <Loader :visible="isLoading" />
     <h4 class="sub-note mt-2">
-      Dưới đây là 3 bài kiểm tra có độ tin cậy cao và đang được sử dụng phổ biến
-      tại các cơ sở sàng lọc sức khỏe tại bệnh viện để đánh giá sơ bộ tình trạng
-      sức khỏe tâm thần. Mỗi bài kiểm tra giúp đánh giá một trong các chỉ số
-      khác nhau của sức khỏe tâm thần: lo âu - trầm cảm - căng thẳng. Kết quả
-      tổng thể và khuyến nghị sẽ càng chính xác hơn khi thực hiện được nhiều bài
-      kiểm tra hơn.
+      Dưới đây là 3 bài kiểm tra có độ tin cậy cao và đang được sử dụng phổ biến tại các cơ sở sàng lọc sức khỏe tại
+      bệnh viện để đánh giá sơ bộ tình trạng sức khỏe tâm thần. Mỗi bài kiểm tra giúp đánh giá một trong các chỉ số khác
+      nhau của sức khỏe tâm thần: lo âu - trầm cảm - căng thẳng. Kết quả tổng thể và khuyến nghị sẽ càng chính xác hơn
+      khi thực hiện được nhiều bài kiểm tra hơn.
     </h4>
     <div>
-      <h1 class="text-center text-title">
-        Vui lòng chọn các bài kiểm tra bạn muốn thực hiện
-      </h1>
+      <h1 class="text-center text-title">Vui lòng chọn các bài kiểm tra bạn muốn thực hiện</h1>
     </div>
     <b-form>
       <b-form-group label="" label-for="checkbox-group">
@@ -55,82 +51,66 @@
       </b-form-group>
     </b-form>
     <router-link :to="{ name: 'exam', query: { id: selectedOptions } }">
-      <b-button
-        class="button-start text-center"
-        :disabled="selectedOptions.length <= 0"
-      >
+      <b-button class="button-start text-center" :disabled="selectedOptions.length <= 0">
         <strong>LÀM BÀI KIỂM TRA</strong>
       </b-button>
     </router-link>
   </div>
 </template>
 <script>
-import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
-import StatsCard from "@/components/Cards/StatsCard";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  updateDoc,
-  doc,
-  query,
-  limit,
-} from "firebase/firestore";
-import { db } from "@/plugins/firebaseConfig";
+import { collection, getDocs, query, limit } from 'firebase/firestore'
+import { db } from '@/plugins/firebaseConfig'
 
 export default {
-  name: "ExamPage",
-  components: {
-    StatsCard,
-    RouteBreadCrumb,
-  },
+  name: 'ExamPage',
+  components: {},
   data() {
     return {
       selectedOptions: [],
       options: [
         {
           text: '<div class="checkbox-label"><strong>GAD-7 (7 câu hỏi) </strong><br />Sàng lọc Rối loạn lo âu lan tỏa </div>',
-          value: "GAD-7",
+          value: 'GAD-7'
         },
         {
           text: '<div class="checkbox-label"><strong>PHQ-9 (9 câu hỏi) </strong><br />Sàng lọc Trầm cảm </div>',
-          value: "PHQ-9",
+          value: 'PHQ-9'
         },
         {
           text: '<div class="checkbox-label"><strong>BSRS-5 (5 câu hỏi) </strong><br />Đánh giá mức độ căng thẳng tâm lý </div>',
-          value: "BSRS-5",
-        },
-      ],
-    };
+          value: 'BSRS-5'
+        }
+      ]
+    }
   },
   methods: {
     async loadExams() {
-      this.showLoader();
-      const q = query(collection(db, "exams"), limit(1)); // Replace "yourCollection" with your actual collection name
+      this.showLoader()
+      const q = query(collection(db, 'exams'), limit(1)) // Replace "yourCollection" with your actual collection name
 
       try {
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await getDocs(q)
         if (!querySnapshot.empty) {
-          const firstDoc = querySnapshot.docs[0]; // Get the first document
-          const dataTest = firstDoc.data();
+          const firstDoc = querySnapshot.docs[0] // Get the first document
+          const dataTest = firstDoc.data()
           this.options = dataTest.tests.map((el) => ({
             text: `<div class="checkbox-label"><strong>${el.name} (${el.questions.length} câu hỏi)</strong><br /> ${el.description}</div>`,
-            value: el.code,
-          }));
+            value: el.code
+          }))
         } else {
-          console.log("No documents found in the collection.");
+          console.log('No documents found in the collection.')
         }
       } catch (error) {
-        console.error("Error getting documents:", error);
+        console.error('Error getting documents:', error)
       } finally {
-        this.hideLoader();
+        this.hideLoader()
       }
-    },
+    }
   },
   mounted() {
-    this.loadExams();
-  },
-};
+    this.loadExams()
+  }
+}
 </script>
 <style scoped>
 ::v-deep .custom-checkbox {
@@ -149,7 +129,7 @@ export default {
   min-height: 48px;
 
   /* Radio text */
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -163,20 +143,11 @@ export default {
   background-color: #1276a8;
   padding-left: 2rem;
 }
-::v-deep
-  .custom-checkbox
-  .custom-control-input:focus:not(:checked)
-  ~ .custom-control-label::before {
+::v-deep .custom-checkbox .custom-control-input:focus:not(:checked) ~ .custom-control-label::before {
   border-color: #0d4460;
 }
-::v-deep
-  .custom-checkbox
-  input[type="checkbox"]
-  + .custom-control-label::before,
-::v-deep
-  .custom-checkbox
-  input[type="checkbox"]:checked
-  + .custom-control-label::before {
+::v-deep .custom-checkbox input[type='checkbox'] + .custom-control-label::before,
+::v-deep .custom-checkbox input[type='checkbox']:checked + .custom-control-label::before {
   position: absolute;
   left: calc(100% - 2.5rem);
   top: 1.5rem;
@@ -192,10 +163,7 @@ export default {
   transform: translateY(-50%);
 }
 
-::v-deep
-  .custom-checkbox
-  input[type="checkbox"]:checked
-  + .custom-control-label::after {
+::v-deep .custom-checkbox input[type='checkbox']:checked + .custom-control-label::after {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23f79c33' stroke-width='1' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
   background-color: transparent;
   /* Inner dot color when checked */
@@ -212,7 +180,7 @@ export default {
 
 .alert-content {
   /* Vector */
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -260,7 +228,7 @@ export default {
 .question-box {
   background: #1276a8;
   color: #ffffff;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -272,14 +240,14 @@ export default {
 
 .question-box p {
   color: #ffffff;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
 }
 
 .question-box .content {
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
@@ -289,7 +257,7 @@ export default {
 
 .sub-note {
   /* Anh/chị hãy nhớ lại một cách chi tiết trong một tuần gần đây (bao gồm cả hôm nay), mức độ mà những vấn đề sau khiến anh/chị cảm thấy buồn phiền hoặc lo lắng. Xin vui lòng lựa chọn câu trả lời phù hợp nhất với tình trạng của anh/chị. */
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: italic;
   font-weight: 300;
   font-size: 12px;

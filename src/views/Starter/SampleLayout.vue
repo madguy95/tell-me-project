@@ -6,7 +6,7 @@
         <sidebar-item
           v-for="(item, index) in sidebarItems"
           :link="{
-            ...item,
+            ...item
           }"
           :key="'sid-' + index"
         >
@@ -44,126 +44,124 @@
 </template>
 <script>
 /* eslint-disable no-new */
-import PerfectScrollbar from "perfect-scrollbar";
-import "perfect-scrollbar/css/perfect-scrollbar.css";
+import PerfectScrollbar from 'perfect-scrollbar'
+import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 function hasElement(className) {
-  return document.getElementsByClassName(className).length > 0;
+  return document.getElementsByClassName(className).length > 0
 }
 
 function initScrollbar(className) {
   if (hasElement(className)) {
-    new PerfectScrollbar(`.${className}`);
+    new PerfectScrollbar(`.${className}`)
   } else {
     // try to init it later in case this component is loaded async
     setTimeout(() => {
-      initScrollbar(className);
-    }, 100);
+      initScrollbar(className)
+    }, 100)
   }
 }
 
-import DashboardNavbar from "./SampleNavbar.vue";
-import ContentFooter from "./SampleFooter.vue";
-import DashboardContent from "../Layout/Content.vue";
-import { FadeTransition } from "vue2-transitions";
+import DashboardNavbar from './SampleNavbar.vue'
+import ContentFooter from './SampleFooter.vue'
+import { FadeTransition } from 'vue2-transitions'
 
 const SIDEBAR_PUBLIC = [
   {
-    name: "Trang chủ",
-    path: "/home",
-    icon: "fas fa-home",
+    name: 'Trang chủ',
+    path: '/home',
+    icon: 'fas fa-home'
   },
   {
-    name: "Làm bài test tâm lý",
-    path: "/home/exam-info",
-    icon: "fa-regular fa-file-lines",
+    name: 'Làm bài test tâm lý',
+    path: '/home/exam-info',
+    icon: 'fa-regular fa-file-lines'
   },
   {
-    name: "Thủ tục hành chính",
-    path: "/home/procedure",
-    icon: "fas fa-briefcase",
+    name: 'Thủ tục hành chính',
+    path: '/home/procedure',
+    icon: 'fas fa-briefcase'
   },
   {
-    name: "Chăm sóc sức khoẻ",
-    path: "/home/posts?type=health",
-    icon: "fas fa-hand-holding-medical",
+    name: 'Chăm sóc sức khoẻ',
+    path: '/home/posts?type=health',
+    icon: 'fas fa-hand-holding-medical'
   },
   {
-    name: "Hỗ trợ tâm lý",
-    path: "/home/posts?type=psych",
-    icon: "fas fa-headset",
+    name: 'Hỗ trợ tâm lý',
+    path: '/home/posts?type=psych',
+    icon: 'fas fa-headset'
   },
   {
-    name: "Sơ đồ",
-    path: "/home/map",
-    icon: "fa-solid fa-map-location-dot",
-  },
-];
+    name: 'Sơ đồ',
+    path: '/home/map',
+    icon: 'fa-solid fa-map-location-dot'
+  }
+]
 const SIDEBAR_ADMIN = [
   {
-    name: "Trang admin",
-    path: "/admin",
-    icon: "fas fa-home",
+    name: 'Trang admin',
+    path: '/admin',
+    icon: 'fas fa-home'
   },
   {
-    name: "Tải Banner",
-    path: "/admin/banner",
-    icon: "fas fa-images",
+    name: 'Tải Banner',
+    path: '/admin/banner',
+    icon: 'fas fa-images'
   },
   {
-    name: "Chỉnh sửa bài test",
-    path: "/admin/exam-config",
-    icon: "fas fa-edit",
+    name: 'Chỉnh sửa bài test',
+    path: '/admin/exam-config',
+    icon: 'fas fa-edit'
   },
   {
-    name: "Quản lý sơ đồ",
-    path: "/admin/map-config",
-    icon: "fas fa-map-marker-alt",
+    name: 'Quản lý sơ đồ',
+    path: '/admin/map-config',
+    icon: 'fas fa-map-marker-alt'
   },
   {
-    name: "Quản lý bài đăng",
-    path: "/admin/posts",
-    icon: "fas fa-rss-square",
+    name: 'Quản lý bài đăng',
+    path: '/admin/posts',
+    icon: 'fas fa-rss-square'
   },
   {
-    name: "Up thông tin thủ tục",
-    path: "/admin/procedure-main",
-    icon: "fas fa-project-diagram",
-  },
-];
+    name: 'Up thông tin thủ tục',
+    path: '/admin/procedure-main',
+    icon: 'fas fa-project-diagram'
+  }
+]
 export default {
   components: {
     DashboardNavbar,
     ContentFooter,
-    DashboardContent,
-    FadeTransition,
+    FadeTransition
   },
   data() {
-    return {};
+    return {}
   },
   computed: {
     sidebarItems() {
-      if (this.$route.path.startsWith("/admin")) {
-        return [...SIDEBAR_ADMIN];
+      if (this.$route.path.startsWith('/admin')) {
+        return [...SIDEBAR_ADMIN]
       }
-      return [...SIDEBAR_PUBLIC];
-    },
+      return [...SIDEBAR_PUBLIC]
+    }
   },
   methods: {
     initScrollbar() {
-      let docClasses = document.body.classList;
-      let isWindows = navigator.platform.startsWith("Win");
+      let docClasses = document.body.classList
+      let isWindows = navigator.platform.startsWith('Win')
       if (isWindows) {
         // if we are on windows OS we activate the perfectScrollbar function
-        initScrollbar("scrollbar-inner");
+        initScrollbar('scrollbar-inner')
 
-        docClasses.add("perfect-scrollbar-on");
+        docClasses.add('perfect-scrollbar-on')
       } else {
-        docClasses.add("perfect-scrollbar-off");
+        docClasses.add('perfect-scrollbar-off')
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style scoped>
 .floating-buttons {

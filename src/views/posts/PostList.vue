@@ -3,20 +3,8 @@
     <Loader :visible="isLoading" />
     <div class="">
       <b-row>
-        <b-col
-          v-for="post in posts"
-          :key="post.id"
-          cols="12"
-          md="4"
-          class="mb-2"
-        >
-          <b-card
-            :title="post.title"
-            :img-src="post.image"
-            img-alt="Card image cap"
-            img-top
-            class="mb-4"
-          >
+        <b-col v-for="post in posts" :key="post.id" cols="12" md="4" class="mb-2">
+          <b-card :title="post.title" :img-src="post.image" img-alt="Card image cap" img-top class="mb-4">
             <b-card-sub-title>{{ post.date }}</b-card-sub-title>
             <b-card-text>{{ post.content }}</b-card-text>
             <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
@@ -30,39 +18,26 @@
   </div>
 </template>
 <script>
-import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
-import StatsCard from "@/components/Cards/StatsCard";
-import { db } from "@/plugins/firebaseConfig";
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  limit,
-  startAfter,
-  where,
-} from "firebase/firestore";
-import { COLLECTION_TYPE, POST_COLLECTION_NAME } from "../../util/constant";
+import { db } from '@/plugins/firebaseConfig'
+import { collection, getDocs, query, orderBy, limit, startAfter, where } from 'firebase/firestore'
+import { COLLECTION_TYPE, POST_COLLECTION_NAME } from '../../util/constant'
 
 export default {
-  name: "PostList",
-  components: {
-    StatsCard,
-    RouteBreadCrumb,
-  },
+  name: 'PostList',
+  components: {},
   watch: {
     // Theo dõi sự thay đổi của query params
-    "$route.query": {
+    '$route.query': {
       handler(newQuery, oldQuery) {
         // Gọi hàm để tải dữ liệu mới hoặc thực hiện hành động cần thiết
-        this.resetData();
+        this.resetData()
         if (newQuery && newQuery.type) {
-          this.collectionType = newQuery.type;
+          this.collectionType = newQuery.type
         }
-        this.fetchPosts();
+        this.fetchPosts()
       },
-      immediate: true, // Gọi hàm ngay khi component được khởi tạo
-    },
+      immediate: true // Gọi hàm ngay khi component được khởi tạo
+    }
   },
   data() {
     return {
@@ -71,68 +46,62 @@ export default {
       lastVisibleDoc: null, // Tài liệu cuối cùng của lô dữ liệu hiện tại
       pageSize: 10,
       isFetching: false, // Trạng thái tải dữ liệu
-      hasMorePosts: true, // Kiểm tra còn dữ liệu để tải hay không
-    };
+      hasMorePosts: true // Kiểm tra còn dữ liệu để tải hay không
+    }
   },
   async created() {},
   methods: {
     resetData() {
-      this.posts = [];
-      this.lastVisibleDoc = null;
-      this.isFetching = false;
-      this.hasMorePosts = true;
+      this.posts = []
+      this.lastVisibleDoc = null
+      this.isFetching = false
+      this.hasMorePosts = true
     },
     toggle(id) {
-      this.openItem = this.openItem === id ? null : id;
+      this.openItem = this.openItem === id ? null : id
     },
     isOpen(id) {
-      return this.openItem === id;
+      return this.openItem === id
     },
     async fetchPosts() {
       // Ngừng tải nếu đang trong quá trình tải hoặc không còn bài viết nào
-      if (this.isFetching || !this.hasMorePosts) return;
+      if (this.isFetching || !this.hasMorePosts) return
 
-      this.showLoader();
-      this.isFetching = true;
+      this.showLoader()
+      this.isFetching = true
 
-      let q;
+      let q
       if (this.lastVisibleDoc) {
         // Tải các bài tiếp theo bắt đầu từ tài liệu cuối cùng của lần trước
         q = query(
           collection(db, POST_COLLECTION_NAME),
-          orderBy("upTime", "desc"),
+          orderBy('upTime', 'desc'),
           startAfter(this.lastVisibleDoc),
           limit(this.pageSize)
-        );
+        )
       } else {
         // Tải dữ liệu lần đầu
-        q = query(
-          collection(db, POST_COLLECTION_NAME),
-          orderBy("upTime", "desc"),
-          limit(this.pageSize)
-        );
+        q = query(collection(db, POST_COLLECTION_NAME), orderBy('upTime', 'desc'), limit(this.pageSize))
       }
       if (this.collectionType) {
-        q = query(q, where("type", "==", this.collectionType));
+        q = query(q, where('type', '==', this.collectionType))
       }
-      const snapshot = await getDocs(q);
+      const snapshot = await getDocs(q)
 
       // Kiểm tra nếu không còn dữ liệu
       if (snapshot.empty) {
-        this.hasMorePosts = false;
+        this.hasMorePosts = false
       } else {
         // Thêm dữ liệu vào danh sách bài post hiện tại
-        this.posts.push(
-          ...snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-        );
+        this.posts.push(...snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })))
         // Lưu lại tài liệu cuối cùng để sử dụng cho lần tải sau
-        this.lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1];
+        this.lastVisibleDoc = snapshot.docs[snapshot.docs.length - 1]
       }
-      this.hideLoader();
-      this.isFetching = false;
-    },
-  },
-};
+      this.hideLoader()
+      this.isFetching = false
+    }
+  }
+}
 </script>
 <style scoped>
 .my-list-item {

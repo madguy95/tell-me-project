@@ -20,19 +20,14 @@
         </div>
       </template>
       <p class="alert-content">
-        Website hiện đang trong quá trình phát triển nên không tránh khỏi những
-        sai sót. Bạn có chắc chắn muốn truy cập?
+        Website hiện đang trong quá trình phát triển nên không tránh khỏi những sai sót. Bạn có chắc chắn muốn truy cập?
       </p>
       <b-row>
         <b-col cols="6">
-          <b-button class="btn-common btn-cancel" block @click="handleCancel"
-            >Trở về</b-button
-          >
+          <b-button class="btn-common btn-cancel" block @click="handleCancel">Trở về</b-button>
         </b-col>
         <b-col cols="6">
-          <b-button class="btn-common btn-yes" block @click="handleConfirm"
-            >Tiếp tục</b-button
-          >
+          <b-button class="btn-common btn-yes" block @click="handleConfirm">Tiếp tục</b-button>
         </b-col>
       </b-row>
     </b-modal>
@@ -56,9 +51,7 @@
         ></b-carousel-slide>
       </b-carousel>
     </div>
-    <b-row
-      class="mt-3 d-flex align-items-center justify-content-center flex-column"
-    >
+    <b-row class="mt-3 d-flex align-items-center justify-content-center flex-column">
       <b-col><h3 class="custom-text">Khảo sát sức khỏe tâm thần</h3></b-col>
       <b-col xl="6" md="6" class="mb-3">
         <router-link :to="{ name: 'exam-info' }">
@@ -85,18 +78,14 @@
         </router-link>
       </b-col>
       <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
-        <router-link
-          :to="{ name: 'posts', query: { type: COLLECTION_TYPE.HEALTH } }"
-        >
+        <router-link :to="{ name: 'posts', query: { type: COLLECTION_TYPE.HEALTH } }">
           <base-button icon class="button-common">
             <span class="btn-inner--text">Chăm sóc bệnh nhân</span>
           </base-button>
         </router-link>
       </b-col>
       <b-col cols="6" sm="6" xl="6" md="6" class="mb-3">
-        <router-link
-          :to="{ name: 'posts', query: { type: COLLECTION_TYPE.PSYCH } }"
-        >
+        <router-link :to="{ name: 'posts', query: { type: COLLECTION_TYPE.PSYCH } }">
           <base-button icon class="button-common">
             <span class="btn-inner--text">Phương pháp hỗ trợ tâm lý</span>
           </base-button>
@@ -106,58 +95,46 @@
   </div>
 </template>
 <script>
-import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
-import StatsCard from "@/components/Cards/StatsCard";
-import { collection, orderBy, query, getDocs } from "firebase/firestore";
-import { db } from "@/plugins/firebaseConfig";
-import { COLLECTION_TYPE } from "../../util/constant";
+import { collection, orderBy, query, getDocs } from 'firebase/firestore'
+import { db } from '@/plugins/firebaseConfig'
+import { COLLECTION_TYPE } from '../../util/constant'
 
-const BANNER_DEFAULT = [
-  "/img/banner/banner1.png",
-  "/img/banner/banner2.png",
-  "/img/banner/banner3.png",
-];
+const BANNER_DEFAULT = ['/img/banner/banner1.png', '/img/banner/banner2.png', '/img/banner/banner3.png']
 export default {
-  name: "HomePage",
-  components: {
-    StatsCard,
-    RouteBreadCrumb,
-  },
+  name: 'HomePage',
+  components: {},
   data() {
     return {
       COLLECTION_TYPE: { ...COLLECTION_TYPE },
       show:
-        typeof JSON.parse(sessionStorage.getItem("isShowInDeveloping")) ==
-        "boolean"
-          ? JSON.parse(sessionStorage.getItem("isShowInDeveloping"))
+        typeof JSON.parse(sessionStorage.getItem('isShowInDeveloping')) == 'boolean'
+          ? JSON.parse(sessionStorage.getItem('isShowInDeveloping'))
           : true,
-      banners: [...BANNER_DEFAULT],
-    };
+      banners: [...BANNER_DEFAULT]
+    }
   },
   created() {
-    this.fetchImages(); // Fetch images on component creation
+    this.fetchImages() // Fetch images on component creation
   },
   methods: {
     async fetchImages() {
-      const imagesCollection = collection(db, "banners");
-      const q = query(imagesCollection, orderBy("order"));
-      const snapshot = await getDocs(q);
-      this.banners = snapshot.docs.map((doc) => doc.data().url) || [
-        ...BANNER_DEFAULT,
-      ];
+      const imagesCollection = collection(db, 'banners')
+      const q = query(imagesCollection, orderBy('order'))
+      const snapshot = await getDocs(q)
+      this.banners = snapshot.docs.map((doc) => doc.data().url) || [...BANNER_DEFAULT]
     },
     goToRoute() {
-      this.$router.push({ name: "exam" });
+      this.$router.push({ name: 'exam' })
     },
     handleConfirm() {
-      sessionStorage.setItem("isShowInDeveloping", false);
-      this.show = false;
+      sessionStorage.setItem('isShowInDeveloping', false)
+      this.show = false
     },
     handleCancel() {
-      this.$router.push("/");
-    },
-  },
-};
+      this.$router.push('/')
+    }
+  }
+}
 </script>
 <style>
 .starter-page {
@@ -200,7 +177,7 @@ export default {
   width: 100%;
   min-height: 36px;
 
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 500;
   font-size: 1.5em;
@@ -217,7 +194,7 @@ export default {
 
   background: #f79c33;
 
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 700;
   font-size: 27.5px;
@@ -233,7 +210,7 @@ export default {
   width: 100%;
   color: #fff;
   background-color: #1276a8;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-size: 1em;
   line-height: 23px;
   text-align: center;

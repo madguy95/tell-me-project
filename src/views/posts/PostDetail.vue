@@ -3,20 +3,12 @@
     <Loader :visible="isLoading" />
     <b-card>
       <b-card-title>{{ post.title }}</b-card-title>
-      <b-card-sub-title class="text-muted">{{
-        formattedUpTime
-      }}</b-card-sub-title>
+      <b-card-sub-title class="text-muted">{{ formattedUpTime }}</b-card-sub-title>
       <b-card-text>
         {{ post.content }}
       </b-card-text>
       <b-card-img :src="post.image" alt="Post image" class="mb-3" />
-      <b-embed
-        type="iframe"
-        aspect="16by9"
-        :src="post.videoLink"
-        v-if="post.videoLink"
-        allowfullscreen
-      ></b-embed>
+      <b-embed type="iframe" aspect="16by9" :src="post.videoLink" v-if="post.videoLink" allowfullscreen></b-embed>
       <router-link to="/home/posts">
         <b-button class="btn-common">Quay lại</b-button>
       </router-link>
@@ -24,66 +16,63 @@
   </div>
 </template>
 <script>
-import { db } from "@/plugins/firebaseConfig";
-import {
-  doc,
-  getDoc
-} from "firebase/firestore";
-import { POST_COLLECTION_NAME } from "../../util/constant";
+import { db } from '@/plugins/firebaseConfig'
+import { doc, getDoc } from 'firebase/firestore'
+import { POST_COLLECTION_NAME } from '../../util/constant'
 export default {
-  name: "PostDetail",
+  name: 'PostDetail',
   props: {
     postData: {
       type: Object,
       default: () => ({
-        title: "Sample Post Title",
-        date: "September 1, 2024",
-        image: "/img/infographic.png",
+        title: 'Sample Post Title',
+        date: 'September 1, 2024',
+        image: '/img/infographic.png',
         content:
-          "This is the full content of the post. It contains detailed information about the subject matter. It can be quite long and includes all the information you want to convey to your readers.",
-      }),
-    },
+          'This is the full content of the post. It contains detailed information about the subject matter. It can be quite long and includes all the information you want to convey to your readers.'
+      })
+    }
   },
   components: {},
   computed: {
     formattedUpTime() {
-      return this.post.upTime ? this.post.upTime.toDate().toLocaleString() : "";
-    },
+      return this.post.upTime ? this.post.upTime.toDate().toLocaleString() : ''
+    }
   },
   async created() {
-    const postId = this.$route.params.id;
+    const postId = this.$route.params.id
     if (postId) {
-      this.isEditMode = true;
-      await this.fetchPostData(postId);
+      this.isEditMode = true
+      await this.fetchPostData(postId)
     } else {
-      this.$router.push("/home");
+      this.$router.push('/home')
     }
   },
   data() {
     return {
-      post: {},
-    };
+      post: {}
+    }
   },
   methods: {
     toggle(id) {
-      this.openItem = this.openItem === id ? null : id;
+      this.openItem = this.openItem === id ? null : id
     },
     isOpen(id) {
-      return this.openItem === id;
+      return this.openItem === id
     },
     async fetchPostData(postId) {
-      this.showLoader();
-      const postRef = doc(db, POST_COLLECTION_NAME, postId);
-      const postSnapshot = await getDoc(postRef);
+      this.showLoader()
+      const postRef = doc(db, POST_COLLECTION_NAME, postId)
+      const postSnapshot = await getDoc(postRef)
       if (postSnapshot.exists()) {
-        this.post = { id: postId, ...postSnapshot.data() };
+        this.post = { id: postId, ...postSnapshot.data() }
       } else {
-        console.error("Bài viết không tồn tại");
+        console.error('Bài viết không tồn tại')
       }
-      this.hideLoader();
-    },
-  },
-};
+      this.hideLoader()
+    }
+  }
+}
 </script>
 <style scoped>
 .starter-page {

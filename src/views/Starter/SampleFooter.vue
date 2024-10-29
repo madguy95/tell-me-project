@@ -3,7 +3,8 @@
     <b-row align-v="center" class="justify-content-lg-between">
       <b-col lg="6">
         <div class="copyright text-center text-lg-left text-muted">
-          © {{year}} <a href="#" class="font-weight-bold ml-1" target="_blank">Thành lập bởi Đại Học Y Hà Nội</a>
+          © {{ year }}
+          <a href="#" class="font-weight-bold ml-1" target="_blank">Thành lập bởi Đại Học Y Hà Nội</a>
         </div>
       </b-col>
       <!-- <b-col lg="6">
@@ -26,12 +27,12 @@
   </footer>
 </template>
 <script>
-  export default {
-    data() {
-      return {
-        year: new Date().getFullYear()
-      };
+export default {
+  data() {
+    return {
+      year: new Date().getFullYear()
     }
-  };
+  }
+}
 </script>
 <style></style>

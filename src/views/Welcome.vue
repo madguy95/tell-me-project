@@ -1,15 +1,9 @@
 <template>
-  <b-container
-    class="d-flex align-items-center justify-content-center flex-column min-vh-100"
-  >
+  <b-container class="d-flex align-items-center justify-content-center flex-column min-vh-100">
     <b-row class="img-container">
       <!-- Image -->
 
-      <img
-        src="/img/welcome.png"
-        alt="Welcome Image"
-        class="img-fluid welcome-image"
-      />
+      <img src="/img/welcome.png" alt="Welcome Image" class="img-fluid welcome-image" />
     </b-row>
     <!-- Slogan -->
     <b-row class="">
@@ -22,10 +16,7 @@
     </b-row>
     <b-row class="">
       <b-col>
-        <h3 class="mt-3 welcome-text">
-          Hỗ trợ chăm sóc sức khỏe tinh thần cho người nhà người bệnh điều trị
-          nội trú
-        </h3>
+        <h3 class="mt-3 welcome-text">Hỗ trợ chăm sóc sức khỏe tinh thần cho người nhà người bệnh điều trị nội trú</h3>
       </b-col>
     </b-row>
     <!-- Select Box -->
@@ -34,10 +25,7 @@
         <b-dropdown no-caret toggle-class="select-box-bv">
           <template #button-content>
             Chọn Bệnh viện
-            <img
-              style="width: 38px; height: 17px"
-              src="/img/icons/arrow-down.png"
-            />
+            <img style="width: 38px; height: 17px" src="/img/icons/arrow-down.png" />
           </template>
           <b-dropdown-item
             v-for="option in options"
@@ -68,24 +56,24 @@ export default {
     return {
       selected: null,
       options: [
-        { value: "option1", text: "Bệnh viện K" },
-        { value: "option2", text: "Bệnh viện Bạch Mai" },
-        { value: "option3", text: "Bệnh viện Việt Đức" },
-      ],
-    };
+        { value: 'option1', text: 'Bệnh viện K' },
+        { value: 'option2', text: 'Bệnh viện Bạch Mai' },
+        { value: 'option3', text: 'Bệnh viện Việt Đức' }
+      ]
+    }
   },
   methods: {
     onChangeSelectBox() {
-      this.$router.push({ name: "home" });
-    },
-  },
-};
+      this.$router.push({ name: 'home' })
+    }
+  }
+}
 </script>
 <style scoped>
 ::v-deep .select-box-bv {
   position: relative;
   height: 84px;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 400;
   font-size: 32px;
@@ -143,7 +131,7 @@ h1 {
 .welcome-text {
   /* Chào mừng bạn đến với website dự án */
 
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 400;
   font-size: 1.2em;
@@ -157,7 +145,7 @@ h1 {
 .project-name {
   /* TELL ME */
 
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 700;
   font-size: 48px;
@@ -171,7 +159,7 @@ h1 {
   position: relative;
   width: 299px;
   height: 84px;
-  font-family: "FS Magistral";
+  font-family: 'FS Magistral';
   font-style: normal;
   font-weight: 400;
   font-size: 32px;

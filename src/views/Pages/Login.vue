@@ -20,10 +20,7 @@
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <polygon
-            class="fill-default"
-            points="2560 0 2560 100 0 100"
-          ></polygon>
+          <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
         </svg>
       </div>
     </div>
@@ -49,10 +46,7 @@
               <div class="text-center text-muted mb-4">
                 <h1>Welcome to Tell me !</h1>
               </div>
-              <validation-observer
-                v-slot="{ handleSubmit }"
-                ref="formValidator"
-              >
+              <validation-observer v-slot="{ handleSubmit }" ref="formValidator">
                 <b-form role="form" @submit.prevent="handleSubmit(onSubmit)">
                   <base-input
                     alternative
@@ -77,16 +71,9 @@
                   >
                   </base-input>
 
-                  <b-form-checkbox v-model="model.rememberMe"
-                    >Remember me</b-form-checkbox
-                  >
+                  <b-form-checkbox v-model="model.rememberMe">Remember me</b-form-checkbox>
                   <div class="text-center">
-                    <base-button
-                      type="primary"
-                      native-type="submit"
-                      class="my-4"
-                      >Sign in</base-button
-                    >
+                    <base-button type="primary" native-type="submit" class="my-4">Sign in</base-button>
                   </div>
                 </b-form>
               </validation-observer>
@@ -109,39 +96,41 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
+import { mapActions } from 'vuex'
 
 export default {
   data() {
     return {
       model: {
-        email: "",
-        password: "",
-        rememberMe: false,
-      },
-    };
+        email: '',
+        password: '',
+        rememberMe: false
+      }
+    }
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     ...mapActions(['login']),
-    
+
     async onSubmit() {
       this.$showGlobalLoader()
       try {
-        await this.login({ email: this.model.email, password: this.model.password });
-        this.$router.push('/admin'); // Redirect on success
+        await this.login({
+          email: this.model.email,
+          password: this.model.password
+        })
+        this.$router.push('/admin') // Redirect on success
       } catch (err) {
-        this.error = err.message; // Handle login errors
+        this.error = err.message // Handle login errors
       } finally {
         this.$hideGlobalLoader()
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style scoped>
 .custom-login-header {
-  background: linear-gradient(87deg, #172b4d, #b0c1dd 100%) !important
+  background: linear-gradient(87deg, #172b4d, #b0c1dd 100%) !important;
 }
 </style>

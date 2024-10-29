@@ -2,11 +2,7 @@
   <base-nav
     container-classes="container-fluid"
     class="navbar-top border-bottom navbar-expand"
-    :class="
-      $route.meta.navbarClasses
-        ? $route.meta.navbarClasses
-        : 'bg-default navbar-dark'
-    "
+    :class="$route.meta.navbarClasses ? $route.meta.navbarClasses : 'bg-default navbar-dark'"
     type=""
   >
     <!-- <router-link :to="{ name: 'home' }">
@@ -27,10 +23,7 @@
       <!-- This item dont have <b-nav-item> becouse they add class 'nav-link' which is not needed here -->
       <li class="nav-item d-xl-none">
         <!-- Sidenav toggler -->
-        <div
-          class="pr-3 sidenav-toggler sidenav-toggler-dark"
-          @click="toggleSidebar"
-        >
+        <div class="pr-3 sidenav-toggler sidenav-toggler-dark" @click="toggleSidebar">
           <div class="sidenav-toggler-inner">
             <i class="sidenav-toggler-line"></i>
             <i class="sidenav-toggler-line"></i>
@@ -40,12 +33,7 @@
       </li>
       <!-- This item dont have <b-nav-item> because item have data-action/data-target on tag <a>, wich we cant add -->
       <li class="nav-item d-sm-none">
-        <a
-          class="nav-link"
-          href="#"
-          data-action="search-show"
-          data-target="#navbar-search-main"
-        >
+        <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
           <i class="ni ni-zoom-split-in"></i>
         </a>
       </li>
@@ -57,21 +45,14 @@
             <b-form-input placeholder="Tim Kiem" type="text"> </b-form-input>
 
             <div class="input-group-append">
-              <span class="input-group-text"
-                ><i class="fas fa-search"></i
-              ></span>
+              <span class="input-group-text"><i class="fas fa-search"></i></span>
             </div>
           </b-input-group>
         </b-form-group>
       </b-form>
       <div class="login-button-container" v-if="!isAuthenticated">
-        <router-link
-          class="navbar-brand"
-          :to="$route.path === '/home' ? '/login' : '/home'"
-        >
-          <b-button variant="default">{{
-            $route.path === "/home" ? "Đăng Nhập" : "Trang chủ"
-          }}</b-button>
+        <router-link class="navbar-brand" :to="$route.path === '/home' ? '/login' : '/home'">
+          <b-button variant="default">{{ $route.path === '/home' ? 'Đăng Nhập' : 'Trang chủ' }}</b-button>
         </router-link>
       </div>
       <base-dropdown
@@ -88,7 +69,7 @@
               <img alt="Image placeholder" src="/img/theme/team-4.jpg" />
             </span>
             <b-media-body class="ml-2 d-none d-lg-block">
-              <span class="mb-0 text-sm font-weight-bold">{{user.email}}</span>
+              <span class="mb-0 text-sm font-weight-bold">{{ user.email }}</span>
             </b-media-body>
           </b-media>
         </a>
@@ -124,63 +105,63 @@
   </base-nav>
 </template>
 <script>
-import { CollapseTransition } from "vue2-transitions";
-import { BaseNav, Modal } from "@/components";
-import { mapState, mapActions } from "vuex";
-import { mapGetters } from "vuex/dist/vuex.common.js";
+import { CollapseTransition } from 'vue2-transitions'
+import { BaseNav, Modal } from '@/components'
+import { mapState, mapActions } from 'vuex'
+import { mapGetters } from 'vuex/dist/vuex.common.js'
 
 export default {
   components: {
     CollapseTransition,
     BaseNav,
-    Modal,
+    Modal
   },
   computed: {
-    ...mapState(["user"]),
-    ...mapGetters(["isAuthenticated"]),
+    ...mapState(['user']),
+    ...mapGetters(['isAuthenticated']),
     routeName() {
-      const { name } = this.$route;
-      return this.capitalizeFirstLetter(name);
+      const { name } = this.$route
+      return this.capitalizeFirstLetter(name)
     },
     isRTL() {
-      return this.$rtl.isRTL;
-    },
+      return this.$rtl.isRTL
+    }
   },
   data() {
     return {
       activeNotifications: false,
       showMenu: false,
       searchModalVisible: false,
-      searchQuery: "",
-    };
+      searchQuery: ''
+    }
   },
   methods: {
     ...mapActions(['logout']),
     async onClickLogout() {
       try {
-        await this.logout();
-        this.$router.push('/login'); // Redirect on success
+        await this.logout()
+        this.$router.push('/login') // Redirect on success
       } catch (err) {
-        this.error = err.message; // Handle login errors
+        this.error = err.message // Handle login errors
       }
     },
     capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
+      return string.charAt(0).toUpperCase() + string.slice(1)
     },
     toggleNotificationDropDown() {
-      this.activeNotifications = !this.activeNotifications;
+      this.activeNotifications = !this.activeNotifications
     },
     closeDropDown() {
-      this.activeNotifications = false;
+      this.activeNotifications = false
     },
     toggleSidebar() {
-      this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
+      this.$sidebar.displaySidebar(!this.$sidebar.showSidebar)
     },
     hideSidebar() {
-      this.$sidebar.displaySidebar(false);
-    },
-  },
-};
+      this.$sidebar.displaySidebar(false)
+    }
+  }
+}
 </script>
 <style scoped>
 .top-navbar {

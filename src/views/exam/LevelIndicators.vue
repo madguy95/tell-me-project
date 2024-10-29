@@ -7,11 +7,11 @@
         class="indicator"
         :class="{
           active: currentLevel >= index + 1,
-          inactive: currentLevel < index + 1,
+          inactive: currentLevel < index + 1
         }"
         :style="{
           width: indicatorWidth,
-          backgroundColor: getIndicatorColor(index),
+          backgroundColor: getIndicatorColor(index)
         }"
       >
         <span class="indicator-text"></span>
@@ -25,34 +25,31 @@ export default {
   props: {
     level: {
       type: Number,
-      default: 0,
+      default: 0
     },
-    maxLevel: 
-    {
+    maxLevel: {
       type: Number,
-      default: 4,
-    },
+      default: 4
+    }
   },
   data() {
     return {
-      levels: [...Array.from({length: this.maxLevel}, (_, i) => i + 1)], // Định nghĩa 5 mức độ
-      currentLevel: this.level,
-    };
+      levels: [...Array.from({ length: this.maxLevel }, (_, i) => i + 1)], // Định nghĩa 5 mức độ
+      currentLevel: this.level
+    }
   },
   computed: {
     indicatorWidth() {
-      return `calc(100% / ${this.levels.length})`;
-    },
+      return `calc(100% / ${this.levels.length})`
+    }
   },
   methods: {
     getIndicatorColor(index) {
-      const colors = ["#1276A8", "#D6D600", "#F79C33", "#A83A12", "#FF0000"]; // Các màu cho từng mức độ
-      return this.currentLevel >= index + 1
-        ? colors[this.currentLevel - 1]
-        : "#e0e0e0";
-    },
-  },
-};
+      const colors = ['#1276A8', '#D6D600', '#F79C33', '#A83A12', '#FF0000'] // Các màu cho từng mức độ
+      return this.currentLevel >= index + 1 ? colors[this.currentLevel - 1] : '#e0e0e0'
+    }
+  }
+}
 </script>
 
 <style scoped>

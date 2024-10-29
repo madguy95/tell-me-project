@@ -1,8 +1,5 @@
 <template>
-  <nav
-    class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white"
-    id="sidenav-main"
-  >
+  <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
     <div class="container-fluid">
       <!--Toggler-->
       <navbar-toggle-button @click.native="showSidebar"> </navbar-toggle-button>
@@ -32,18 +29,10 @@
           </base-dropdown> -->
           <div class="login-button-container" v-if="!isAuthenticated">
             <router-link class="navbar-brand" :to="$route.path === '/home' ? '/login' : '/home'">
-              <b-button variant="default">{{
-                $route.path === "/home" ? "Đăng Nhập" : "Trang chủ"
-              }}</b-button>
+              <b-button variant="default">{{ $route.path === '/home' ? 'Đăng Nhập' : 'Trang chủ' }}</b-button>
             </router-link>
           </div>
-          <base-dropdown
-            v-if="isAuthenticated"
-            class="nav-item"
-            menu-on-right
-            tag="li"
-            title-tag="a"
-          >
+          <base-dropdown v-if="isAuthenticated" class="nav-item" menu-on-right tag="li" title-tag="a">
             <a slot="title-container" class="nav-link" href="#" role="button">
               <div class="media align-items-center">
                 <span class="avatar avatar-sm rounded-circle">
@@ -87,11 +76,7 @@
         </ul>
       </slot>
       <slot></slot>
-      <div
-        v-show="$sidebar.showSidebar"
-        class="navbar-collapse collapse show"
-        id="sidenav-collapse-main"
-      >
+      <div v-show="$sidebar.showSidebar" class="navbar-collapse collapse show" id="sidenav-collapse-main">
         <div class="navbar-collapse-header d-md-none">
           <div class="row">
             <div class="col-6 collapse-brand">
@@ -100,9 +85,7 @@
               </router-link>
             </div>
             <div class="col-6 collapse-close">
-              <navbar-toggle-button
-                @click.native="closeSidebar"
-              ></navbar-toggle-button>
+              <navbar-toggle-button @click.native="closeSidebar"></navbar-toggle-button>
             </div>
           </div>
         </div>
@@ -122,14 +105,10 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fas fa-envelope"></i> Email: duantellme.hmu@gmail.com
-            </a>
+            <a class="nav-link" href="#"> <i class="fas fa-envelope"></i> Email: duantellme.hmu@gmail.com </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fas fa-phone"></i> Hotline: 0375458921 (Ms. Thu Trang)
-            </a>
+            <a class="nav-link" href="#"> <i class="fas fa-phone"></i> Hotline: 0375458921 (Ms. Thu Trang) </a>
           </li>
         </ul>
       </div>
@@ -137,57 +116,56 @@
   </nav>
 </template>
 <script>
-import NavbarToggleButton from "@/components/NavbarToggleButton";
-import { mapState, mapActions, mapGetters } from "vuex";
+import NavbarToggleButton from '@/components/NavbarToggleButton'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: "sidebar",
+  name: 'sidebar',
   components: {
-    NavbarToggleButton,
+    NavbarToggleButton
   },
   props: {
     logo: {
       type: String,
-      default: "/img/logo.svg",
-      description: "Sidebar app logo",
+      default: '/img/logo.svg',
+      description: 'Sidebar app logo'
     },
     autoClose: {
       type: Boolean,
       default: true,
-      description:
-        "Whether sidebar should autoclose on mobile when clicking an item",
-    },
+      description: 'Whether sidebar should autoclose on mobile when clicking an item'
+    }
   },
   provide() {
     return {
-      autoClose: this.autoClose,
-    };
+      autoClose: this.autoClose
+    }
   },
   computed: {
-    ...mapState(["user"]),
-    ...mapGetters(["isAuthenticated"]),
+    ...mapState(['user']),
+    ...mapGetters(['isAuthenticated'])
   },
   methods: {
-    ...mapActions(["logout"]),
+    ...mapActions(['logout']),
     async onClickLogout() {
       try {
-        await this.logout();
-        this.$router.push("/login"); // Redirect on success
+        await this.logout()
+        this.$router.push('/login') // Redirect on success
       } catch (err) {
-        this.error = err.message; // Handle login errors
+        this.error = err.message // Handle login errors
       }
     },
     closeSidebar() {
-      this.$sidebar.displaySidebar(false);
+      this.$sidebar.displaySidebar(false)
     },
     showSidebar() {
-      this.$sidebar.displaySidebar(true);
-    },
+      this.$sidebar.displaySidebar(true)
+    }
   },
   beforeDestroy() {
     if (this.$sidebar.showSidebar) {
-      this.$sidebar.showSidebar = false;
+      this.$sidebar.showSidebar = false
     }
-  },
-};
+  }
+}
 </script>

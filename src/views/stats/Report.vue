@@ -22,100 +22,73 @@
   </div>
 </template>
 <script>
-import RouteBreadCrumb from "@/components/Breadcrumb/RouteBreadcrumb";
-import StatsCard from "@/components/Cards/StatsCard";
-import {
-  collection,
-  onSnapshot,
-  getDocs,
-  query,
-  orderBy,
-  Timestamp,
-} from "firebase/firestore";
-import { db } from "@/plugins/firebaseConfig";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import * as Helpers from "chart.js/helpers";
-import { Pie } from "vue-chartjs";
-import _ from "lodash";
-import * as XLSX from "xlsx";
+import { collection, onSnapshot, getDocs, query, orderBy, Timestamp } from 'firebase/firestore'
+import { db } from '@/plugins/firebaseConfig'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import * as Helpers from 'chart.js/helpers'
+import { Pie } from 'vue-chartjs'
+import _ from 'lodash'
+import * as XLSX from 'xlsx'
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend)
 // var theHelp = ChartJS.helpers
 export const DATA_DEFAUT = {
-  "GAD-7": {
-    labels: ["Mức 1", "Mức 2", "Mức 3", "Mức 4"],
+  'GAD-7': {
+    labels: ['Mức 1', 'Mức 2', 'Mức 3', 'Mức 4'],
     datasets: [
       {
-        backgroundColor: ["#1276A8", "#D6D600", "#F79C33", "#A83A12"],
-        data: [40, 20, 80, 10],
-      },
-    ],
+        backgroundColor: ['#1276A8', '#D6D600', '#F79C33', '#A83A12'],
+        data: [40, 20, 80, 10]
+      }
+    ]
   },
-  "PHQ-9": {
-    labels: ["Mức 1", "Mức 2", "Mức 3", "Mức 4", "Mức 5"],
+  'PHQ-9': {
+    labels: ['Mức 1', 'Mức 2', 'Mức 3', 'Mức 4', 'Mức 5'],
     datasets: [
       {
-        backgroundColor: [
-          "#1276A8",
-          "#D6D600",
-          "#F79C33",
-          "#A83A12",
-          "#FF0000",
-        ],
-        data: [40, 20, 80, 10],
-      },
-    ],
+        backgroundColor: ['#1276A8', '#D6D600', '#F79C33', '#A83A12', '#FF0000'],
+        data: [40, 20, 80, 10]
+      }
+    ]
   },
-  "BSRS-5": {
-    labels: ["Mức 1", "Mức 2", "Mức 3", "Mức 4"],
+  'BSRS-5': {
+    labels: ['Mức 1', 'Mức 2', 'Mức 3', 'Mức 4'],
     datasets: [
       {
-        backgroundColor: ["#1276A8", "#D6D600", "#F79C33", "#A83A12"],
-        data: [40, 20, 80, 10],
-      },
-    ],
-  },
-};
+        backgroundColor: ['#1276A8', '#D6D600', '#F79C33', '#A83A12'],
+        data: [40, 20, 80, 10]
+      }
+    ]
+  }
+}
 
 export const options = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: "right",
+      position: 'right',
       labels: {
         // Thay đổi văn bản legend ở đây
         generateLabels: (chart) => {
-          var data = chart.data;
+          var data = chart.data
           if (data.labels.length && data.datasets.length) {
             const labels = chart.data.labels.map((labelText, i) => {
-              var meta = chart.getDatasetMeta(0);
-              var ds = data.datasets[0];
-              var arc = meta.data[i];
-              var custom = (arc && arc.custom) || {};
-              var getValueAtIndexOrDefault = Helpers.resolve;
-              var arcOpts = chart.options.elements.arc;
+              var meta = chart.getDatasetMeta(0)
+              var ds = data.datasets[0]
+              var arc = meta.data[i]
+              var custom = (arc && arc.custom) || {}
+              var getValueAtIndexOrDefault = Helpers.resolve
+              var arcOpts = chart.options.elements.arc
               var fill = custom.backgroundColor
                 ? custom.backgroundColor
-                : getValueAtIndexOrDefault(
-                    [ds.backgroundColor || [], arcOpts.backgroundColor],
-                    chart.$context,
-                    i
-                  );
+                : getValueAtIndexOrDefault([ds.backgroundColor || [], arcOpts.backgroundColor], chart.$context, i)
               var stroke = custom.borderColor
                 ? custom.borderColor
-                : getValueAtIndexOrDefault(
-                    [ds.borderColor || [], arcOpts.borderColor],
-                    chart.$context,
-                    i
-                  );
+                : getValueAtIndexOrDefault([ds.borderColor || [], arcOpts.borderColor], chart.$context, i)
               var bw = custom.borderWidth
                 ? custom.borderWidth
-                : getValueAtIndexOrDefault(
-                    [ds.borderWidth || [], arcOpts.borderWidth],
-                    chart.$context,
-                    i
-                  );
+                : getValueAtIndexOrDefault([ds.borderWidth || [], arcOpts.borderWidth], chart.$context, i)
               return {
                 // And finally :
                 text: `${labelText} (${ds.data[i] || 0})`,
@@ -123,45 +96,43 @@ export const options = {
                 strokeStyle: stroke,
                 lineWidth: bw,
                 hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
-                index: i,
-              };
-            });
+                index: i
+              }
+            })
             // console.log(labels)
-            return labels;
+            return labels
           }
-          return [];
-        },
-      },
+          return []
+        }
+      }
     },
     datalabels: {
       formatter: (value, context) => {
-        const label = context.chart.data.labels[context.dataIndex];
-        return `${label}: ${value}`;
+        const label = context.chart.data.labels[context.dataIndex]
+        return `${label}: ${value}`
       },
-      color: "#fff",
-    },
-  },
-};
+      color: '#fff'
+    }
+  }
+}
 const USER_TYPE = {
-  A: "Người nhà bệnh nhân",
-  B: "Bệnh nhân",
-  O: "Khác",
-};
+  A: 'Người nhà bệnh nhân',
+  B: 'Bệnh nhân',
+  O: 'Khác'
+}
 function formatDate(value) {
   // Check if the value is a valid date
   if (value instanceof Timestamp && !isNaN(value)) {
     // Convert the date to a string (ISO format)
-    return value.toDate().toISOString(); // or use value.toString() for a more human-readable format
+    return value.toDate().toISOString() // or use value.toString() for a more human-readable format
   } else {
-    return null; // or throw an error or return a default value
+    return null // or throw an error or return a default value
   }
 }
 export default {
-  name: "ReportPage",
+  name: 'ReportPage',
   components: {
-    StatsCard,
-    RouteBreadCrumb,
-    Pie,
+    Pie
   },
   data() {
     return {
@@ -170,65 +141,57 @@ export default {
       options: options,
       items: [],
       fieldsOrder: [
-        "timestamp",
-        "testerInfo.userType",
-        "testerInfo.gender",
-        "testerInfo.age",
-        "result.GAD-7",
-        "result.PHQ-9",
-        "result.BSRS-5",
+        'timestamp',
+        'testerInfo.userType',
+        'testerInfo.gender',
+        'testerInfo.age',
+        'result.GAD-7',
+        'result.PHQ-9',
+        'result.BSRS-5'
       ],
-      headers: [
-        "Thời gian",
-        "Người",
-        "Giới tính",
-        "Tuổi",
-        "Bài test GAD-7",
-        "Bài test PHQ-9",
-        "Bài test BSRS-5",
-      ],
-    };
+      headers: ['Thời gian', 'Người', 'Giới tính', 'Tuổi', 'Bài test GAD-7', 'Bài test PHQ-9', 'Bài test BSRS-5']
+    }
   },
   watch: {},
   methods: {
     toggle(id) {
-      this.openItem = this.openItem === id ? null : id;
+      this.openItem = this.openItem === id ? null : id
     },
     isOpen(id) {
-      return this.openItem === id;
+      return this.openItem === id
     },
     async getUsers() {
-      this.showLoader();
+      this.showLoader()
       // use 'collection()' instead of 'doc()'
       const dataArr = {
-        "GAD-7": [0, 0, 0, 0],
-        "PHQ-9": [0, 0, 0, 0, 0],
-        "BSRS-5": [0, 0, 0, 0],
-      };
-      onSnapshot(collection(db, "surveys"), (snap) => {
+        'GAD-7': [0, 0, 0, 0],
+        'PHQ-9': [0, 0, 0, 0, 0],
+        'BSRS-5': [0, 0, 0, 0]
+      }
+      onSnapshot(collection(db, 'surveys'), (snap) => {
         snap.forEach((doc) => {
-          const data = doc.data();
+          const data = doc.data()
           // if (!data.result) {
           //   updateDoc(doc.ref, { result: { "BSRS-5": data.point } });
           // }
           Object.keys(data.result).forEach((name) => {
-            if (name === "PHQ-9" && data.result[name] >= 20) {
-              dataArr[name][4]++;
+            if (name === 'PHQ-9' && data.result[name] >= 20) {
+              dataArr[name][4]++
             } else if (data.result[name] >= 15) {
-              dataArr[name][3]++;
+              dataArr[name][3]++
             } else if (data.result[name] >= 10) {
-              dataArr[name][2]++;
+              dataArr[name][2]++
             } else if (data.result[name] >= 6) {
-              dataArr[name][1]++;
+              dataArr[name][1]++
             } else {
-              dataArr[name][0]++;
+              dataArr[name][0]++
             }
-          });
-        });
+          })
+        })
         Object.keys(dataArr).forEach((name) => {
-          this.data[name].datasets[0].data = dataArr[name];
-        });
-        this.items = dataArr;
+          this.data[name].datasets[0].data = dataArr[name]
+        })
+        this.items = dataArr
         // Object.keys(dataArr).map((name) => {
         //   const dataClone = dataArr[name].reduce((acc, value, index) => {
         //     acc[`level${index + 1}`] = value;
@@ -236,44 +199,42 @@ export default {
         //   }, {});
         //   return { "Tên bài Test": name, ...dataClone };
         // });
-      });
-      this.hideLoader();
+      })
+      this.hideLoader()
     },
     async exportToExcel() {
       try {
-        const snapshot = await getDocs(
-          query(collection(db, "surveys"), orderBy("timestamp", "desc"))
-        );
+        const snapshot = await getDocs(query(collection(db, 'surveys'), orderBy('timestamp', 'desc')))
         const data = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
-        }));
+          ...doc.data()
+        }))
         // Tạo mảng hai chiều cho dữ liệu
-        const sheetData = [];
+        const sheetData = []
 
         // Thêm tên header vào mảng
-        sheetData.push(this.headers);
+        sheetData.push(this.headers)
 
         // Thêm dữ liệu vào mảng
         data.forEach((item) => {
           const row = this.fieldsOrder.map((field) => {
-            const keys = field.split("."); // Tách các trường nếu có sub-object
-            let value = item;
+            const keys = field.split('.') // Tách các trường nếu có sub-object
+            let value = item
 
             // Duyệt qua các keys để lấy giá trị
             keys.forEach((key) => {
-              value = value ? value[key] : value; // Lấy giá trị hoặc gán trống nếu không tồn tại
-            });
-            if (field === "testerInfo.userType") {
-              value = USER_TYPE[value];
+              value = value ? value[key] : value // Lấy giá trị hoặc gán trống nếu không tồn tại
+            })
+            if (field === 'testerInfo.userType') {
+              value = USER_TYPE[value]
             }
-            if (field === "timestamp") {
-              value = formatDate(value);
+            if (field === 'timestamp') {
+              value = formatDate(value)
             }
-            return value === undefined || value === null ? "N/A" : value; // Gán giá trị hoặc gán trống nếu không có
-          });
-          sheetData.push(row); // Thêm hàng vào mảng
-        });
+            return value === undefined || value === null ? 'N/A' : value // Gán giá trị hoặc gán trống nếu không có
+          })
+          sheetData.push(row) // Thêm hàng vào mảng
+        })
         // Chuyển đổi dữ liệu thành dạng tương thích với Excel theo thứ tự đã chỉ định
         // const formattedData = data.map((item) => {
         //   const formattedItem = {};
@@ -292,56 +253,42 @@ export default {
         //   });
         //   return formattedItem;
         // });
-        const ws = XLSX.utils.aoa_to_sheet(sheetData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-        XLSX.writeFile(wb, "data.xlsx");
+        const ws = XLSX.utils.aoa_to_sheet(sheetData)
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+        XLSX.writeFile(wb, 'data.xlsx')
       } catch (error) {
-        console.error("Lỗi khi xuất file Excel:", error);
+        console.error('Lỗi khi xuất file Excel:', error)
       }
     },
     exportToExcelOld() {
       // Chuyển đổi đối tượng thành mảng mảng
-      const sheetData = [];
+      const sheetData = []
 
       // Thêm tiêu đề với style
-      const header = [
-        "Tên bài test",
-        "Mức 1",
-        "Mức 2",
-        "Mức 3",
-        "Mức 4",
-        "Mức 5",
-      ];
-      sheetData.push(header);
+      const header = ['Tên bài test', 'Mức 1', 'Mức 2', 'Mức 3', 'Mức 4', 'Mức 5']
+      sheetData.push(header)
 
       // Thêm dữ liệu
       for (const key in this.items) {
-        const row = [key]; // Thêm tên chỉ số
-        row.push(...this.items[key]); // Thêm giá trị
-        sheetData.push(row);
+        const row = [key] // Thêm tên chỉ số
+        row.push(...this.items[key]) // Thêm giá trị
+        sheetData.push(row)
       }
-      const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+      const worksheet = XLSX.utils.aoa_to_sheet(sheetData)
       // Thiết lập chiều rộng cột
-      worksheet["!cols"] = [
-        { wch: 15 },
-        { wch: 10 },
-        { wch: 10 },
-        { wch: 10 },
-        { wch: 10 },
-        { wch: 10 },
-      ];
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+      worksheet['!cols'] = [{ wch: 15 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }]
+      const workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Data')
 
       // Xuất file
-      XLSX.writeFile(workbook, "data.xlsx");
-    },
+      XLSX.writeFile(workbook, 'data.xlsx')
+    }
   },
   created() {
-    this.getUsers();
+    this.getUsers()
   },
-  mounted() {},
-};
+  mounted() {}
+}
 </script>
 <style scoped></style>

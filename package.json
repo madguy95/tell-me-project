@@ -6,6 +6,7 @@
     "serve": "vue-cli-service serve --open",
     "build": "cross-env NODE_OPTIONS=--openssl-legacy-provider cross-env CI=false vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "format": "prettier --write \"src/**/*.vue\"",
     "dev": "npm run serve"
   },
   "dependencies": {

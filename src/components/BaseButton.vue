@@ -57,19 +57,19 @@ export default {
   },
   methods: {
     handleClick(evt) {
-      this.$emit('click', evt);
+      this.$emit('click', evt)
     }
   }
-};
+}
 </script>
 <style lang="scss">
-  .base-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.base-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    i {
-      padding: 0 3px;
-    }
+  i {
+    padding: 0 3px;
   }
+}
 </style>

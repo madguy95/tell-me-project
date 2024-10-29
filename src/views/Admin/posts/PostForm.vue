@@ -4,21 +4,16 @@
     <router-link to="/admin/posts">
       <b-button>Quay lại</b-button>
     </router-link>
-    <h2>{{ isEditMode ? "Cập Nhật Bài Post" : "Thêm Mới Bài Post" }}</h2>
+    <h2>{{ isEditMode ? 'Cập Nhật Bài Post' : 'Thêm Mới Bài Post' }}</h2>
 
     <b-form @submit.prevent="handleSubmit">
       <b-form-group label="Tiêu Đề">
         <b-form-input v-model="post.title" required></b-form-input>
       </b-form-group>
       <label>Loại bài: </label>
-      <b-form-select v-model="post.type" :options="typeOptions" class="mb-3">
-      </b-form-select>
+      <b-form-select v-model="post.type" :options="typeOptions" class="mb-3"> </b-form-select>
       <b-form-group label="Nội Dung">
-        <b-form-textarea
-          v-model="post.content"
-          rows="3"
-          required
-        ></b-form-textarea>
+        <b-form-textarea v-model="post.content" rows="3" required></b-form-textarea>
       </b-form-group>
 
       <b-form-group label="Thời Gian Đăng" v-if="post.upTime">
@@ -43,124 +38,103 @@
       </b-form-group>
 
       <b-form-group label="Link Video">
-        <b-form-input
-          v-model="post.videoLink"
-          placeholder="URL video"
-          type="url"
-        ></b-form-input>
+        <b-form-input v-model="post.videoLink" placeholder="URL video" type="url"></b-form-input>
       </b-form-group>
 
-      <b-button type="submit" variant="primary">{{
-        isEditMode ? "Cập Nhật" : "Lưu"
-      }}</b-button>
+      <b-button type="submit" variant="primary">{{ isEditMode ? 'Cập Nhật' : 'Lưu' }}</b-button>
     </b-form>
   </div>
 </template>
 
 <script>
-import { db, storage } from "@/plugins/firebaseConfig";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp,
-  addDoc,
-  collection,
-} from "firebase/firestore";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from "firebase/storage";
-import { v4 as uuidv4 } from "uuid";
-import { COLLECTION_TYPE, POST_COLLECTION_NAME } from "../../../util/constant";
+import { db, storage } from '@/plugins/firebaseConfig'
+import { doc, getDoc, updateDoc, serverTimestamp, addDoc, collection } from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid'
+import { COLLECTION_TYPE, POST_COLLECTION_NAME } from '../../../util/constant'
 
 export default {
   data() {
     return {
       post: {
-        title: "",
-        content: "",
+        title: '',
+        content: '',
         upTime: null,
-        image: "",
-        videoLink: "",
-        type: COLLECTION_TYPE.HEALTH,
+        image: '',
+        videoLink: '',
+        type: COLLECTION_TYPE.HEALTH
       },
       typeOptions: [
-        { value: COLLECTION_TYPE.HEALTH, text: "Chăm sóc sức khỏe" },
-        { value: COLLECTION_TYPE.PSYCH, text: "Hỗ trợ tâm lý" },
+        { value: COLLECTION_TYPE.HEALTH, text: 'Chăm sóc sức khỏe' },
+        { value: COLLECTION_TYPE.PSYCH, text: 'Hỗ trợ tâm lý' }
       ],
       isEditMode: false,
       imageFile: null,
-      imagePreview: "",
-    };
+      imagePreview: ''
+    }
   },
   computed: {
     formattedUpTime() {
-      return this.post.upTime ? this.post.upTime.toDate().toLocaleString() : "";
-    },
+      return this.post.upTime ? this.post.upTime.toDate().toLocaleString() : ''
+    }
   },
   async created() {
-    const postId = this.$route.params.id;
+    const postId = this.$route.params.id
     if (postId) {
-      this.isEditMode = true;
-      await this.fetchPostData(postId);
+      this.isEditMode = true
+      await this.fetchPostData(postId)
     }
   },
   methods: {
     async fetchPostData(postId) {
-      this.showLoader();
-      const postRef = doc(db, POST_COLLECTION_NAME, postId);
-      const postSnapshot = await getDoc(postRef);
+      this.showLoader()
+      const postRef = doc(db, POST_COLLECTION_NAME, postId)
+      const postSnapshot = await getDoc(postRef)
       if (postSnapshot.exists()) {
-        this.post = { id: postId, ...postSnapshot.data() };
+        this.post = { id: postId, ...postSnapshot.data() }
       } else {
-        console.error("Bài viết không tồn tại");
+        console.error('Bài viết không tồn tại')
       }
-      this.hideLoader();
+      this.hideLoader()
     },
     handleFileChange(event) {
-      const file = event.target.files[0];
+      const file = event.target.files[0]
       if (file) {
-        this.imageFile = file;
-        const reader = new FileReader();
+        this.imageFile = file
+        const reader = new FileReader()
         reader.onload = (e) => {
-          this.imagePreview = e.target.result;
-        };
-        reader.readAsDataURL(file);
+          this.imagePreview = e.target.result
+        }
+        reader.readAsDataURL(file)
       }
     },
     async handleSubmit() {
       try {
-        this.showLoader();
+        this.showLoader()
 
         // Tải hình ảnh mới lên nếu có file hình ảnh
         if (this.imageFile) {
           // Nếu đang chỉnh sửa và có ảnh cũ, xóa ảnh cũ trước khi tải ảnh mới lên
           if (this.isEditMode && this.post.image) {
-            const oldImageRef = ref(storage, this.post.image); // Lấy reference của ảnh cũ
-            await deleteObject(oldImageRef); // Xóa ảnh cũ
+            const oldImageRef = ref(storage, this.post.image) // Lấy reference của ảnh cũ
+            await deleteObject(oldImageRef) // Xóa ảnh cũ
           }
-          const storageRef = ref(
-            storage,
-            `images/${uuidv4() + "_" + this.imageFile.name}`
-          );
-          await uploadBytes(storageRef, this.imageFile);
-          const url = await getDownloadURL(storageRef);
-          this.post.image = url; // Lưu URL hình ảnh mới vào post
+          const storageRef = ref(storage, `images/${uuidv4() + '_' + this.imageFile.name}`)
+          await uploadBytes(storageRef, this.imageFile)
+          const url = await getDownloadURL(storageRef)
+          this.post.image = url // Lưu URL hình ảnh mới vào post
         }
 
         if (this.isEditMode && this.post.id) {
-          const postRef = doc(db, POST_COLLECTION_NAME, this.post.id);
+          const postRef = doc(db, POST_COLLECTION_NAME, this.post.id)
           await updateDoc(postRef, {
             title: this.post.title,
             content: this.post.content,
             image: this.post.image,
             videoLink: this.post.videoLink,
             upTime: serverTimestamp(),
-            type: this.post.type,
-          });
+            type: this.post.type
+          })
         } else {
           await addDoc(collection(db, POST_COLLECTION_NAME), {
             title: this.post.title,
@@ -168,18 +142,18 @@ export default {
             image: this.post.image,
             videoLink: this.post.videoLink,
             upTime: serverTimestamp(),
-            type: this.post.type,
-          });
+            type: this.post.type
+          })
         }
-        this.$router.push("/admin/posts");
+        this.$router.push('/admin/posts')
       } catch (error) {
-        console.error("Lỗi khi lưu bài viết:", error);
+        console.error('Lỗi khi lưu bài viết:', error)
       } finally {
-        this.hideLoader();
+        this.hideLoader()
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style scoped>

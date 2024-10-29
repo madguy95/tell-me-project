@@ -18,10 +18,7 @@
         </button>
       </slot>
 
-      <b-navbar-toggle
-        target="nav-text-collapse"
-        @click.stop="toggleMenu">
-      </b-navbar-toggle>
+      <b-navbar-toggle target="nav-text-collapse" @click.stop="toggleMenu"> </b-navbar-toggle>
 
       <b-collapse
         is-nav
@@ -29,7 +26,8 @@
         class="navbar-custom-collapse collapse"
         :class="menuClasses"
         :visible="show"
-        v-click-outside="closeMenu">
+        v-click-outside="closeMenu"
+      >
         <slot :close-menu="closeMenu"></slot>
       </b-collapse>
     </div>
@@ -42,8 +40,7 @@ export default {
     show: {
       type: Boolean,
       default: false,
-      description:
-        'Whether navbar menu is shown (valid for viewports < specified by `expand` prop)'
+      description: 'Whether navbar menu is shown (valid for viewports < specified by `expand` prop)'
     },
     transparent: {
       type: Boolean,
@@ -58,8 +55,7 @@ export default {
     menuClasses: {
       type: [String, Object, Array],
       default: '',
-      description:
-        'Navbar menu (items) classes. Can be used to align menu items to the right/left'
+      description: 'Navbar menu (items) classes. Can be used to align menu items to the right/left'
     },
     containerClasses: {
       type: [String, Object, Array],
@@ -71,18 +67,7 @@ export default {
       type: String,
       default: '',
       validator(value) {
-        return [
-          '',
-          'dark',
-          'success',
-          'danger',
-          'warning',
-          'white',
-          'primary',
-          'light',
-          'info',
-          'vue'
-        ].includes(value);
+        return ['', 'dark', 'success', 'danger', 'warning', 'white', 'primary', 'light', 'info', 'vue'].includes(value)
       },
       description: 'Navbar color type'
     }
@@ -93,31 +78,28 @@ export default {
   },
   computed: {
     classes() {
-      let color = `bg-${this.type}`;
-      let classes = [
-        { 'navbar-transparent': this.transparent },
-        { [`navbar-expand-${this.expand}`]: this.expand }
-      ];
+      let color = `bg-${this.type}`
+      let classes = [{ 'navbar-transparent': this.transparent }, { [`navbar-expand-${this.expand}`]: this.expand }]
       if (this.position) {
-        classes.push(`navbar-${this.position}`);
+        classes.push(`navbar-${this.position}`)
       }
       if (!this.transparent) {
-        classes.push(color);
+        classes.push(color)
       }
-      return classes;
+      return classes
     },
     hasMenu() {
-      return this.$slots.default;
+      return this.$slots.default
     }
   },
   methods: {
     toggleMenu() {
-      this.$emit('change', !this.show);
+      this.$emit('change', !this.show)
     },
     closeMenu() {
-      this.$emit('change', false);
+      this.$emit('change', false)
     }
   }
-};
+}
 </script>
 <style></style>
