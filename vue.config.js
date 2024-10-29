@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require("path");
 
 function resolveSrc(_path) {
   return path.join(__dirname, _path);
@@ -10,12 +10,14 @@ module.exports = {
     // Set up all the aliases we use in our app.
     resolve: {
       alias: {
+        "@": resolveSrc("src"),
         assets: resolveSrc('src/assets')
-      }
-    }
+      },
+      extensions: [".js", ".vue", ".json"],
+    },
   },
   css: {
     // Enable CSS source maps.
-    sourceMap: process.env.NODE_ENV !== 'production'
-  }
+    sourceMap: process.env.NODE_ENV !== "production",
+  },
 };
