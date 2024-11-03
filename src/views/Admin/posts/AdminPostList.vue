@@ -14,7 +14,7 @@
         <template #table-colgroup="scope">
           <colgroup>
             <col />
-            <col style="width: 60%" />
+            <col />
             <col />
             <col />
             <col />
@@ -22,8 +22,11 @@
             <col />
           </colgroup>
         </template>
+        <template #cell(title)="data">
+          {{ truncateText(data.item.title, 40) }}
+        </template>
         <template #cell(content)="data">
-          <div class="text-truncate">{{ data.item.content }}</div>
+          <div class="text-truncate">{{ truncateText(data.item.content) }}</div>
         </template>
         <template #cell(image)="data">
           <b-img :src="data.item.image" fluid alt="Image" style="max-width: 100px" />
@@ -54,14 +57,27 @@
 import { db } from '@/plugins/firebaseConfig'
 import { collection, getDocs, deleteDoc, doc, query, orderBy, limit, startAfter, where } from 'firebase/firestore'
 import { COLLECTION_TYPE, POST_COLLECTION_NAME } from '../../../util/constant'
+function truncateText(text, maxLength) {
+  if (text.length <= maxLength) return text
 
+  // Find the last space within the limit
+  let truncatedText = text.substr(0, maxLength)
+  let lastSpaceIndex = truncatedText.lastIndexOf(' ')
+
+  // Cut off at the last complete word if possible
+  if (lastSpaceIndex > -1) {
+    truncatedText = truncatedText.substr(0, lastSpaceIndex)
+  }
+
+  return truncatedText + '...'
+}
 export default {
   data() {
     return {
       collectionType: '',
       posts: [],
       lastVisibleDoc: null, // Tài liệu cuối cùng của lô dữ liệu hiện tại
-      pageSize: 2,
+      pageSize: 6,
       isFetching: false, // Trạng thái tải dữ liệu
       hasMorePosts: true, // Kiểm tra còn dữ liệu để tải hay không
       fields: [
@@ -129,6 +145,9 @@ export default {
       this.hideLoader()
       this.isFetching = false
     },
+    truncateText(text, maxLength = 120) {
+      return truncateText(text, maxLength)
+    },
     editPost(id) {
       this.$router.push(`/admin/post-form/${id}`)
     },
@@ -163,8 +182,6 @@ export default {
 <style scoped>
 ::v-deep .table-container .b-table-sticky-header {
   max-height: calc(100vh - 500px); /* Đặt chiều cao cố định */
-  overflow: hidden;
-  overflow-y: auto;
 }
 
 .table-container .b-table {
@@ -173,10 +190,11 @@ export default {
 .text-truncate {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  overflow: hidden;
   -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
-  max-height: 3em; /* Chiều cao tối đa cho 2 dòng */
   text-overflow: ellipsis; /* Dấu ba chấm */
+  max-width: 80ch; /* Limits the width to approximately 80 characters */
+  white-space: normal; /* Allows the text to wrap onto new lines */
+  word-wrap: break-word; /* Breaks long words onto the next line if needed */
 }
 .img-fluid {
   max-width: 100%;

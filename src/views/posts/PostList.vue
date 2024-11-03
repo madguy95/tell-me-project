@@ -6,7 +6,7 @@
         <b-col v-for="post in posts" :key="post.id" cols="12" md="4" class="mb-2">
           <b-card :title="post.title" :img-src="post.image" img-alt="Card image cap" img-top class="mb-4">
             <b-card-sub-title>{{ post.date }}</b-card-sub-title>
-            <b-card-text>{{ post.content }}</b-card-text>
+            <b-card-text>{{ truncateText(post.content, 120) }}</b-card-text>
             <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
               <a href="#" class="btn btn-link px-0">Xem thêm</a>
             </router-link>
@@ -21,7 +21,20 @@
 import { db } from '@/plugins/firebaseConfig'
 import { collection, getDocs, query, orderBy, limit, startAfter, where } from 'firebase/firestore'
 import { COLLECTION_TYPE, POST_COLLECTION_NAME } from '../../util/constant'
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) return text;
 
+    // Find the last space within the limit
+    let truncatedText = text.substr(0, maxLength);
+    let lastSpaceIndex = truncatedText.lastIndexOf(' ');
+
+    // Cut off at the last complete word if possible
+    if (lastSpaceIndex > -1) {
+        truncatedText = truncatedText.substr(0, lastSpaceIndex);
+    }
+
+    return truncatedText + '...';
+}
 export default {
   name: 'PostList',
   components: {},
@@ -62,6 +75,9 @@ export default {
     },
     isOpen(id) {
       return this.openItem === id
+    },
+    truncateText(text, maxLength = 120) {
+      return truncateText(text, maxLength)
     },
     async fetchPosts() {
       // Ngừng tải nếu đang trong quá trình tải hoặc không còn bài viết nào
